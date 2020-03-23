@@ -2,10 +2,15 @@
   <div id="game" :class="$style.game">
     <h1>{{ state.stage }}</h1>
     <Lobby v-if="state.stage === 'lobby'" :lobby="state.state"/>
+    <ActiveGame v-else-if="state.stage === 'game'"
+      :game="state.state"
+      seat="north"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import ActiveGame from '@/components/ActiveGame.vue';
 import Lobby from '@/components/Lobby.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
@@ -22,6 +27,7 @@ export default defineComponent({
   },
   components: {
     Lobby,
+    ActiveGame,
   },
   setup: () => {
     const state = computed(() => store.state.state);
