@@ -4,12 +4,12 @@ export class Deck {
   static deal(
     deck: ReadonlyArray<Card>,
     ...players: string[]
-  ): { [k: string]: ReadonlyArray<Card> } {
+  ): { [k: string]: Card[] } {
     if (deck.length % players.length !== 0) {
       throw new Error(`Cannot deal evenly to ${players.length} players.`);
     }
 
-    const dealt: { [k: string]: ReadonlyArray<Card> } = {};
+    const dealt: { [k: string]: Card[] } = {};
 
     const shuffled = Deck.shuffle(deck);
 
@@ -28,7 +28,7 @@ export class Deck {
     deck: ReadonlyArray<Card>,
     nums: number[],
     ...players: string[]
-  ): { [k: string]: ReadonlyArray<ReadonlyArray<Card>> } {
+  ): { [k: string]: Card[][] } {
     if (nums.reduce((i, j) => i + j, 0) * players.length !== deck.length) {
       throw new Error(
         `Not enough cards left to deal ${nums} cards to ${players.length} players.`
@@ -36,11 +36,11 @@ export class Deck {
     }
 
     const deal = Deck.deal(deck, ...players);
-    const splitDeal: { [k: string]: ReadonlyArray<ReadonlyArray<Card>> } = {};
+    const splitDeal: { [k: string]: Card[][] } = {};
 
     for (const player in deal) {
       const playerDeal = [];
-      const fullDeal = deal[player] as Card[];
+      const fullDeal = deal[player];
 
       for (const n of nums) {
         playerDeal.push(fullDeal.splice(fullDeal.length - n));

@@ -1,6 +1,8 @@
 <template>
   <div :class="$style.hand">
-    <Card v-for="card in cards" :key="card.id" :card="card"/>
+    <div v-for="card in cards" :key="card.id" :class="$style['card-container']">
+      <Card :card="card" :class="$style.card"/>
+    </div>
   </div>
 </template>
 
@@ -21,8 +23,17 @@ export default defineComponent({
 </script>
 
 <style lang="less" module>
+@import '../shared.less';
+
 .hand {
   display: grid;
-  grid-auto-flow: column;
+  gap: @px-grid-gap;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+.card-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

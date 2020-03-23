@@ -3,4 +3,5 @@ export type Card = {
   name: string;
   rank: number;
   value: number;
+  suit: string;
 }

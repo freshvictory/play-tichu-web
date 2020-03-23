@@ -8,25 +8,29 @@ const baseDeck: ReadonlyArray<Card> = [
     id: '3#spade',
     name: 'Three of spades',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'spade'
   },
   {
     id: '10#heart',
     name: 'Ten of hearts',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'heart'
   },
   {
     id: 'J#club',
     name: 'Jack of clubs',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'club'
   },
   {
     id: 'dragon',
     name: 'Dragon',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'special'
   }
 ];
 
@@ -35,49 +39,57 @@ const largeDeck: ReadonlyArray<Card> = [
     id: '3#spade',
     name: 'Three of spades',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'spade'
   },
   {
     id: '10#heart',
     name: 'Ten of hearts',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'heart'
   },
   {
     id: 'J#club',
     name: 'Jack of clubs',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'club'
   },
   {
     id: 'dragon',
     name: 'Dragon',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'special'
   },
   {
     id: '4#diamonds',
     name: 'Four of diamonds',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'diamond'
   },
   {
     id: 'K#clubs',
     name: 'King of clubs',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'club'
   },
   {
     id: '2#spade',
     name: 'Two of spades',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'spade'
   },
   {
     id: '7#club',
     name: 'Seven of clubs',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'club'
   }
 ];
 

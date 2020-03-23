@@ -5,336 +5,392 @@ export const Tichu: Card[] = [
     id: 'dragon',
     name: 'Dragon',
     value: 25,
-    rank: 15
+    rank: 16,
+    suit: 'special'
   },
   {
     id: 'dog',
     name: 'Dog',
     value: 0,
-    rank: 0
+    rank: 0,
+    suit: 'special'
   },
   {
     id: 'pheonix',
     name: 'Pheonix',
     value: -25,
-    rank: 14
+    rank: 15,
+    suit: 'special'
   },
   {
     id: 'bird',
     name: 'Bird',
     value: 0,
-    rank: 1
+    rank: 1,
+    suit: 'special'
   },
   {
-    id: '2_green',
-    name: 'Green two',
+    id: 'green_2',
+    name: '2',
     value: 0,
-    rank: 2
+    rank: 2,
+    suit: 'green'
   },
   {
-    id: '3_green',
-    name: 'Green three',
+    id: 'green_3',
+    name: '3',
     value: 0,
-    rank: 3
+    rank: 3,
+    suit: 'green'
   },
   {
-    id: '4_green',
-    name: 'Green four',
+    id: 'green_4',
+    name: '4',
     value: 0,
-    rank: 4
+    rank: 4,
+    suit: 'green'
   },
   {
-    id: '5_green',
-    name: 'Green five',
+    id: 'green_5',
+    name: '5',
     value: 5,
-    rank: 5
+    rank: 5,
+    suit: 'green'
   },
   {
-    id: '6_green',
-    name: 'Green six',
+    id: 'green_6',
+    name: '7',
     value: 0,
-    rank: 6
+    rank: 6,
+    suit: 'green'
   },
   {
-    id: '7_green',
-    name: 'Green seven',
+    id: 'green_7',
+    name: '7',
     value: 0,
-    rank: 7
+    rank: 7,
+    suit: 'green'
   },
   {
-    id: '8_green',
-    name: 'Green eight',
+    id: 'green_8',
+    name: '8',
     value: 0,
-    rank: 8
+    rank: 8,
+    suit: 'green'
   },
   {
-    id: '9_green',
-    name: 'Green nine',
+    id: 'green_9',
+    name: '9',
     value: 0,
-    rank: 9
+    rank: 9,
+    suit: 'green'
   },
   {
-    id: '10_green',
-    name: 'Green ten',
+    id: '1green_0',
+    name: '10',
     value: 10,
-    rank: 10
+    rank: 10,
+    suit: 'green'
   },
   {
-    id: 'J_green',
-    name: 'Green Jack',
+    id: 'green_J',
+    name: 'J',
     value: 0,
-    rank: 11
+    rank: 11,
+    suit: 'green'
   },
   {
-    id: 'Q_green',
-    name: 'Green Queen',
+    id: 'green_Q',
+    name: 'Q',
     value: 0,
-    rank: 12
+    rank: 12,
+    suit: 'green'
   },
   {
-    id: 'K_green',
-    name: 'Green King',
+    id: 'green_K',
+    name: 'K',
     value: 10,
-    rank: 13
+    rank: 13,
+    suit: 'green'
   },
   {
-    id: 'A_green',
-    name: 'Green Ace',
+    id: 'green_A',
+    name: 'A',
     value: 0,
-    rank: 14
+    rank: 14,
+    suit: 'green'
   },
   {
-    id: '2_black',
-    name: 'Black two',
+    id: 'black_2',
+    name: '2',
     value: 0,
-    rank: 2
+    rank: 2,
+    suit: 'black'
   },
   {
-    id: '3_black',
-    name: 'Black three',
+    id: 'black_3',
+    name: '3',
     value: 0,
-    rank: 3
+    rank: 3,
+    suit: 'black'
   },
   {
-    id: '4_black',
-    name: 'Black four',
+    id: 'black_4',
+    name: '4',
     value: 0,
-    rank: 4
+    rank: 4,
+    suit: 'black'
   },
   {
-    id: '5_black',
-    name: 'Black five',
+    id: 'black_5',
+    name: '5',
     value: 5,
-    rank: 5
+    rank: 5,
+    suit: 'black'
   },
   {
-    id: '6_black',
-    name: 'Black six',
+    id: 'black_6',
+    name: '7',
     value: 0,
-    rank: 6
+    rank: 6,
+    suit: 'black'
   },
   {
-    id: '7_black',
-    name: 'Black seven',
+    id: 'black_7',
+    name: '7',
     value: 0,
-    rank: 7
+    rank: 7,
+    suit: 'black'
   },
   {
-    id: '8_black',
-    name: 'Black eight',
+    id: 'black_8',
+    name: '8',
     value: 0,
-    rank: 8
+    rank: 8,
+    suit: 'black'
   },
   {
-    id: '9_black',
-    name: 'Black nine',
+    id: 'black_9',
+    name: '9',
     value: 0,
-    rank: 9
+    rank: 9,
+    suit: 'black'
   },
   {
-    id: '10_black',
-    name: 'Black ten',
+    id: 'black_10',
+    name: '10',
     value: 10,
-    rank: 10
+    rank: 10,
+    suit: 'black'
   },
   {
-    id: 'J_black',
-    name: 'Black Jack',
+    id: 'black_J',
+    name: 'J',
     value: 0,
-    rank: 11
+    rank: 11,
+    suit: 'black'
   },
   {
-    id: 'Q_black',
-    name: 'Black Queen',
+    id: 'black_Q',
+    name: 'Q',
     value: 0,
-    rank: 12
+    rank: 12,
+    suit: 'black'
   },
   {
-    id: 'K_black',
-    name: 'Black King',
+    id: 'black_K',
+    name: 'K',
     value: 10,
-    rank: 13
+    rank: 13,
+    suit: 'black'
   },
   {
-    id: 'A_black',
-    name: 'Black Ace',
+    id: 'black_A',
+    name: 'A',
     value: 0,
-    rank: 14
+    rank: 14,
+    suit: 'black'
   },
   {
-    id: '2_blue',
-    name: 'Blue two',
+    id: 'blue_2',
+    name: '2',
     value: 0,
-    rank: 2
+    rank: 2,
+    suit: 'blue'
   },
   {
-    id: '3_blue',
-    name: 'Blue three',
+    id: 'blue_3',
+    name: '3',
     value: 0,
-    rank: 3
+    rank: 3,
+    suit: 'blue'
   },
   {
-    id: '4_blue',
-    name: 'Blue four',
+    id: 'blue_4',
+    name: '4',
     value: 0,
-    rank: 4
+    rank: 4,
+    suit: 'blue'
   },
   {
-    id: '5_blue',
-    name: 'Blue five',
+    id: 'blue_5',
+    name: '5',
     value: 5,
-    rank: 5
+    rank: 5,
+    suit: 'blue'
   },
   {
-    id: '6_blue',
-    name: 'Blue six',
+    id: 'blue_6',
+    name: '7',
     value: 0,
-    rank: 6
+    rank: 6,
+    suit: 'blue'
   },
   {
-    id: '7_blue',
-    name: 'Blue seven',
+    id: 'blue_7',
+    name: '7',
     value: 0,
-    rank: 7
+    rank: 7,
+    suit: 'blue'
   },
   {
-    id: '8_blue',
-    name: 'Blue eight',
+    id: 'blue_8',
+    name: '8',
     value: 0,
-    rank: 8
+    rank: 8,
+    suit: 'blue'
   },
   {
-    id: '9_blue',
-    name: 'Blue nine',
+    id: 'blue_9',
+    name: '9',
     value: 0,
-    rank: 9
+    rank: 9,
+    suit: 'blue'
   },
   {
-    id: '10_blue',
-    name: 'Blue ten',
+    id: 'blue_10',
+    name: '10',
     value: 10,
-    rank: 10
+    rank: 10,
+    suit: 'blue'
   },
   {
-    id: 'J_blue',
-    name: 'Blue Jack',
+    id: 'blue_J',
+    name: 'J',
     value: 0,
-    rank: 11
+    rank: 11,
+    suit: 'blue'
   },
   {
-    id: 'Q_blue',
-    name: 'Blue Queen',
+    id: 'blue_Q',
+    name: 'Q',
     value: 0,
-    rank: 12
+    rank: 12,
+    suit: 'blue'
   },
   {
-    id: 'K_blue',
-    name: 'Blue King',
+    id: 'blue_K',
+    name: 'K',
     value: 10,
-    rank: 13
+    rank: 13,
+    suit: 'blue'
   },
   {
-    id: 'A_blue',
-    name: 'Blue Ace',
+    id: 'blue_A',
+    name: 'A',
     value: 0,
-    rank: 14
+    rank: 14,
+    suit: 'blue'
   },
   {
-    id: '2_red',
-    name: 'Red two',
+    id: 'red_2',
+    name: '2',
     value: 0,
-    rank: 2
+    rank: 2,
+    suit: 'red'
   },
   {
-    id: '3_red',
-    name: 'Red three',
+    id: 'red_3',
+    name: '3',
     value: 0,
-    rank: 3
+    rank: 3,
+    suit: 'red'
   },
   {
-    id: '4_red',
-    name: 'Red four',
+    id: 'red_4',
+    name: '4',
     value: 0,
-    rank: 4
+    rank: 4,
+    suit: 'red'
   },
   {
-    id: '5_red',
-    name: 'Red five',
+    id: 'red_5',
+    name: '5',
     value: 5,
-    rank: 5
+    rank: 5,
+    suit: 'red'
   },
   {
-    id: '6_red',
-    name: 'Red six',
+    id: 'red_6',
+    name: '7',
     value: 0,
-    rank: 6
+    rank: 6,
+    suit: 'red'
   },
   {
-    id: '7_red',
-    name: 'Red seven',
+    id: 'red_7',
+    name: '7',
     value: 0,
-    rank: 7
+    rank: 7,
+    suit: 'red'
   },
   {
-    id: '8_red',
-    name: 'Red eight',
+    id: 'red_8',
+    name: '8',
     value: 0,
-    rank: 8
+    rank: 8,
+    suit: 'red'
   },
   {
-    id: '9_red',
-    name: 'Red nine',
+    id: 'red_9',
+    name: '9',
     value: 0,
-    rank: 9
+    rank: 9,
+    suit: 'red'
   },
   {
-    id: '10_red',
-    name: 'Red ten',
+    id: 'red_10',
+    name: '10',
     value: 10,
-    rank: 10
+    rank: 10,
+    suit: 'red'
   },
   {
-    id: 'J_red',
-    name: 'Red Jack',
+    id: 'red_J',
+    name: 'J',
     value: 0,
-    rank: 11
+    rank: 11,
+    suit: 'red'
   },
   {
-    id: 'Q_red',
-    name: 'Red Queen',
+    id: 'red_Q',
+    name: 'Q',
     value: 0,
-    rank: 12
+    rank: 12,
+    suit: 'red'
   },
   {
-    id: 'K_red',
-    name: 'Red King',
+    id: 'red_K',
+    name: 'K',
     value: 10,
-    rank: 13
+    rank: 13,
+    suit: 'red'
   },
   {
-    id: 'A_red',
-    name: 'Red Ace',
+    id: 'red_A',
+    name: 'A',
     value: 0,
-    rank: 14
+    rank: 14,
+    suit: 'red'
   },
 ];
