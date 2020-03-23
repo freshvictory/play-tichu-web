@@ -1,10 +1,14 @@
 <template>
-  <div id="lobby">
-    <form @submit.prevent="join">
+  <div id="lobby" :class="$style.lobby">
+    <form @submit.prevent="join" :class="$style.form">
       <div :class="$style.seats" >
         <div
           v-for="(player, seat) in lobby.seats"
-          :class="[$style.seat, $style[seat], chosenSeat === seat ? $style.active : '']"
+          :class="[
+            $style.seat,
+            $style[seat],
+            chosenSeat === seat ? $style.active : ''
+          ]"
           :key="seat"
           :is="player ? 'div' : 'label'"
           :for="seat"
@@ -22,7 +26,7 @@
         </div>
       </div>
       <input v-if="chosenSeat" :class="$style.name" v-model="name" placeholder="Your name"/>
-      <button v-if="chosenSeat" type="submit">Submit</button>
+      <button v-if="chosenSeat" type="submit" :class="$style.submit">Submit</button>
     </form>
     <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
   </div>
@@ -51,6 +55,7 @@ export default defineComponent({
     const join = () => {
       console.log('Joining lobby...');
       store.commit('joinLobby', { name: name.value, seat: chosenSeat.value });
+      chosenSeat.value = '';
     };
 
     const start = () => store.commit('startGame');
@@ -69,6 +74,15 @@ export default defineComponent({
 <style lang="less" module>
 @import '../shared.less';
 
+.lobby {
+  margin: auto;
+}
+
+.form {
+  display: grid;
+  gap: @px-grid-gap;
+}
+
 .seats {
   display: grid;
   grid-template-columns: 100px 100px;
@@ -82,22 +96,26 @@ export default defineComponent({
   border: 2px solid var(--c-team);
   border-radius: 5px;
 
-  padding: 5px;
   display: grid;
   grid-template-rows: max-content 1fr;
   align-items: center;
+}
+
+label {
+  &.seat {
+    cursor: pointer;
+  }
 
   &.active {
     background: var(--c-team);
   }
 }
 
-label.seat {
-  cursor: pointer;
-}
-
 .seat-label {
-  border-bottom: 1px solid #777;
+  font-weight: bold;
+  padding: 5px 0;
+  background-color: var(--c-team);
+  border-bottom: 2px dotted #fff;
 }
 
 .north {
@@ -122,6 +140,7 @@ label.seat {
 
 .north, .south {
   --c-team: #ef5840;
+  --c-team-light: #ff654a;
 }
 
 .east, .west {
@@ -133,6 +152,12 @@ label.seat {
 }
 
 .name {
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.submit {
   border: 2px solid #ddd;
   border-radius: 5px;
   padding: 5px;

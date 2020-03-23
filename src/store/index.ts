@@ -35,10 +35,8 @@ inGame.seats.north.hand = [
 export default new Vuex.Store<{ state: State }>({
   state: {
     // state: { stage: 'none' },
-    state: {
-      stage: 'game',
-      state: inGame,
-    },
+    state: { stage: 'lobby', state: new Lobby('Justin') },
+    // state: { stage: 'game', state: inGame },
   },
   mutations: {
     startLobby: (state, payload: { name: string }) => {
