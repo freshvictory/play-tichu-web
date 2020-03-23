@@ -1,18 +1,42 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="home" :class="$style.home">
+    <h1>Tichu?</h1>
+
+    <div :class="$style.start">
+      <NewGame/>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import NewGame from '@/components/NewGame.vue';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'Home',
   components: {
-    HelloWorld,
+    NewGame,
   },
-};
+});
 </script>
+
+<style lang="less" module>
+@import '../shared.less';
+
+.home {
+  margin: 20px;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  row-gap: @px-grid-gap;
+}
+
+.start {
+  margin: 0 auto;
+  padding: @px-grid-gap;
+  display: grid;
+  row-gap: @px-grid-gap;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+</style>
