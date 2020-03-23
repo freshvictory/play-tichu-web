@@ -21,14 +21,20 @@ inGame.seats.north.hand = [
   {
     id: '1',
     name: 'Dragon',
+    value: 0,
+    rank: 0
   },
   {
     id: '2',
     name: 'Dog',
+    value: 0,
+    rank: 0
   },
   {
     id: '3',
     name: 'Red Three',
+    value: 0,
+    rank: 0
   },
 ];
 

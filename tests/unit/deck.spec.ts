@@ -6,54 +6,78 @@ import { Deck } from '@/logic/deck';
 const baseDeck: ReadonlyArray<Card> = [
   {
     id: '3#spade',
-    name: 'Three of spades'
+    name: 'Three of spades',
+    value: 0,
+    rank: 0
   },
   {
     id: '10#heart',
-    name: 'Ten of hearts'
+    name: 'Ten of hearts',
+    value: 0,
+    rank: 0
   },
   {
     id: 'J#club',
-    name: 'Jack of clubs'
+    name: 'Jack of clubs',
+    value: 0,
+    rank: 0
   },
   {
     id: 'dragon',
-    name: 'Dragon'
+    name: 'Dragon',
+    value: 0,
+    rank: 0
   }
 ];
 
 const largeDeck: ReadonlyArray<Card> = [
   {
     id: '3#spade',
-    name: 'Three of spades'
+    name: 'Three of spades',
+    value: 0,
+    rank: 0
   },
   {
     id: '10#heart',
-    name: 'Ten of hearts'
+    name: 'Ten of hearts',
+    value: 0,
+    rank: 0
   },
   {
     id: 'J#club',
-    name: 'Jack of clubs'
+    name: 'Jack of clubs',
+    value: 0,
+    rank: 0
   },
   {
     id: 'dragon',
-    name: 'Dragon'
+    name: 'Dragon',
+    value: 0,
+    rank: 0
   },
   {
     id: '4#diamonds',
-    name: 'Four of diamonds'
+    name: 'Four of diamonds',
+    value: 0,
+    rank: 0
   },
   {
     id: 'K#clubs',
-    name: 'King of clubs'
+    name: 'King of clubs',
+    value: 0,
+    rank: 0
   },
   {
     id: '2#spade',
-    name: 'Two of spades'
+    name: 'Two of spades',
+    value: 0,
+    rank: 0
   },
   {
     id: '7#club',
-    name: 'Seven of clubs'
+    name: 'Seven of clubs',
+    value: 0,
+    rank: 0
   }
 ];
 
