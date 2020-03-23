@@ -10,15 +10,16 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import router from '../router';
+import store from '../store';
 
 export default defineComponent({
   name: 'NewGame',
-  setup: (_, ctx) => {
+  setup: () => {
     const name = ref('Justin');
 
     const submit = () => {
-      ctx.root.$store.commit('startLobby', { name: name.value });
-      router.push(`/game/${ctx.root.$store.getters.gameId}`);
+      store.commit('startLobby', { name: name.value });
+      router.push(store.getters.gameRoute);
     };
 
     return {

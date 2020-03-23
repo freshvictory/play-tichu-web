@@ -1,7 +1,11 @@
-import { Lobby } from './lobby'
-import { Game } from './game'
+import { Lobby } from './lobby';
+import { Game } from './game';
 
-export type State = LobbyState | GameState | 'none';
+export type State = LobbyState | GameState | DefaultState;
+
+type DefaultState = {
+  stage: 'none';
+}
 
 type LobbyState = {
   stage: 'lobby';

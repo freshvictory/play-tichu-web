@@ -6,25 +6,29 @@ export class Lobby {
 
   public seats: { [k in Seat]: Player | undefined };
 
+  public get full(): boolean {
+    return Object.values(this.seats).every((x) => !!x);
+  }
+
   constructor(name: string) {
-    this.id = this.getId();
+    this.id = Lobby.getId();
     this.seats = {
-      north: new Player(this.getId(), name),
+      north: new Player(Lobby.getId(), name),
       south: undefined,
       east: undefined,
       west: undefined,
     };
   }
 
-  public join(seat: Seat, playerId: string, name: string): void {
-    this.seats[seat] = new Player(playerId, name);
+  public join(seat: Seat, name: string): void {
+    this.seats[seat] = new Player(Lobby.getId(), name);
   }
 
   public start(): Game {
     return new Game(this.id, this.seats as { [k in Seat]: Player });
   }
 
-  private getId(): string {
+  private static getId(): string {
     return Math.ceil(Math.random() * 100).toString();
   }
 }
