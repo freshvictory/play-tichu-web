@@ -1,66 +1,34 @@
 <template>
-  <label
-    :for="card.id"
+  <div
     :class="[
       $style.card,
       $style[card.suit],
       selected ? $style.selected : ''
     ]"
   >
-    <input
-      :id="card.id"
-      ref="checkbox"
-      type="checkbox"
-      :class="$style.checkbox"
-      @change="toggle"
-    />
     <div :class="$style.detail">
       <p :class="[$style.name, $style.top]">{{ card.name }}</p>
       <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
     </div>
-  </label>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
 import { Card } from "../logic/card";
 
 export default defineComponent({
   name: "Card",
   props: {
-    card: { type: Object as () => Card, required: true }
+    card: { type: Object as () => Card, required: true },
+    selected: Boolean
   },
-  setup: () => {
-    const selected = ref(false);
-    const checkbox = ref<HTMLInputElement>(null);
-
-    const toggle = () => {
-      if (checkbox.value) {
-        selected.value = checkbox.value.checked;
-      }
-    };
-
-    return {
-      checkbox,
-      selected,
-      toggle,
-    };
-  }
 });
 </script>
 
 <style lang="less" module>
 .container {
   position: relative;
-}
-
-.checkbox {
-  opacity: 0;
-  position: absolute;
-}
-
-.checkbox:checked + .card {
-  transform: scale(1.3);
 }
 
 .card {
@@ -88,10 +56,7 @@ export default defineComponent({
 
   &.selected {
     transform: scale(1.3);
-  }
-  
-  &:focus-within {
-    --shadow-color: #999;
+    z-index: 2;
   }
 
   &.red {

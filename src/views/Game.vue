@@ -47,5 +47,6 @@ export default defineComponent({
   display: grid;
   grid-template-rows: max-content 1fr;
   row-gap: @px-grid-gap;
+  min-height: calc(100vh - 2 * 20px);
 }
 </style>

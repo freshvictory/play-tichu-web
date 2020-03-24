@@ -1,11 +1,17 @@
 <template>
-  <div></div>
+  <div>
+    Table
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
-  name: 'Deck',
+
 });
 </script>
+
+<style lang="less" module>
+
+</style>
