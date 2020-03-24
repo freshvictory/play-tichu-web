@@ -9,7 +9,7 @@ body {
   margin: 0;
 }
 
-h1, h2 {
+h1, h2, p {
   margin: 0;
 }
 

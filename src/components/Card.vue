@@ -14,8 +14,10 @@
       :class="$style.checkbox"
       @change="toggle"
     />
-    <p :class="[$style.name, $style.top]">{{ card.name }}</p>
-    <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
+    <div :class="$style.detail">
+      <p :class="[$style.name, $style.top]">{{ card.name }}</p>
+      <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
+    </div>
   </label>
 </template>
 
@@ -54,6 +56,7 @@ export default defineComponent({
 
 .checkbox {
   opacity: 0;
+  position: absolute;
 }
 
 .checkbox:checked + .card {
@@ -68,7 +71,6 @@ export default defineComponent({
   height: 150px;
   width: 100px;
   position: relative;
-  top: 0;
 
   transform: scale(1);
   will-change: transform;
@@ -89,34 +91,51 @@ export default defineComponent({
   }
   
   &:focus-within {
-    --shadow-color: var(--c-card);
+    --shadow-color: #999;
   }
 
   &.red {
     --c-card: #ff2f00;
+    --c-card-light: #ffd9d3;
   }
 
   &.blue {
     --c-card: #005bff;
+    --c-card-light: #cfdfff;
   }
 
   &.green {
     --c-card: #00b82e;
+    --c-card-light: #d8f1d8;
   }
 
   &.black {
     --c-card: #444444;
+    --c-card-light: #dadada;
   }
 
   &.special {
     --c-card: #efc940;
+    --c-card-light: #fcf4db;
   }
+}
+
+.detail {
+  margin: 15px;
+  background-color: var(--c-card-light);
+  border-radius: 3px;
+  height: calc(100% - 2 * 15px);
+  width: calc(100% - 2 * 15px);
 }
 
 .name {
   font-weight: bold;
-  margin: 5px;
+  padding: 4px;
   position: absolute;
+  background-color: #fff;
+  min-height: 30px;
+  min-width: 30px;
+  border-radius: 60px;
   
   &.top {
     top: 0;
