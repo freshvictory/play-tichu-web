@@ -59,7 +59,7 @@ export const Tichu: Card[] = [
   },
   {
     id: 'green_6',
-    name: '7',
+    name: '6',
     value: 0,
     rank: 6,
     suit: 'green'
@@ -150,7 +150,7 @@ export const Tichu: Card[] = [
   },
   {
     id: 'black_6',
-    name: '7',
+    name: '6',
     value: 0,
     rank: 6,
     suit: 'black'
@@ -241,7 +241,7 @@ export const Tichu: Card[] = [
   },
   {
     id: 'blue_6',
-    name: '7',
+    name: '6',
     value: 0,
     rank: 6,
     suit: 'blue'
@@ -332,7 +332,7 @@ export const Tichu: Card[] = [
   },
   {
     id: 'red_6',
-    name: '7',
+    name: '6',
     value: 0,
     rank: 6,
     suit: 'red'
