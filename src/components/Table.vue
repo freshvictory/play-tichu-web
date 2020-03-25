@@ -1,19 +1,21 @@
 <template>
   <div :class="$style.table">
     <ol :class="$style.trick">
-      <li
-        :class="$style.play"
-        :style="`--i:${i}`"
-        v-for="([seat, cards], i) in currentTrick"
-        :key="i"
-      >
-        <div :class="$style.name"><p>{{ name(seat) }}</p></div>
-        <ol :class="$style.list">
-          <li v-for="card in cards" :key="card.id" :class="$style.card" >
-            <Card :card="card"/>
-          </li>
-        </ol>
-      </li>
+    <transition-group name="play-slide">
+        <li
+          :class="$style.play"
+          :style="`--i:${i}`"
+          v-for="([seat, cards], i) in currentTrick"
+          :key="i"
+        >
+          <div :class="$style.name"><p>{{ name(seat) }}</p></div>
+          <ol :class="$style.list">
+            <li v-for="card in cards" :key="card.id" :class="$style.card" >
+              <Card :card="card"/>
+            </li>
+          </ol>
+        </li>
+     </transition-group>
     </ol>
   </div>
 </template>
@@ -65,7 +67,7 @@ export default defineComponent({
   max-width: max-content;
 
   top: calc(var(--i) * 90px);
-  left: calc(var(--i) * 20px);
+  // left: calc(var(--i) * 20px);
 
   transform: scale(1);
   will-change: transform;
@@ -79,20 +81,29 @@ export default defineComponent({
 
 
 .name {
-  padding: 15px 0;
+  padding: 15px 10px;
   border-top-left-radius: 18px;
   border-bottom-left-radius: 18px;
   line-height: 1;
   text-align: right;
   background: #eee;
-
-  p {
-    transform: rotate(-90deg) translateX(-15px);
-  }
 }
 
 .list {
   margin: 15px 15px 15px 0;
   .card-grid;
+}
+</style>
+
+<style lang="less">
+.play-slide-enter-active {
+  transition: all 300ms;
+}
+.play-slide-leave-active {
+  transition: all 300ms;
+}
+.play-slide-enter, .play-slide-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
 }
 </style>
