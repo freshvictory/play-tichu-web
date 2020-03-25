@@ -1,8 +1,13 @@
 <template>
   <div :class="$style.table">
     <ol :class="$style.trick">
-      <li :class="$style.play" v-for="([seat, cards], i) in currentTrick" :key="i">
-        <p :class="$style.name">{{ name(seat) }}</p>
+      <li
+        :class="$style.play"
+        :style="`--i:${i}`"
+        v-for="([seat, cards], i) in currentTrick"
+        :key="i"
+      >
+        <div :class="$style.name"><p>{{ name(seat) }}</p></div>
         <ol :class="$style.list">
           <li v-for="card in cards" :key="card.id" :class="$style.card" >
             <Card :card="card"/>
@@ -25,7 +30,7 @@ export default defineComponent({
     Card,
   },
   setup: () => {
-    const currentTrick = computed(() => store.getters.currentTrick.slice().reverse());
+    const currentTrick = computed(() => store.getters.currentTrick);
     const name = computed(() => (seat: Seat) => store.getters.player(seat).name);
 
     return  {
@@ -44,31 +49,50 @@ export default defineComponent({
 }
 
 .trick {
-  display: grid;
-  gap: @px-grid-gap;
+  position: relative;
 }
 
 .play {
+  position: absolute;
+
   border: 2px dotted #ddd;
   border-radius: 20px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
 
   display: grid;
   gap: @px-grid-gap;
+  grid-template-columns: min-content max-content;
   max-width: max-content;
+
+  top: calc(var(--i) * 90px);
+  left: calc(var(--i) * 20px);
+
+  transform: scale(1);
+  will-change: transform;
+  transition: transform 300ms;
+
+  &:hover {
+    z-index: 5;
+    transform: scale(1.1);
+  }
 }
 
+
 .name {
-  padding: 15px;
+  padding: 15px 0;
   border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
+  border-bottom-left-radius: 18px;
   line-height: 1;
-  text-align: left;
-  background: #ddd;
+  text-align: right;
+  background: #eee;
+
+  p {
+    transform: rotate(-90deg) translateX(-15px);
+  }
 }
 
 .list {
-  margin: 0 15px 15px;
+  margin: 15px 15px 15px 0;
   .card-grid;
 }
 </style>

@@ -43,7 +43,7 @@ export default defineComponent({
 
 .game {
   display: grid;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: 1fr;
   row-gap: @px-grid-gap;
   height: 100vh;
 }
