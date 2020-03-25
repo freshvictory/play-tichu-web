@@ -1,6 +1,8 @@
 <template>
   <div :class="$style.hand">
-    <div v-if="selected.length" @click="play">Play</div>
+    <transition name="slide-fade">
+      <button v-if="selected.length" @click="play" :class="$style.play">play</button>
+    </transition>
     <div :class="$style.list">
       <label v-for="card in cards" :key="card.id" :class="$style['card-container']" :for="card.id">
         <input
@@ -80,11 +82,30 @@ export default defineComponent({
   gap: @px-grid-gap;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
+  position: relative;
+}
+
+.play {
+  border-radius: 5px;
+  background-color: #efc940;
+  max-width: max-content;
+  padding: 5px 20px;
+  justify-self: flex-end;
+  top: -75px;
+  position: absolute;
+  box-shadow: 2px 2px 6px 0 #ddd;
+  will-change: transform;
+  transform: scale(1);
+  transition: transform 300ms, opacity 300ms;
+
+  &:hover {
+    transform: scale(1.1)
+  }
 }
 
 .list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
   grid-auto-rows: 75px 75px;
   justify-content: center;
   padding-right: 50px;
@@ -103,5 +124,11 @@ export default defineComponent({
 .checkbox {
   opacity: 0;
   position: absolute;
+}
+</style>
+
+<style lang="less">
+.slide-fade-enter, .slide-fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -140,7 +140,6 @@ label {
 
 .north, .south {
   --c-team: #ef5840;
-  --c-team-light: #ff654a;
 }
 
 .east, .west {
