@@ -13,6 +13,33 @@ h1, h2, p {
   margin: 0;
 }
 
+button,
+input {
+  --webkit-appearance: none;
+  border: none;
+  background: none;;
+  box-shadow: none;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+}
+
 * {
   box-sizing: border-box;
 }

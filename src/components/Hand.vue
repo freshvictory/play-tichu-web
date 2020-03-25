@@ -78,25 +78,27 @@ export default defineComponent({
 @import "../shared.less";
 
 .hand {
+  position: relative;
   display: grid;
   gap: @px-grid-gap;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
-  position: relative;
 }
 
 .play {
-  border-radius: 5px;
-  background-color: #efc940;
   max-width: max-content;
   padding: 5px 20px;
-  justify-self: flex-end;
-  top: -75px;
   position: absolute;
-  box-shadow: 2px 2px 6px 0 #ddd;
+  top: -65px;
+  justify-self: flex-end;
+
   will-change: transform;
   transform: scale(1);
   transition: transform 300ms, opacity 300ms;
+
+  border-radius: 5px;
+  background-color: #efc940;
+  box-shadow: 2px 2px 6px 0 #ddd;
 
   &:hover {
     transform: scale(1.1)
@@ -104,16 +106,11 @@ export default defineComponent({
 }
 
 .list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-  grid-auto-rows: 75px 75px;
+  .card-grid;
   justify-content: center;
-  padding-right: 50px;
-  padding-bottom: 75px;
 }
 
 .card-container {
-
   &:focus-within {
     .card {
       box-shadow: 2px 2px 6px 0 #999;

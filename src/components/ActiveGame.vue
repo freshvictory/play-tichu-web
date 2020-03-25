@@ -1,6 +1,8 @@
 <template>
   <div :class="$style.view">
+    <div :class="$style.table">
       <Table />
+    </div>
     <div v-if="seat" :class="$style.player">
       <Player :seat="seat" />
     </div>
@@ -11,7 +13,7 @@
 import Table from '@/components/Table.vue';
 import Player from '@/components/Player.vue';
 import { defineComponent } from '@vue/composition-api';
-import { Game, Seat } from '../logic/game';
+import { Game } from '../logic/game';
 
 export default defineComponent({
   name: 'ActiveGame',
@@ -31,12 +33,13 @@ export default defineComponent({
 
 <style lang="less" module>
 .view {
-  display: grid;
-  grid-template-rows: 1fr max-content;
+  overflow: auto;
+}
+
+.table {
+  padding-bottom: 300px;
 }
 
 .player {
-  border-top: 2px dotted #ddd;
-  padding-top: 15px;
 }
 </style>

@@ -2,14 +2,16 @@
   <div>
     Table
 
-    <div :class="$style.play" v-for="([seat, cards], i) in currentTrick" :key="i">
-      <p>{{ name(seat) }}</p>
-      <ol :class="$style.list">
-        <li v-for="card in cards" :key="card.id" :class="$style.card" >
-          <Card :card="card"/>
-        </li>
-      </ol>
-    </div>
+    <ol :class="$style.trick">
+      <li :class="$style.play" v-for="([seat, cards], i) in currentTrick" :key="i">
+        <p>{{ name(seat) }}</p>
+        <ol :class="$style.list">
+          <li v-for="card in cards" :key="card.id" :class="$style.card" >
+            <Card :card="card"/>
+          </li>
+        </ol>
+      </li>
+    </ol>
   </div>
 </template>
 
@@ -37,25 +39,18 @@ export default defineComponent({
 </script>
 
 <style lang="less" module>
+@import '../shared.less';
+
+.trick {
+  display: grid;
+  gap: @px-grid-gap;
+}
+
 .play {
   text-align: left;
 }
 
 .list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  display: flex;
-
-  li {
-    margin: none;
-  }
-}
-
-.card {
-  &:not(:first-child) {
-    margin-left: -50px;
-  }
+  .card-grid;
 }
 </style>

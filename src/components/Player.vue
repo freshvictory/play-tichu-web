@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div :class="$style.player">
     <Hand :cards="player.hand" :seat="seat"/>
   </div>
 </template>
@@ -26,3 +26,18 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="less" module>
+.player {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 30px;
+
+  border: 2px dotted #ddd;
+  padding: 15px;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+}
+</style>

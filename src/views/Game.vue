@@ -1,6 +1,6 @@
 <template>
   <div id="game" :class="$style.game">
-    <h1>{{ state.stage }}</h1>
+    <Header/>
     <Lobby v-if="state.stage === 'lobby'" :lobby="state.state"/>
     <ActiveGame v-else-if="state.stage === 'game'"
       :game="state.state"
@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import ActiveGame from '@/components/ActiveGame.vue';
+import Header from '@/components/Header.vue';
 import Lobby from '@/components/Lobby.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
@@ -26,8 +27,9 @@ export default defineComponent({
     }
   },
   components: {
-    Lobby,
     ActiveGame,
+    Header,
+    Lobby,
   },
   setup: () => {
     const state = computed(() => store.state.state);
@@ -43,10 +45,11 @@ export default defineComponent({
 @import '../shared.less';
 
 .game {
+  --px-game-height:calc(100vh - 2 * 20px);
   margin: 20px;
   display: grid;
   grid-template-rows: max-content 1fr;
   row-gap: @px-grid-gap;
-  min-height: calc(100vh - 2 * 20px);
+  height: var(--px-game-height);
 }
 </style>
