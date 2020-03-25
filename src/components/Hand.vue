@@ -1,75 +1,79 @@
 <template>
   <div :class="$style.hand">
-    <div v-if="selected.length">Play</div>
+    <div v-if="selected.length" @click="play">Play</div>
     <div :class="$style.list">
-      <label
-        v-for="card in cards"
-        :key="card.id"
-        :class="$style['card-container']"
-        :for="card.id"
-      >
+      <label v-for="card in cards" :key="card.id" :class="$style['card-container']" :for="card.id">
         <input
           :id="card.id"
           :ref="card.id"
           type="checkbox"
           :class="$style.checkbox"
-          @change="toggle(card.id)"
+          @change="toggle(card)"
         />
-        <Card :card="card" :class="$style.card" :selected="isSelected(card.id)"/>
+        <Card :card="card" :class="$style.card" :selected="isSelected(card)" />
       </label>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import CardComponent from '@/components/Card.vue';
-import { Card } from '@/logic/card';
-import { defineComponent, ref, Ref, computed } from '@vue/composition-api';
+import CardComponent from "@/components/Card.vue";
+import { Card } from "@/logic/card";
+import { defineComponent, ref, Ref, computed } from "@vue/composition-api";
+import store from "../store";
+import { Seat } from "../logic/game";
 
 export default defineComponent({
-  name: 'Hand',
+  name: "Hand",
   components: {
-    Card: CardComponent,
+    Card: CardComponent
   },
   props: {
-    cards: { type: Array as () => Card[], required: true },
+    seat: { type: String as () => Seat, required: true },
+    cards: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
-  setup: (props) => {
+  setup: props => {
     const checkboxes: { [k: string]: Ref<HTMLInputElement[]> } = {};
     for (const card of props.cards) {
       checkboxes[card.id] = ref<HTMLInputElement[]>([]);
     }
 
-    const selected = ref<string[]>([]);
+    const selected = ref<Card[]>([]);
 
-    const toggle = (cardId: string) => {
-      const checkbox = checkboxes[cardId].value[0];
+    const toggle = (card: Card) => {
+      const checkbox = checkboxes[card.id].value[0];
       if (checkbox) {
         if (checkbox.checked) {
-          selected.value.push(cardId);
+          selected.value.push(card);
         } else {
-          const index = selected.value.indexOf(cardId);
+          const index = selected.value.findIndex(c => c.id === card.id);
           selected.value.splice(index, 1);
         }
       }
     };
 
-    const isSelected = computed(() =>
-      (cardId: string) => selected.value.indexOf(cardId) >= 0
+    const isSelected = computed(() => (card: Card) =>
+      !!selected.value.find(c => c.id === card.id)
     );
+
+    const play = () => {
+      store.commit("play", { seat: props.seat, cards: selected.value });
+      selected.value = [];
+    };
 
     return {
       ...checkboxes,
       isSelected,
       selected,
       toggle,
-    }
-  },
+      play
+    };
+  }
 });
 </script>
 
 <style lang="less" module>
-@import '../shared.less';
+@import "../shared.less";
 
 .hand {
   display: grid;
@@ -80,18 +84,18 @@ export default defineComponent({
 
 .list {
   display: grid;
-  gap: @px-grid-gap;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  grid-auto-rows: 75px 75px;
+  justify-content: center;
+  padding-right: 50px;
+  padding-bottom: 75px;
 }
 
 .card-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:focus-within {
     .card {
-    box-shadow: 2px 2px 6px 0 #999;
+      box-shadow: 2px 2px 6px 0 #999;
     }
   }
 }

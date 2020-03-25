@@ -4,6 +4,7 @@ import { Seat, Game } from '@/logic/game';
 import { Lobby } from '@/logic/lobby';
 import { State } from '@/logic/state';
 import { Player } from '@/logic/player';
+import { Card } from '@/logic/card';
 
 Vue.use(Vuex);
 
@@ -42,6 +43,11 @@ export default new Vuex.Store<{ state: State }>({
         }
       }
     },
+    play: (state, payload: { seat: Seat; cards: Card[]}) => {
+      if (state.state.stage === 'game') {
+        state.state.state.play(payload.seat, payload.cards);
+      }
+    },
   },
   getters: {
     gameRoute: (state): string => {
@@ -59,6 +65,13 @@ export default new Vuex.Store<{ state: State }>({
         default:
           return undefined;
       }
+    },
+    currentTrick: (state): [Seat, ReadonlyArray<Card>][] => {
+      if (state.state.stage === 'game') {
+        return state.state.state.currentTrick;
+      }
+
+      return [];
     },
   },
 });

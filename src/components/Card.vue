@@ -56,7 +56,6 @@ export default defineComponent({
 
   &.selected {
     transform: scale(1.3);
-    z-index: 2;
   }
 
   &.red {
@@ -94,6 +93,7 @@ export default defineComponent({
 }
 
 .name {
+  text-align: center;
   font-weight: bold;
   padding: 4px;
   position: absolute;

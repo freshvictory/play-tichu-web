@@ -5,14 +5,14 @@ export class Player {
 
   public name: string;
 
-  public hand: Card[];
+  public hand: Set<Card>;
 
   public tricks: Card[];
 
   constructor(id: string, name: string) {
     this.id = id;
     this.name = name;
-    this.hand = [];
+    this.hand = new Set([]);
     this.tricks = [];
   }
 }

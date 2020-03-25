@@ -1,6 +1,6 @@
 <template>
   <div class="player">
-    <Hand :cards="player.hand"/>
+    <Hand :cards="player.hand" :seat="seat"/>
   </div>
 </template>
 
