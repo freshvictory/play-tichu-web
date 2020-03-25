@@ -89,7 +89,7 @@ export default defineComponent({
   max-width: max-content;
   padding: 5px 20px;
   position: absolute;
-  top: -65px;
+  top: -57px;
   justify-self: flex-end;
 
   will-change: transform;

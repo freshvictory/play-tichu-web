@@ -1,6 +1,7 @@
 <template>
   <div :class="$style.player">
-    <Hand :cards="player.hand" :seat="seat"/>
+    <p :class="$style.title">Your hand</p>
+    <Hand :class="$style.hand" :cards="player.hand" :seat="seat"/>
   </div>
 </template>
 
@@ -36,8 +37,19 @@ export default defineComponent({
   margin: 30px;
 
   border: 2px dotted #ddd;
-  padding: 15px;
   border-radius: 20px;
   backdrop-filter: blur(5px);
+}
+
+.title {
+  font-weight: bold;
+  background-color: #ddd;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  padding: 15px;
+}
+
+.hand {
+  margin: 15px;
 }
 </style>
