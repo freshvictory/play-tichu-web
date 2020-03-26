@@ -1,15 +1,15 @@
 @px-grid-gap: 15px;
 
-.card-grid {
+.card-grid(@px-overlap: 50px) {
   display: flex;
   flex-wrap: wrap;
 
-  padding-right: 50px;
+  padding-right: @px-overlap;
   padding-top: 75px;
 
   &> * {
     margin-top: -75px;
 
-    margin-right: -50px;
+    margin-right: calc(-1 * @px-overlap);
   }
 }

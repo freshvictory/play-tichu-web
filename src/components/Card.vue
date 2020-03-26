@@ -40,7 +40,7 @@ export default defineComponent({
   width: 100px;
   position: relative;
 
-  transform: scale(1);
+  transform: scale(1) translateY(0);
   will-change: transform;
   transition: transform 200ms;
 
@@ -50,12 +50,8 @@ export default defineComponent({
   background-color: #fff;
   color: var(--c-card);
 
-  &:hover {
-    transform: scale(1.15);
-  }
-
   &.selected {
-    transform: scale(1.3);
+    transform: scale(1.1) translateY(-15px);
   }
 
   &.red {

@@ -96,9 +96,9 @@ export default defineComponent({
 }
 
 .list {
+  .card-grid;
   justify-content: center;
   margin: 15px 15px 15px 0;
-  .card-grid;
 }
 </style>
 

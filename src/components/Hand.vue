@@ -105,11 +105,12 @@ export default defineComponent({
 }
 
 .list {
-  .card-grid;
+  .card-grid(25px);
   justify-content: center;
 }
 
 .card-container {
+
   &:focus-within {
     .card {
       box-shadow: 2px 2px 6px 0 #999;
