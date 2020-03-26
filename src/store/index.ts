@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Seat, Game } from '@/logic/game';
+import { Seat, Game, Trick } from '@/logic/game';
 import { Lobby } from '@/logic/lobby';
 import { State } from '@/logic/state';
 import { Player } from '@/logic/player';
@@ -43,11 +43,16 @@ export default new Vuex.Store<{ state: State }>({
         }
       }
     },
-    play: (state, payload: { seat: Seat; cards: Card[]}) => {
+    play: (state, { seat, cards }: { seat: Seat; cards: Card[]}) => {
       if (state.state.stage === 'game') {
-        state.state.state.play(payload.seat, payload.cards);
+        state.state.state.play(seat, cards);
       }
     },
+    take: (state, { seat, cards }: { seat: Seat; cards: Trick }) => {
+      if (state.state.stage === 'game') {
+        state.state.state.take(seat, cards);
+      }
+    }
   },
   getters: {
     gameRoute: (state): string => {

@@ -5,12 +5,14 @@ import { Card } from './card';
 
 export type Seat = 'north' | 'south' | 'east' | 'west';
 
+export type Trick = [Seat, ReadonlyArray<Card>][];
+
 export class Game {
   public readonly id: string;
 
   public readonly seats: { readonly [k in Seat]: Player };
 
-  public readonly currentTrick: [Seat, ReadonlyArray<Card>][]
+  public currentTrick: Trick;
 
   constructor(id: string, seats: { [k in Seat]: Player }) {
     this.id = id;
@@ -25,6 +27,11 @@ export class Game {
     }
 
     this.currentTrick.push([seat, cards.sort((c0, c1) => c0.rank - c1.rank)]);
+  }
+
+  public take(seat: Seat, trick: Trick): void {
+    this.seats[seat].tricks.push(...trick.flatMap((play) => play[1]));
+    this.currentTrick = [];
   }
 
   private deal(): void {

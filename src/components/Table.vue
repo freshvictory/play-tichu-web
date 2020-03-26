@@ -15,6 +15,9 @@
           </ol>
         </li>
     </transition-group>
+    <div v-if="currentTrick.length">
+      <button @click="take">Take trick</button>
+    </div>
   </div>
 </template>
 
@@ -42,9 +45,14 @@ export default defineComponent({
       }
     });
 
+    const take = () => {
+      store.commit('take', { seat: 'north', cards: currentTrick.value });
+    };
+
     return  {
       currentTrick,
       name,
+      take,
       trick,
     };
   },
