@@ -1,10 +1,9 @@
 <template>
   <div :class="$style.table">
-    <ol :class="$style.trick">
-    <transition-group name="play-slide">
+    <transition-group tag="ol" name="play-slide" :class="$style.trick" ref="trick">
         <li
           :class="$style.play"
-          :style="`--i:${i}`"
+          :style="`--i:${currentTrick.length < 3 ? i : i - (currentTrick.length - 3)}`"
           v-for="([seat, cards], i) in currentTrick"
           :key="i"
         >
@@ -15,14 +14,13 @@
             </li>
           </ol>
         </li>
-     </transition-group>
-    </ol>
+    </transition-group>
   </div>
 </template>
 
 <script lang="ts">
 import Card from './Card.vue';
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref } from '@vue/composition-api';
 import store from '../store';
 import { Seat } from '../logic/game';
 
@@ -32,12 +30,22 @@ export default defineComponent({
     Card,
   },
   setup: () => {
+    const trick = ref<Vue>(null);
     const currentTrick = computed(() => store.getters.currentTrick);
     const name = computed(() => (seat: Seat) => store.getters.player(seat).name);
+
+    watch(currentTrick, () => {
+      if (trick.value) {
+        const el = trick.value.$el;
+        el.children[el.childElementCount - 1]
+          .scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    });
 
     return  {
       currentTrick,
       name,
+      trick,
     };
   },
 });
@@ -51,11 +59,13 @@ export default defineComponent({
 }
 
 .trick {
-  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: center;
 }
 
 .play {
-  position: absolute;
+  margin: 10px;
 
   border: 2px dotted #ddd;
   border-radius: 20px;
@@ -63,20 +73,8 @@ export default defineComponent({
 
   display: grid;
   gap: @px-grid-gap;
-  grid-template-columns: min-content max-content;
+  grid-template-columns: min-content 1fr;
   max-width: max-content;
-
-  top: calc(var(--i) * 90px);
-  // left: calc(var(--i) * 20px);
-
-  transform: scale(1);
-  will-change: transform;
-  transition: transform 300ms;
-
-  &:hover {
-    z-index: 5;
-    transform: scale(1.1);
-  }
 }
 
 
@@ -90,6 +88,7 @@ export default defineComponent({
 }
 
 .list {
+  justify-content: center;
   margin: 15px 15px 15px 0;
   .card-grid;
 }

@@ -29,15 +29,16 @@ export default defineComponent({
 
 <style lang="less" module>
 .player {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 30px;
+  // position: fixed;
+  // left: 0;
+  // right: 0;
+  // bottom: 0;
+  // margin: 30px;
 
   border: 2px dotted #ddd;
   border-radius: 20px;
   backdrop-filter: blur(5px);
+  // box-shadow: 3px 3px 10px 0 #ddd;
 }
 
 .hand {

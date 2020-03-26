@@ -24,7 +24,7 @@ export class Game {
       this.seats[seat].hand.delete(card);
     }
 
-    this.currentTrick.push([seat, cards]);
+    this.currentTrick.push([seat, cards.sort((c0, c1) => c0.rank - c1.rank)]);
   }
 
   private deal(): void {

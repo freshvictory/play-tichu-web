@@ -32,14 +32,21 @@ export default defineComponent({
 </script>
 
 <style lang="less" module>
+@import '../shared.less';
+
 .view {
-  overflow: auto;
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  height: 100vh;
+  // gap: @px-grid-gap;
 }
 
 .table {
-  padding-bottom: 300px;
+  overflow: auto;
+  // padding-bottom: 300px;
 }
 
 .player {
+  margin: 0 20px 20px;
 }
 </style>

@@ -86,7 +86,6 @@ export default defineComponent({
 }
 
 .play {
-  max-width: max-content;
   padding: 5px 20px;
   position: absolute;
   top: -57px;
