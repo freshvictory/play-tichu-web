@@ -34,16 +34,11 @@ export default defineComponent({
     seat: { type: String as () => Seat, required: true },
     cards: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
-  setup: props => {
-    const checkboxes: { [k: string]: Ref<HTMLInputElement[]> } = {};
-    for (const card of props.cards) {
-      checkboxes[card.id] = ref<HTMLInputElement[]>([]);
-    }
-
+  setup: (props, ctx) => {
     const selected = ref<Card[]>([]);
 
     const toggle = (card: Card) => {
-      const checkbox = checkboxes[card.id]?.value[0];
+      const checkbox = (ctx as any).refs[card.id][0];
       if (checkbox) {
         if (checkbox.checked) {
           selected.value.push(card);
@@ -64,7 +59,6 @@ export default defineComponent({
     };
 
     return {
-      ...checkboxes,
       isSelected,
       selected,
       toggle,
