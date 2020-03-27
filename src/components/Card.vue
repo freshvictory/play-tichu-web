@@ -50,8 +50,12 @@ export default defineComponent({
   background-color: #fff;
   color: var(--c-card);
 
+  &:hover {
+    border-color: gold;
+  }
+
   &.selected {
-    transform: scale(1.1) translateY(-15px);
+    transform: scale(1.05) translateY(-15px);
   }
 
   &.red {
@@ -89,6 +93,7 @@ export default defineComponent({
 }
 
 .name {
+  user-select: none;
   text-align: center;
   font-weight: bold;
   padding: 4px;
