@@ -21,13 +21,17 @@ const inGame = new Game(
   },
 );
 
-export default new Vuex.Store<{ sharedState: SharedState }>({
+export default new Vuex.Store<{ sharedState: SharedState; connected: boolean }>({
   state: {
-    sharedState: { stage: 'none' },
+    // sharedState: { stage: 'none' },
     // sharedState: { stage: 'lobby', stageState: new Lobby('Justin') },
-    // sharedState: { stage: 'game', stageState: inGame },
+    sharedState: { stage: 'game', stageState: inGame },
+    connected: false
   },
   mutations: {
+    connected: (state) => {
+      state.connected = true;
+    },
     startLobby: (state, payload: { name: string }) => {
       state.sharedState = { stage: 'lobby', stageState: new Lobby(payload.name) };
     },
@@ -88,11 +92,19 @@ export default new Vuex.Store<{ sharedState: SharedState }>({
     },
   },
   actions: {
+    connect: async ({ commit, state }) => {
+      if(state.connected) return;
+      if(state.sharedState.stage === 'game' || state.sharedState.stage === 'lobby') {
+        //let gameId = state.sharedState.stageState.id;
+        await server.start('2', (newState) => commit('deserialize', { newState }));
+        await server.joinGame('1', '2');
+        commit('connected');
+      }
+    },
     startLobby: async ({ commit, state }) => {
-      await server.start('2', (newState) => commit('deserialize', { newState }));
-      await server.joinGame('1', '2');
+      //await server.start('2', (newState) => commit('deserialize', { newState }));
+      //await server.joinGame('1', '2');
       commit('startLobby', { name: 'Justin' });
-      //await server.pushState('1', state.sharedState);
     },
     newGame: async ({ state }) => {
       if (state.sharedState.stage === 'game') {

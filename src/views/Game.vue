@@ -17,10 +17,11 @@ import store from '../store';
 
 export default defineComponent({
   name: 'Game',
-  beforeRouteEnter: (to: unknown, from: unknown, next: Function) => {
+  beforeRouteEnter: async (to: unknown, from: unknown, next: Function) => {
     if (store.state.sharedState.stage === 'none') {
       next('/');
     } else {
+      await store.dispatch('connect');
       next();
     }
   },
