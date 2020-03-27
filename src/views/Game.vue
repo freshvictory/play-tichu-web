@@ -1,8 +1,8 @@
 <template>
   <div id="game" :class="$style.game">
-    <Lobby v-if="state.stage === 'lobby'" :lobby="state.state"/>
-    <ActiveGame v-else-if="state.stage === 'game'"
-      :game="state.state"
+    <Lobby v-if="sharedState.stage === 'lobby'" :lobby="sharedState.stageState"/>
+    <ActiveGame v-else-if="sharedState.stage === 'game'"
+      :game="sharedState.stageState"
       seat="north"
     />
   </div>
@@ -18,7 +18,7 @@ import store from '../store';
 export default defineComponent({
   name: 'Game',
   beforeRouteEnter: (to: unknown, from: unknown, next: Function) => {
-    if (store.state.state.stage === 'none') {
+    if (store.state.sharedState.stage === 'none') {
       next('/');
     } else {
       next();
@@ -29,10 +29,10 @@ export default defineComponent({
     Lobby,
   },
   setup: () => {
-    const state = computed(() => store.state.state);
+    const sharedState = computed(() => store.state.sharedState);
 
     return {
-      state,
+      sharedState,
     };
   },
 });

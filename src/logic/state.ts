@@ -9,10 +9,10 @@ type DefaultState = {
 
 type LobbyState = {
   stage: 'lobby';
-  state: Lobby;
+  stageState: Lobby;
 }
 
 type GameState = {
   stage: 'game';
-  state: Game;
+  stageState: Game;
 }
