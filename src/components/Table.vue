@@ -55,8 +55,8 @@ export default defineComponent({
       store.commit('deal');
     }
 
-    const newGame = () => {
-      store.commit('newGame');
+    const newGame = async () => {
+      await store.dispatch('newGame');
     }
 
     return  {

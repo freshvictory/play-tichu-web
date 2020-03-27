@@ -17,8 +17,8 @@ export default defineComponent({
   setup: () => {
     const name = ref('Justin');
 
-    const submit = () => {
-      store.commit('startLobby', { name: name.value });
+    const submit = async () => {
+      await store.dispatch('startLobby', { name: name.value });
       router.push(store.getters.gameRoute);
     };
 

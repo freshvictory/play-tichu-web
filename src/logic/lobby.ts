@@ -11,9 +11,9 @@ export class Lobby {
   }
 
   constructor(name: string) {
-    this.id = Lobby.getId();
+    this.id = '1';
     this.seats = {
-      north: new Player(Lobby.getId(), name),
+      north: new Player('2', name),
       south: undefined,
       east: undefined,
       west: undefined,

@@ -5,8 +5,11 @@ import { Lobby } from '@/logic/lobby';
 import { State } from '@/logic/state';
 import { Player } from '@/logic/player';
 import { Card } from '@/logic/card';
+import { Server, ApiBaseUrl } from '@/server';
 
 Vue.use(Vuex);
+
+const server = new Server(ApiBaseUrl);
 
 const inGame = new Game(
   '1',
@@ -67,6 +70,9 @@ export default new Vuex.Store<{ state: State }>({
         }
         state.state.state = new Game(state.state.state.id, players);
       }
+    },
+    deserialize: (state, { newState }: { newState: State }) => {
+      state.state = newState;
     }
   },
   getters: {
@@ -94,4 +100,20 @@ export default new Vuex.Store<{ state: State }>({
       return [];
     },
   },
+  actions: {
+    startLobby: async ({ commit, state }) => {
+      server.start('2', (newState) => commit('deserialize', { newState }));
+      await server.joinGame('1', '2');
+      commit('startLobby', { name: 'Justin' });
+      await server.pushState('1', state.state);
+    },
+    newGame: async ({ state }) => {
+      const players = { ...state.state.state.seats };
+      for (const player in players) {
+        players[player as Seat].hand = new Set([]);
+        players[player as Seat].tricks = [];
+      }
+      await server.pushState('1', { stage: 'game', state: new Game('1', players) });
+    }
+  }
 });

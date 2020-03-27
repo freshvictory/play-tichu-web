@@ -41,4 +41,12 @@ export class Game {
       this.seats[seat].hand = new Set(deal[seat].sort((a, b) => a.rank - b.rank));
     }
   }
+
+  public serialize() {
+    return {
+      id: this.id,
+      currentTrick: this.currentTrick.map((play) => (play[0], play[1].map((card) => card.id))),
+      seats: this.seats
+    }
+  }
 }
