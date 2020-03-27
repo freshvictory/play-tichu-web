@@ -3,6 +3,9 @@
     <form :class="$style.form" @submit.prevent="submit">
       <input id="name" :class="$style.input" v-model.trim="name" placeholder="Your name" />
       <button :class="$style.submit" type="submit">Start a game!</button>
+
+      <input id="gameid" :class="$style.input" v-model.trim="gameid" placeholder="Game ID" />
+      <button :class="$style.submit" type="submit" v-on:click="join">Join a game!</button>
     </form>
   </div>
 </template>
@@ -16,15 +19,22 @@ export default defineComponent({
   name: 'NewGame',
   setup: () => {
     const name = ref('Justin');
+    const gameid = ref();
 
     const submit = async () => {
       await store.dispatch('startLobby', { name: name.value });
       router.push(store.getters.gameRoute);
     };
 
+    const join = async () => {
+      router.push(store.getters.gameRoute);
+    }
+
     return {
       name,
+      gameid,
       submit,
+      join
     };
   },
 });

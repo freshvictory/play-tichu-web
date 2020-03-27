@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { HubConnectionBuilder, LogLevel, HubConnection } from "@aspnet/signalr";
-import { State } from './logic/state';
+
+export type Handlers = {
+  onReceiveState: Function;
+  onRequestState: Function;
+}
 
 export class Server {
   private readonly url: string;
@@ -19,16 +23,16 @@ export class Server {
     this.connection = connection;
   }
 
-  public setupEventHandlers(onReceiveState: (state: State) => void) { 
+  public setupEventHandlers(handlers: Handlers) { 
     // this.connection.on('ping', newMessage);
-    this.connection.on('newState', (state) => onReceiveState(state));
-    // this.connection.on('requestState', stateRequested);
+    this.connection.on('newState', (state) => handlers.onReceiveState(state));
+    this.connection.on('requestState', () => handlers.onRequestState());
     this.connection.onclose(() => console.log('disconnected'));
   }
 
-  public start(userId: string, onReceiveState: (state: State) => void) {
+  public start(userId: string, handlers: Handlers) {
     this.buildConnection(userId);
-    this.setupEventHandlers(onReceiveState);
+    this.setupEventHandlers(handlers);
     return this.connection.start();
   }
 
