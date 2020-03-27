@@ -1,6 +1,7 @@
 <template>
   <div :class="$style.table">
     <button @click="deal">Deal</button>
+    <button @click="newGame">New game</button>
     <transition-group tag="ol" name="play-slide" :class="$style.trick" ref="trick">
         <li
           :class="$style.play"
@@ -42,7 +43,7 @@ export default defineComponent({
       if (trick.value) {
         const el = trick.value.$el;
         el.children[el.childElementCount - 1]
-          .scrollIntoView({ behavior: 'smooth', block: 'end' });
+          ?.scrollIntoView({ behavior: 'smooth', block: 'end' });
       }
     });
 
@@ -54,10 +55,15 @@ export default defineComponent({
       store.commit('deal');
     }
 
+    const newGame = () => {
+      store.commit('newGame');
+    }
+
     return  {
       currentTrick,
       deal,
       name,
+      newGame,
       take,
       trick,
     };

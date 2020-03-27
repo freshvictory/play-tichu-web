@@ -57,6 +57,16 @@ export default new Vuex.Store<{ state: State }>({
       if (state.state.stage === 'game') {
         state.state.state.deal();
       }
+    },
+    newGame: (state) => {
+      if (state.state.stage === 'game') {
+        const players = { ...state.state.state.seats };
+        for (const player in players) {
+          players[player as Seat].hand = new Set([]);
+          players[player as Seat].tricks = [];
+        }
+        state.state.state = new Game(state.state.state.id, players);
+      }
     }
   },
   getters: {
