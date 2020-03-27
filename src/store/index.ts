@@ -46,21 +46,6 @@ export default new Vuex.Store<{ sharedState: SharedState }>({
         }
       }
     },
-    play: (state, { seat, cards }: { seat: Seat; cards: Card[]}) => {
-      if (state.sharedState.stage === 'game') {
-        state.sharedState.stageState.play(seat, cards);
-      }
-    },
-    take: (state, { seat, cards }: { seat: Seat; cards: Trick }) => {
-      if (state.sharedState.stage === 'game') {
-        state.sharedState.stageState.take(seat, cards);
-      }
-    },
-    deal: (state) => {
-      if (state.sharedState.stage === 'game') {
-        state.sharedState.stageState.deal();
-      }
-    },
     newGame: (state) => {
       if (state.sharedState.stage === 'game') {
         const players = { ...state.sharedState.stageState.seats };
@@ -118,6 +103,27 @@ export default new Vuex.Store<{ sharedState: SharedState }>({
         const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
         await server.pushState('1', serialized);
       }
-    }
+    },
+    play: async ({state}, { seat, cards }: { seat: Seat; cards: Card[]}) => {
+      if (state.sharedState.stage === 'game') {
+        state.sharedState.stageState.play(seat, cards);
+        const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
+        await server.pushState('1', serialized);
+      }
+    },
+    take: async ({state}, { seat, cards }: { seat: Seat; cards: Trick }) => {
+      if (state.sharedState.stage === 'game') {
+        state.sharedState.stageState.take(seat, cards);
+        const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
+        await server.pushState('1', serialized);
+      }
+    },
+    deal: async ({state}) => {
+      if (state.sharedState.stage === 'game') {
+        state.sharedState.stageState.deal();
+        const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
+        await server.pushState('1', serialized);
+      }
+    },
   }
 });

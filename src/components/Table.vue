@@ -47,12 +47,12 @@ export default defineComponent({
       }
     });
 
-    const take = () => {
-      store.commit('take', { seat: 'north', cards: currentTrick.value });
+    const take = async () => {
+      await store.dispatch('take', { seat: 'north', cards: currentTrick.value });
     };
 
-    const deal = () => {
-      store.commit('deal');
+    const deal = async () => {
+      await store.dispatch('deal');
     }
 
     const newGame = async () => {

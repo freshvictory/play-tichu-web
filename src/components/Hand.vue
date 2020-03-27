@@ -53,8 +53,8 @@ export default defineComponent({
       !!selected.value.find(c => c.id === card.id)
     );
 
-    const play = () => {
-      store.commit("play", { seat: props.seat, cards: selected.value });
+    const play = async () => {      
+      await store.dispatch("play", { seat: props.seat, cards: selected.value });
       selected.value = [];
     };
 
