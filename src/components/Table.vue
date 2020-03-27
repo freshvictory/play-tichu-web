@@ -1,5 +1,6 @@
 <template>
   <div :class="$style.table">
+    <button @click="deal">Deal</button>
     <transition-group tag="ol" name="play-slide" :class="$style.trick" ref="trick">
         <li
           :class="$style.play"
@@ -49,8 +50,13 @@ export default defineComponent({
       store.commit('take', { seat: 'north', cards: currentTrick.value });
     };
 
+    const deal = () => {
+      store.commit('deal');
+    }
+
     return  {
       currentTrick,
+      deal,
       name,
       take,
       trick,

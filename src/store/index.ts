@@ -52,6 +52,11 @@ export default new Vuex.Store<{ state: State }>({
       if (state.state.stage === 'game') {
         state.state.state.take(seat, cards);
       }
+    },
+    deal: (state) => {
+      if (state.state.stage === 'game') {
+        state.state.state.deal();
+      }
     }
   },
   getters: {

@@ -43,7 +43,7 @@ export default defineComponent({
     const selected = ref<Card[]>([]);
 
     const toggle = (card: Card) => {
-      const checkbox = checkboxes[card.id].value[0];
+      const checkbox = checkboxes[card.id]?.value[0];
       if (checkbox) {
         if (checkbox.checked) {
           selected.value.push(card);

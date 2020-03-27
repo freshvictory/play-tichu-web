@@ -18,7 +18,6 @@ export class Game {
     this.id = id;
     this.seats = seats;
     this.currentTrick = [];
-    this.deal();
   }
 
   public play(seat: Seat, cards: Card[]): void {
@@ -34,7 +33,7 @@ export class Game {
     this.currentTrick = [];
   }
 
-  private deal(): void {
+  public deal(): void {
     const seats = Object.keys(this.seats) as Seat[];
     const deal = Deck.deal(Tichu, ...seats);
     
