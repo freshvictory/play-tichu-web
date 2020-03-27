@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Seat, Game, Trick } from '@/logic/game';
+import { Seat, Game, Trick, SerializedGame } from '@/logic/game';
 import { Lobby } from '@/logic/lobby';
 import { State as SharedState } from '@/logic/state';
 import { Player } from '@/logic/player';
@@ -71,8 +71,10 @@ export default new Vuex.Store<{ sharedState: SharedState }>({
         state.sharedState.stageState = new Game(state.sharedState.stageState.id, players);
       }
     },
-    deserialize: (state, { newState }: { newState: SharedState }) => {
-      state.sharedState = newState;
+    deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame} }) => {
+      let stageState = null;
+      if(newState.stage === 'game') stageState = Game.deserialize(newState.stageState);
+      state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
     }
   },
   getters: {
@@ -102,19 +104,19 @@ export default new Vuex.Store<{ sharedState: SharedState }>({
   },
   actions: {
     startLobby: async ({ commit, state }) => {
-      server.start('2', (newState) => commit('deserialize', { newState }));
+      await server.start('2', (newState) => commit('deserialize', { newState }));
       await server.joinGame('1', '2');
       commit('startLobby', { name: 'Justin' });
-      await server.pushState('1', state.sharedState);
+      //await server.pushState('1', state.sharedState);
     },
     newGame: async ({ state }) => {
       if (state.sharedState.stage === 'game') {
-        const players = { ...state.sharedState.stageState.seats };
-        for (const player in players) {
-          players[player as Seat].hand = new Set([]);
-          players[player as Seat].tricks = [];
-        }
-        await server.pushState('1', { stage: 'game', stageState: new Game('1', players) });
+        state.sharedState.stageState.seats.north.hand.clear();
+        state.sharedState.stageState.seats.south.hand.clear();
+        state.sharedState.stageState.seats.east.hand.clear();
+        state.sharedState.stageState.seats.west.hand.clear();
+        const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
+        await server.pushState('1', serialized);
       }
     }
   }

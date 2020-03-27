@@ -9,28 +9,32 @@ const baseDeck: ReadonlyArray<Card> = [
     name: 'Three of spades',
     value: 0,
     rank: 0,
-    suit: 'spade'
+    suit: 'spade',
+    serializedId: 0
   },
   {
     id: '10#heart',
     name: 'Ten of hearts',
     value: 0,
     rank: 0,
-    suit: 'heart'
+    suit: 'heart',
+    serializedId: 1
   },
   {
     id: 'J#club',
     name: 'Jack of clubs',
     value: 0,
     rank: 0,
-    suit: 'club'
+    suit: 'club',
+    serializedId: 2
   },
   {
     id: 'dragon',
     name: 'Dragon',
     value: 0,
     rank: 0,
-    suit: 'special'
+    suit: 'special',
+    serializedId: 3
   }
 ];
 
@@ -40,56 +44,64 @@ const largeDeck: ReadonlyArray<Card> = [
     name: 'Three of spades',
     value: 0,
     rank: 0,
-    suit: 'spade'
+    suit: 'spade',
+    serializedId: 0
   },
   {
     id: '10#heart',
     name: 'Ten of hearts',
     value: 0,
     rank: 0,
-    suit: 'heart'
+    suit: 'heart',
+    serializedId: 1
   },
   {
     id: 'J#club',
     name: 'Jack of clubs',
     value: 0,
     rank: 0,
-    suit: 'club'
+    suit: 'club',
+    serializedId: 2
   },
   {
     id: 'dragon',
     name: 'Dragon',
     value: 0,
     rank: 0,
-    suit: 'special'
+    suit: 'special',
+    serializedId: 3
   },
   {
     id: '4#diamonds',
     name: 'Four of diamonds',
     value: 0,
     rank: 0,
-    suit: 'diamond'
+    suit: 'diamond',
+    serializedId: 4
   },
   {
     id: 'K#clubs',
     name: 'King of clubs',
     value: 0,
     rank: 0,
-    suit: 'club'
+    suit: 'club',
+    serializedId: 5
   },
   {
     id: '2#spade',
     name: 'Two of spades',
     value: 0,
     rank: 0,
-    suit: 'spade'
+    suit: 'spade',
+    serializedId: 6
   },
   {
     id: '7#club',
     name: 'Seven of clubs',
     value: 0,
     rank: 0,
-    suit: 'club'
+    suit: 'club',
+    serializedId: 7
   }
 ];
 

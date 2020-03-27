@@ -36,12 +36,12 @@ export class Server {
     return axios.post(`${this.url}/api/game/${gameId}/join?userid=${userId}`);
   }
 
-  public pushState(gameId: string, state: State) {
+  public pushState(gameId: string, state: any) {
     return axios.post(`${this.url}/api/game/${gameId}/state`, state);
   }
 }
 
-// export const ApiBaseUrl = 'https://play-tichu-api.azurewebsites.net';
-export const ApiBaseUrl = 'http://localhost:7071';
+export const ApiBaseUrl = 'https://play-tichu-api.azurewebsites.net';
+// export const ApiBaseUrl = 'http://localhost:7071';
 
 

@@ -7,6 +7,16 @@ export type Seat = 'north' | 'south' | 'east' | 'west';
 
 export type Trick = [Seat, ReadonlyArray<Card>][];
 
+export type SerializedGame = {
+  id: string;
+  seats: {[k in Seat]: {
+    id: string;
+    name: string;
+    hand: number[];
+  }};
+  currentTrick: [string, number[]][];
+};
+
 export class Game {
   public readonly id: string;
 
@@ -42,11 +52,28 @@ export class Game {
     }
   }
 
-  public serialize() {
+  public serialize(): SerializedGame {
     return {
       id: this.id,
-      currentTrick: this.currentTrick.map((play) => (play[0], play[1].map((card) => card.id))),
-      seats: this.seats
+      currentTrick: this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]),
+      seats: {
+        north: this.seats.north.serialize(),
+        south: this.seats.south.serialize(),
+        east: this.seats.east.serialize(),
+        west: this.seats.west.serialize(),
+      }
     }
+  }
+
+  static deserialize(data: SerializedGame) {
+    const seats = {
+      north: Player.deserialize(data.seats.north),
+      south: Player.deserialize(data.seats.north),
+      east: Player.deserialize(data.seats.north),
+      west: Player.deserialize(data.seats.north),
+    };
+    const game = new Game(data.id, seats);
+    game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
+    return game;
   }
 }

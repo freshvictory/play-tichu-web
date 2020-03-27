@@ -4,4 +4,5 @@ export type Card = {
   rank: number;
   value: number;
   suit: string;
+  serializedId: number;
 }
