@@ -164,6 +164,8 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
 
         // Connect user to the server
         await server.start(state.clientState.userId, handlers);
+        // Remove all subscriptions for this user, in case they are lingering
+        await server.leaveAllGames(state.clientState.userId);
         // Subscribe user to the game and request current state
         await server.joinGame(gameId, state.clientState.userId);
         commit('connected');

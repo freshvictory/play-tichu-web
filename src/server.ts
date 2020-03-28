@@ -40,6 +40,10 @@ export class Server {
     return axios.post(`${this.url}/api/game/${gameId}/join?userid=${userId}`);
   }
 
+  public leaveAllGames(userId: string) {
+    return axios.post(`${this.url}/api/reset/${userId}`);
+  }
+
   public pushState(gameId: string, state: any) {
     return axios.post(`${this.url}/api/game/${gameId}/state`, state);
   }
