@@ -15,14 +15,14 @@
     <div v-if="seat" :class="$style.player">
       <Player :seat="seat" />
     </div>
-    <div v-if="showEndGameModal" :class="$style.modal">
-      <EndGameModal/>
+    <div v-if="showEndHandModal" :class="$style.modal">
+      <EndHandModal/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import EndGameModal from '@/components/EndGameModal.vue';
+import EndHandModal from '@/components/EndHandModal.vue';
 import GameHeader from '@/components/GameHeader.vue';
 import Table from '@/components/Table.vue';
 import Player from '@/components/Player.vue';
@@ -33,7 +33,7 @@ import store from '../store';
 export default defineComponent({
   name: 'ActiveGame',
   components: {
-    EndGameModal,
+    EndHandModal,
     GameHeader,
     Table,
     Player,
@@ -43,11 +43,11 @@ export default defineComponent({
     seat: { type: String },
   },
   setup: () => {
-    const showEndGameModal = computed(() => store.state.clientState.showEndGameModal);
+    const showEndHandModal = computed(() => store.state.clientState.showEndHandModal);
     const seats = computed(() => store.getters.seats);
 
     return {
-      showEndGameModal,
+      showEndHandModal,
       seats,
     };
   },

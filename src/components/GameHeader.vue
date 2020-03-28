@@ -6,7 +6,7 @@
         <button :class="$style.button" @click="take">take trick</button>
       </li>
       <li>
-        <button :class="$style.button" @click="endGame">end hand</button>
+        <button :class="$style.button" @click="endHand">end hand</button>
       </li>
     </ul>
   </header>
@@ -25,8 +25,8 @@ export default defineComponent({
   setup: (props) => {
     const currentTrick = computed(() => store.getters.currentTrick);
 
-    const endGame = () => {
-      store.commit('toggleEndGameModal');
+    const endHand = () => {
+      store.commit('toggleEndHandModal');
     }
 
     const take = async () => {
@@ -35,7 +35,7 @@ export default defineComponent({
 
     return {
       currentTrick,
-      endGame,
+      endHand,
       take
     }
   }

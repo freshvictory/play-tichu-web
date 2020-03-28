@@ -55,18 +55,23 @@ export class Game {
     }
   }
 
-  public score(): { [k in Seat]: number } {
-    const getScore = (seat: Seat) => {
+  public score(): { [k in Seat]: { tricks: number; hand: number } } {
+    const getTrickScore = (seat: Seat) => {
       return this.seats[seat]
         .tricks
         .reduce((n, c) => n + c.value, 0);
     }
 
+    const getHandScore = (seat: Seat) => {
+      return [...this.seats[seat].hand]
+        .reduce((n, c) => n + c.value, 0);
+    }
+
     return {
-      north: getScore('north'),
-      east: getScore('east'),
-      south: getScore('south'),
-      west: getScore('west')
+      north: { tricks: getTrickScore('north'), hand: getHandScore('north') },
+      east: { tricks: getTrickScore('east'), hand: getHandScore('east') },
+      south: { tricks: getTrickScore('south'), hand: getHandScore('south') },
+      west: { tricks: getTrickScore('west'), hand: getHandScore('west') }
     };
   }
 

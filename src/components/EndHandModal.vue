@@ -1,38 +1,48 @@
 <template>
   <div :class="$style.modal">
-    <div :class="$style.scores">
+    <ol :class="$style.scores" v-if="showScores">
       <h3 :class="$style.header">Scores</h3>
-      <div
+      <li
         v-for="(score, seat) in scores"
         :key="seat"
+        :class="$style['score-list']"
       >
-        <span><strong>{{ getPlayer(seat).name }}</strong>: {{ score }} points</span>
-      </div>
-    </div>
-      <button @click="deal" :class="$style.button">deal new hand</button>
+        <strong>{{ getPlayer(seat).name }}</strong>:
+        <ul>
+          <li>{{ score.tricks }} points</li>
+          <li v-if="score.hand">{{ score.hand }} left in hand</li>
+        </ul>
+      </li>
+    </ol>
+    <button v-else-if="seatsOut.length > 0" @click="showScores = true" :class="$style.button">show scores</button>
+    <button @click="deal" :class="$style.button">deal new hand</button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import store from '../store';
 import { Seat } from '../logic/game';
 
 export default defineComponent({
-  name: 'EndGameModal',
+  name: 'EndHandModal',
   setup: () => {
     const scores = computed(() => store.getters.score);
     const getPlayer = (seat: Seat) => store.getters.player(seat);
+    const showScores = ref(false);
+    const seatsOut = computed(() => store.getters.seatsOut)
 
     const deal = async () => {
-      store.commit('toggleEndGameModal');
+      store.commit('toggleEndHandModal');
       await store.dispatch('deal');
     }
 
     return {
       getPlayer,
       deal,
-      scores
+      scores,
+      seatsOut,
+      showScores
     };
   }
 });
@@ -56,6 +66,10 @@ export default defineComponent({
 
 .scores {
   display: block;
+}
+
+.score-list {
+  margin-bottom: 10px;
 }
 
 .header {

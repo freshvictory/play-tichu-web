@@ -28,7 +28,7 @@ export type ClientState = {
   name: string | undefined;
   gameId: string | undefined;
   pickedUpSecondDeal: boolean;
-  showEndGameModal: boolean;
+  showEndHandModal: boolean;
 }
 
 export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState }>({
@@ -43,7 +43,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       name: undefined,
       gameId: undefined,
       pickedUpSecondDeal: false,
-      showEndGameModal: false
+      showEndHandModal: false
     }
   },
   mutations: {
@@ -77,8 +77,8 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         state.sharedState.stageState = new Game(state.sharedState.stageState.id, players);
       }
     },
-    toggleEndGameModal: (state) => {
-      state.clientState.showEndGameModal = !state.clientState.showEndGameModal;
+    toggleEndHandModal: (state) => {
+      state.clientState.showEndHandModal = !state.clientState.showEndHandModal;
     },
     deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame | SerializedLobby} }) => {
       console.log('received new state for game '+newState.stageState.id);
@@ -144,6 +144,18 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       }
 
       return {};
+    },
+    seatsOut: (state) => {
+      const seats = [];
+      if (state.sharedState.stage === 'game') {
+        for (const seat in state.sharedState.stageState.seats) {
+          if (state.sharedState.stageState.seats[seat as Seat].hand.size === 0) {
+            seats.push(seat);
+          }
+        }
+      }
+
+      return seats;
     }
   },
   actions: {
