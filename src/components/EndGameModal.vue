@@ -25,8 +25,8 @@ export default defineComponent({
     const getPlayer = (seat: Seat) => store.getters.player(seat);
 
     const deal = async () => {
-      await store.dispatch('deal');
       store.commit('toggleEndGameModal');
+      await store.dispatch('deal');
     }
 
     return {
@@ -45,7 +45,7 @@ export default defineComponent({
   border: 2px dotted #ddd;
   padding: 20px;
   border-radius: 20px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(20px);
   text-align: left;
 
   width: 200px;

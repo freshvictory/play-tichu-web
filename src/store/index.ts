@@ -126,6 +126,13 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       if (state.sharedState.stage === 'game') {
         return state.sharedState.stageState.score();
       }
+    },
+    seats: (state) => {
+      if (state.sharedState.stage === 'game') {
+        return state.sharedState.stageState.seats;
+      }
+
+      return {};
     }
   },
   actions: {

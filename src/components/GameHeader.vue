@@ -44,6 +44,7 @@ export default defineComponent({
 .header {
   display: flex;
   padding: @px-grid-gap;
+  // padding-bottom: 0;
   align-items: center;
   justify-content: space-between;
 }

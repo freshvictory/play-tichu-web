@@ -1,6 +1,14 @@
 <template>
   <div :class="$style.view">
     <GameHeader/>
+    <ul :class="$style.players">
+      <li v-for="seat in ['north', 'east', 'south', 'west']" :key="seat" :class="$style.size">
+        <span>
+          <strong>{{ seats[seat].name }}</strong>:&nbsp;
+          {{ seats[seat].hand.size }}&nbsp;|&nbsp;{{ seats[seat].tricks.length }}
+        </span>
+      </li>
+    </ul>
     <div :class="$style.table">
       <Table />
     </div>
@@ -36,9 +44,11 @@ export default defineComponent({
   },
   setup: () => {
     const showEndGameModal = computed(() => store.state.clientState.showEndGameModal);
+    const seats = computed(() => store.getters.seats);
 
     return {
-      showEndGameModal
+      showEndGameModal,
+      seats,
     };
   },
 });
@@ -49,9 +59,24 @@ export default defineComponent({
 
 .view {
   display: grid;
-  grid-template-rows: max-content 1fr max-content;
+  grid-template-rows: max-content max-content 1fr max-content;
   height: 100vh;
   // gap: @px-grid-gap;
+}
+
+.players {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 2px dotted #ddd;
+  border-radius: 20px;
+  margin: 0 20px;
+}
+
+.size {
+    margin: 0 10px;
 }
 
 .table {
