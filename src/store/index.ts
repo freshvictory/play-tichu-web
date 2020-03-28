@@ -94,7 +94,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
             state.clientState.pickedUpSecondDeal = false;
           }
       }
-      else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState)
+      else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState as SerializedLobby)
       else console.log('could not deserialize state for stage '+newState.stage)
       
       if(stageState != null) state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
@@ -175,20 +175,11 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         if (state.sharedState.stageState.full) {
           console.log('Starting game...');
           const game = state.sharedState.stageState.start();
-          game.deal();
-
           state.sharedState = { stage: 'game', stageState: game };
-          await dispatch('sendState');
+
+          // Deal will take care of sending state
+          await dispatch('deal');
         }
-      }
-    },
-    newGame: async ({ dispatch, state }) => {
-      if (state.sharedState.stage === 'game') {
-        state.sharedState.stageState.seats.north.hand.clear();
-        state.sharedState.stageState.seats.south.hand.clear();
-        state.sharedState.stageState.seats.east.hand.clear();
-        state.sharedState.stageState.seats.west.hand.clear();
-        await dispatch('sendState');
       }
     },
     play: async ({dispatch, state}, { seat, cards }: { seat: Seat; cards: Card[]}) => {

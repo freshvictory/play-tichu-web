@@ -53,7 +53,9 @@ export class Game {
     const deal = Deck.deal(Tichu, ...seats);
     
     for (const seat of seats) {
-      this.seats[seat].hand = new Set(deal[seat].sort((a, b) => a.rank - b.rank));
+      const player = this.seats[seat];
+      player.hand = new Set(deal[seat].sort((a, b) => a.rank - b.rank));
+      player.tricks = [];
     }
   }
 

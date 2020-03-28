@@ -5,6 +5,7 @@ export type SerializedPlayer = {
   id: string;
   name: string;
   hand: number[];
+  tricks: number[];
 }
 
 export class Player {
@@ -27,13 +28,15 @@ export class Player {
     return {
       id: this.id,
       name: this.name,
-      hand: Array.from(this.hand).map((card) => card.serializedId)
+      hand: Array.from(this.hand).map((card) => card.serializedId),
+      tricks: this.tricks.map((card) => card.serializedId),
     }
   }
 
   static deserialize(data: SerializedPlayer) {
     const player = new Player(data.id, data.name);
     player.hand = new Set(data.hand.map((cardId) => Tichu[cardId]));
+    player.tricks = data.tricks.map((id) => Tichu[id]);
     return player;
   }
 }
