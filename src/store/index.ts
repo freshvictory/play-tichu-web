@@ -108,6 +108,15 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
 
       return '/';
     },
+    mySeat: (state): Seat | undefined => {
+      if(state.sharedState.stage != 'none' && state.clientState.userId != undefined) {
+        const seats = state.sharedState.stageState.seats;
+        for (const seat in seats) {
+          if (seats[seat as Seat]?.id === state.clientState.userId) return seat as Seat;
+        }
+      }
+      return undefined;
+    },
     player: (state) => (seat: Seat): Player | undefined => {
       switch (state.sharedState.stage) {
         case 'game':
@@ -160,8 +169,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         commit('connected');
     },
     takeSeat: async ({ dispatch, state }, {seat}: {seat: Seat}) => {
-      if(state.sharedState.stage === 'lobby') {
-        
+      if(state.sharedState.stage === 'lobby') {        
         if(state.clientState.userId === undefined ||
           state.clientState.name === undefined ||
           state.sharedState.stageState.seats[seat] != undefined) return;
@@ -170,6 +178,15 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         await dispatch('sendState');
       }
     },    
+    ghostSeat: async ({dispatch, state}, {seat}: {seat: Seat}) => {
+      if(state.sharedState.stage === 'lobby') {        
+        if(state.sharedState.stageState.seats[seat] != undefined) return;
+        
+        const id = Lobby.getId();
+        state.sharedState.stageState.join(seat, 'ghost'+id, id);
+        await dispatch('sendState');
+      }
+    },
     startGame: async({dispatch, state}) => {
       if (state.sharedState.stage === 'lobby') {
         if (state.sharedState.stageState.full) {

@@ -1,6 +1,6 @@
 <template>
   <div id="game" :class="$style.game">
-    <Lobby v-if="sharedState.stage === 'lobby'" :lobby="sharedState.stageState"/>
+    <Lobby v-if="sharedState.stage === 'lobby'" :lobby="sharedState.stageState" />
     <ActiveGame v-else-if="sharedState.stage === 'game'"
       :game="sharedState.stageState"
       :seat="mySeat"
@@ -32,15 +32,7 @@ export default defineComponent({
   },
   setup: () => {
     const sharedState = computed(() => store.state.sharedState);
-    const mySeat = computed(() => {
-      if(store.state.sharedState.stage === 'game' && store.state.clientState.userId != undefined) {
-        const seats = store.state.sharedState.stageState.seats;
-        for (const seat in seats) {
-          if (seats[seat as Seat].id === store.state.clientState.userId) return seat;
-        }
-      }
-      return undefined;
-    });
+    const mySeat = computed(() => store.getters.mySeat);
 
     return {
       sharedState,

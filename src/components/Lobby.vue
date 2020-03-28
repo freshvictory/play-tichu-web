@@ -26,7 +26,8 @@
         </div>
       </div>
       <p v-if="chosenSeat">{{ name }}</p>
-      <button v-if="chosenSeat" type="submit" :class="$style.submit">Sit Down</button>
+      <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">Sit Down</button>
+      <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">Ghost</button>
     </form>
     <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
   </div>
@@ -41,11 +42,12 @@ import { Seat } from '../logic/game';
 export default defineComponent({
   name: 'Lobby',
   props: {
-    lobby: { type: Lobby, required: true },
+    lobby: { type: Lobby, required: true }
   },
   setup: () => {
     const chosenSeat = ref('');
     const name = computed(() => store.state.clientState.name);
+    const mySeat = computed(() => store.getters.mySeat);
 
     const chooseSeat = (seat: Seat) => {
       console.log('Choosing seat', seat);
@@ -57,14 +59,21 @@ export default defineComponent({
       store.dispatch('takeSeat', { seat: chosenSeat.value });
       chosenSeat.value = '';
     };
+    
+    const ghost = () => {
+      store.dispatch('ghostSeat', { seat: chosenSeat.value });
+      chosenSeat.value = '';
+    };
 
     const start = () => store.dispatch('startGame');
 
     return {
       sit,
+      ghost,
       chooseSeat,
       chosenSeat,
       name,
+      mySeat,
       start,
     };
   },
