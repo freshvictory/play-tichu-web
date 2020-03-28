@@ -27,6 +27,7 @@ export type ClientState = {
   userId: string | undefined;
   name: string | undefined;
   gameId: string | undefined;
+  pickedUpSecondDeal: boolean;
   showEndGameModal: boolean;
 }
 
@@ -41,6 +42,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       userId: undefined,
       name: undefined,
       gameId: undefined,
+      pickedUpSecondDeal: false,
       showEndGameModal: false
     }
   },
@@ -65,16 +67,6 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       state.clientState.name = payload.name;
       state.clientState.gameId = payload.game;
     },
-    startGame: (state) => {
-      if (state.sharedState.stage === 'lobby') {
-        if (state.sharedState.stageState.full) {
-          console.log('Starting game...');
-          const game = state.sharedState.stageState.start();
-
-          state.sharedState = { stage: 'game', stageState: game };
-        }
-      }
-    },
     newGame: (state) => {
       if (state.sharedState.stage === 'game') {
         const players = { ...state.sharedState.stageState.seats };
@@ -89,9 +81,19 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       state.clientState.showEndGameModal = !state.clientState.showEndGameModal;
     },
     deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame | SerializedLobby} }) => {
-      console.log('received state')
+      console.log('received new state for game '+newState.stageState.id);
+
+      // Check the game ID to guard against old SignalR subscriptions
+      if(state.clientState.gameId != newState.stageState.id) return;
+
       let stageState = null;
-      if(newState.stage === 'game') stageState = Game.deserialize(newState.stageState as SerializedGame);
+      if(newState.stage === 'game') { 
+        stageState = Game.deserialize(newState.stageState as SerializedGame);
+        if(state.sharedState.stage === 'game' && 
+          stageState.dealCount > state.sharedState.stageState.dealCount) { 
+            state.clientState.pickedUpSecondDeal = false;
+          }
+      }
       else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState)
       else console.log('could not deserialize state for stage '+newState.stage)
       
@@ -142,7 +144,13 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
 
         const handlers = {
           onReceiveState: (newState: {stage: string; stageState: SerializedGame}) => commit('deserialize', { newState }),
-          onRequestState: async () => { if(state.clientState.host === true) {await dispatch('sendState')} }
+          onRequestState: async () => { 
+            if(state.clientState.host === true) {
+              console.log("Received state request, sending because I'm the host");
+              await dispatch('sendState');
+            }
+            else console.log("Received state request, ignoring because I'm not the host");
+          }
         }
 
         // Connect user to the server
@@ -160,6 +168,18 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         
         state.sharedState.stageState.join(seat, state.clientState.name, state.clientState.userId);
         await dispatch('sendState');
+      }
+    },    
+    startGame: async({dispatch, state}) => {
+      if (state.sharedState.stage === 'lobby') {
+        if (state.sharedState.stageState.full) {
+          console.log('Starting game...');
+          const game = state.sharedState.stageState.start();
+          game.deal();
+
+          state.sharedState = { stage: 'game', stageState: game };
+          await dispatch('sendState');
+        }
       }
     },
     newGame: async ({ dispatch, state }) => {

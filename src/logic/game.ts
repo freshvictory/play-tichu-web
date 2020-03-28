@@ -15,6 +15,7 @@ export type SerializedGame = {
     hand: number[];
   }};
   currentTrick: [string, number[]][];
+  dealCount: number;
 };
 
 export class Game {
@@ -24,10 +25,13 @@ export class Game {
 
   public currentTrick: Trick;
 
+  public dealCount: number;
+
   constructor(id: string, seats: { [k in Seat]: Player }) {
     this.id = id;
     this.seats = seats;
     this.currentTrick = [];
+    this.dealCount = 0;
   }
 
   public play(seat: Seat, cards: Card[]): void {
@@ -44,6 +48,7 @@ export class Game {
   }
 
   public deal(): void {
+    this.dealCount++;
     const seats = Object.keys(this.seats) as Seat[];
     const deal = Deck.deal(Tichu, ...seats);
     
@@ -71,6 +76,7 @@ export class Game {
     return {
       id: this.id,
       currentTrick: this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]),
+      dealCount: this.dealCount,
       seats: {
         north: this.seats.north.serialize(),
         south: this.seats.south.serialize(),
@@ -89,6 +95,7 @@ export class Game {
     };
     const game = new Game(data.id, seats);
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
+    game.dealCount = data.dealCount;
     return game;
   }
 }

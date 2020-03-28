@@ -58,7 +58,7 @@ export default defineComponent({
       chosenSeat.value = '';
     };
 
-    const start = () => store.commit('startGame');
+    const start = () => store.dispatch('startGame');
 
     return {
       sit,
