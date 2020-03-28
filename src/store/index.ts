@@ -50,6 +50,9 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     connected: (state) => {
       state.clientState.connected = true;
     },
+    setGame: (state, payload: {gameId: string}) => {
+      state.clientState.gameId = payload.gameId;
+    },
     startLobby: (state, payload: { name: string }) => {
       const userId = Lobby.getId();
       
