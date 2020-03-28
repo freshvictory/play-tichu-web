@@ -1,4 +1,4 @@
-import { Player } from './player';
+import { Player, SerializedPlayer } from './player';
 import { Deck } from './deck';
 import { Tichu } from './tichu-deck';
 import { Card } from './card';
@@ -9,11 +9,7 @@ export type Trick = [Seat, ReadonlyArray<Card>][];
 
 export type SerializedGame = {
   id: string;
-  seats: {[k in Seat]: {
-    id: string;
-    name: string;
-    hand: number[];
-  }};
+  seats: {[k in Seat]: SerializedPlayer};
   currentTrick: [string, number[]][];
   dealCount: number;
 };
