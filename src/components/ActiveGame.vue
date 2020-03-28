@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.view">
-    <GameHeader/>
+    <GameHeader :seat="seat"/>
     <ul :class="$style.players">
       <li v-for="seat in ['north', 'east', 'south', 'west']" :key="seat" :class="$style.size">
         <span>

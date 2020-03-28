@@ -54,7 +54,7 @@ export default defineComponent({
     );
 
     const play = async () => {      
-      await store.dispatch("play", { seat: props.seat, cards: selected.value });
+      await store.dispatch('play', { seat: props.seat, cards: selected.value });
       selected.value = [];
     };
 
