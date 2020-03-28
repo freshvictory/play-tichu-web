@@ -27,6 +27,7 @@ export type ClientState = {
   userId: string | undefined;
   name: string | undefined;
   gameId: string | undefined;
+  showEndGameModal: boolean;
 }
 
 export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState }>({
@@ -39,7 +40,8 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       host: false,
       userId: undefined,
       name: undefined,
-      gameId: undefined
+      gameId: undefined,
+      showEndGameModal: false
     }
   },
   mutations: {
@@ -83,6 +85,9 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         state.sharedState.stageState = new Game(state.sharedState.stageState.id, players);
       }
     },
+    toggleEndGameModal: (state) => {
+      state.clientState.showEndGameModal = !state.clientState.showEndGameModal;
+    },
     deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame | SerializedLobby} }) => {
       console.log('received state')
       let stageState = null;
@@ -117,6 +122,11 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
 
       return [];
     },
+    score: (state) => {
+      if (state.sharedState.stage === 'game') {
+        return state.sharedState.stageState.score();
+      }
+    }
   },
   actions: {
     connect: async ({ dispatch, commit, state }, { gameId }: {gameId: string}) => {

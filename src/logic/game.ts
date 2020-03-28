@@ -52,6 +52,21 @@ export class Game {
     }
   }
 
+  public score(): { [k in Seat]: number } {
+    const getScore = (seat: Seat) => {
+      return this.seats[seat]
+        .tricks
+        .reduce((n, c) => n + c.value, 0);
+    }
+
+    return {
+      north: getScore('north'),
+      east: getScore('east'),
+      south: getScore('south'),
+      west: getScore('west')
+    };
+  }
+
   public serialize(): SerializedGame {
     return {
       id: this.id,

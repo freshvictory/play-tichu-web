@@ -1,7 +1,5 @@
 <template>
   <div :class="$style.table">
-    <button @click="deal">Deal</button>
-    <button @click="newGame">New game</button>
     <transition-group tag="ol" name="play-slide" :class="$style.trick" ref="trick">
         <li
           :class="$style.play"
@@ -17,9 +15,6 @@
           </ol>
         </li>
     </transition-group>
-    <div v-if="currentTrick.length">
-      <button @click="take">Take trick</button>
-    </div>
   </div>
 </template>
 
@@ -47,24 +42,9 @@ export default defineComponent({
       }
     });
 
-    const take = async () => {
-      await store.dispatch('take', { seat: 'north', cards: currentTrick.value });
-    };
-
-    const deal = async () => {
-      await store.dispatch('deal');
-    }
-
-    const newGame = async () => {
-      await store.dispatch('newGame');
-    }
-
     return  {
       currentTrick,
-      deal,
       name,
-      newGame,
-      take,
       trick,
     };
   },
@@ -75,7 +55,7 @@ export default defineComponent({
 @import '../shared.less';
 
 .table {
-  padding: 20px;
+  padding: 0 20px;
 }
 
 .trick {

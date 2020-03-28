@@ -21,7 +21,7 @@
 <script lang="ts">
 import CardComponent from "@/components/Card.vue";
 import { Card } from "@/logic/card";
-import { defineComponent, ref, Ref, computed } from "@vue/composition-api";
+import { defineComponent, ref, computed } from "@vue/composition-api";
 import store from "../store";
 import { Seat } from "../logic/game";
 

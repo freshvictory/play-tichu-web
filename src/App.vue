@@ -9,8 +9,16 @@ body {
   margin: 0;
 }
 
-h1, h2, p {
+h1, h2, h3, p {
   margin: 0;
+}
+
+a {
+  text-decoration: none;
+
+  &:visited {
+    color: inherit;
+  }
 }
 
 button,
@@ -29,6 +37,7 @@ button {
   cursor: pointer;
 }
 
+ul,
 ol {
   list-style: none;
   margin: 0;
