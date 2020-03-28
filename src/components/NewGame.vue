@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import router from '../router';
 import store from '../store';
 
@@ -19,7 +19,7 @@ export default defineComponent({
   name: 'NewGame',
   setup: () => {
     const name = ref('Justin');
-    const gameid = computed(() => store.state.clientState.gameId);
+    const gameid = ref();
 
     const submit = async () => {
       console.log(`starting new game!`)

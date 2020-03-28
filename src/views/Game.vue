@@ -18,9 +18,8 @@ import { Seat } from '../logic/game'
 
 export default defineComponent({
   name: 'Game',
-  beforeRouteEnter: async (to: any, from: unknown, next: Function) => {
+  beforeRouteEnter: async (to: unknown, from: unknown, next: Function) => {
     if (store.state.clientState.gameId === undefined) {
-      store.commit('setGame', { gameId: to.params.id });
       next('/');
     } else {
       await store.dispatch('connect', { gameId: store.state.clientState.gameId });
