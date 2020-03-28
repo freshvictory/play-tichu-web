@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { Seat, Game, Trick, SerializedGame } from '@/logic/game';
-import { Lobby } from '@/logic/lobby';
+import { Lobby, SerializedLobby } from '@/logic/lobby';
 import { State as SharedState } from '@/logic/state';
 import { Player } from '@/logic/player';
 import { Card } from '@/logic/card';
@@ -24,6 +24,9 @@ const inGame = new Game(
 export type ClientState = {
   connected: boolean;
   host: boolean;
+  userId: string | undefined;
+  name: string | undefined;
+  gameId: string | undefined;
 }
 
 export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState }>({
@@ -33,7 +36,10 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     //sharedState: { stage: 'game', stageState: inGame },
     clientState: {
       connected: false,
-      host: false
+      host: false,
+      userId: undefined,
+      name: undefined,
+      gameId: undefined
     }
   },
   mutations: {
@@ -41,13 +47,21 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       state.clientState.connected = true;
     },
     startLobby: (state, payload: { name: string }) => {
-      state.sharedState = { stage: 'lobby', stageState: new Lobby(payload.name) };
+      const userId = Lobby.getId();
+      
+      state.clientState.userId = userId;
+      state.clientState.name = payload.name;
       state.clientState.host = true;
+
+      const lobby = new Lobby(Lobby.getId());
+      state.clientState.gameId = lobby.id;
+      state.sharedState = { stage: 'lobby', stageState: lobby };
     },
-    joinLobby: (state, payload: { name: string; seat: Seat }) => {
-      if (state.sharedState.stage === 'lobby') {
-        state.sharedState.stageState.join(payload.seat, payload.name);
-      }
+    joinLobby: (state, payload: { name: string; game: string }) => {
+      const userId = Lobby.getId();      
+      state.clientState.userId = userId;
+      state.clientState.name = payload.name;
+      state.clientState.gameId = payload.game;
     },
     startGame: (state) => {
       if (state.sharedState.stage === 'lobby') {
@@ -69,10 +83,14 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         state.sharedState.stageState = new Game(state.sharedState.stageState.id, players);
       }
     },
-    deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame} }) => {
+    deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame | SerializedLobby} }) => {
+      console.log('received state')
       let stageState = null;
-      if(newState.stage === 'game') stageState = Game.deserialize(newState.stageState);
-      state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
+      if(newState.stage === 'game') stageState = Game.deserialize(newState.stageState as SerializedGame);
+      else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState)
+      else console.log('could not deserialize state for stage '+newState.stage)
+      
+      if(stageState != null) state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
     }
   },
   getters: {
@@ -101,24 +119,31 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     },
   },
   actions: {
-    connect: async ({ dispatch, commit, state }) => {
+    connect: async ({ dispatch, commit, state }, { gameId }: {gameId: string}) => {
       if(state.clientState.connected) return;
-      if(state.sharedState.stage === 'game' || state.sharedState.stage === 'lobby') {
+      if(state.clientState.userId === undefined) throw 'User ID is not set, cannot connect';
+
         const handlers = {
           onReceiveState: (newState: {stage: string; stageState: SerializedGame}) => commit('deserialize', { newState }),
           onRequestState: async () => { if(state.clientState.host === true) {await dispatch('sendState')} }
         }
 
-        //let gameId = state.sharedState.stageState.id;
-        await server.start('2', handlers);
-        await server.joinGame('1', '2');
+        // Connect user to the server
+        await server.start(state.clientState.userId, handlers);
+        // Subscribe user to the game and request current state
+        await server.joinGame(gameId, state.clientState.userId);
         commit('connected');
-      }
     },
-    startLobby: async ({ commit, state }) => {
-      //await server.start('2', (newState) => commit('deserialize', { newState }));
-      //await server.joinGame('1', '2');
-      commit('startLobby', { name: 'Justin' });
+    takeSeat: async ({ dispatch, state }, {seat}: {seat: Seat}) => {
+      if(state.sharedState.stage === 'lobby') {
+        
+        if(state.clientState.userId === undefined ||
+          state.clientState.name === undefined ||
+          state.sharedState.stageState.seats[seat] != undefined) return;
+        
+        state.sharedState.stageState.join(seat, state.clientState.name, state.clientState.userId);
+        await dispatch('sendState');
+      }
     },
     newGame: async ({ dispatch, state }) => {
       if (state.sharedState.stage === 'game') {
@@ -148,12 +173,10 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       }
     },
     sendState: async ({state}) => {
-      if(state.sharedState.stage === 'game') {
+      if(state.sharedState.stage != 'none') {
+        console.log('sending state for game '+state.sharedState.stageState.id)
         const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
-        await server.pushState('1', serialized);
-      }
-      else if(state.sharedState.stage === 'lobby'){
-
+        await server.pushState(state.sharedState.stageState.id, serialized);
       }
     }
   }

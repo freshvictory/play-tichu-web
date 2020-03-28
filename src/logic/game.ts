@@ -68,9 +68,9 @@ export class Game {
   static deserialize(data: SerializedGame) {
     const seats = {
       north: Player.deserialize(data.seats.north),
-      south: Player.deserialize(data.seats.north),
-      east: Player.deserialize(data.seats.north),
-      west: Player.deserialize(data.seats.north),
+      south: Player.deserialize(data.seats.south),
+      east: Player.deserialize(data.seats.east),
+      west: Player.deserialize(data.seats.west),
     };
     const game = new Game(data.id, seats);
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick

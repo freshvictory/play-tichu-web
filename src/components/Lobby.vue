@@ -1,6 +1,6 @@
 <template>
   <div id="lobby" :class="$style.lobby">
-    <form @submit.prevent="join" :class="$style.form">
+    <form @submit.prevent="sit" :class="$style.form">
       <div :class="$style.seats" >
         <div
           v-for="(player, seat) in lobby.seats"
@@ -25,15 +25,15 @@
           />
         </div>
       </div>
-      <input v-if="chosenSeat" :class="$style.name" v-model="name" placeholder="Your name"/>
-      <button v-if="chosenSeat" type="submit" :class="$style.submit">Submit</button>
+      <p v-if="chosenSeat">{{ name }}</p>
+      <button v-if="chosenSeat" type="submit" :class="$style.submit">Sit Down</button>
     </form>
     <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import { Lobby } from '../logic/lobby';
 import store from '../store';
 import { Seat } from '../logic/game';
@@ -45,23 +45,23 @@ export default defineComponent({
   },
   setup: () => {
     const chosenSeat = ref('');
-    const name = ref('');
+    const name = computed(() => store.state.clientState.name);
 
     const chooseSeat = (seat: Seat) => {
       console.log('Choosing seat', seat);
       chosenSeat.value = seat;
     };
 
-    const join = () => {
-      console.log('Joining lobby...');
-      store.commit('joinLobby', { name: name.value, seat: chosenSeat.value });
+    const sit = () => {
+      console.log('Taking seat...');
+      store.dispatch('takeSeat', { seat: chosenSeat.value });
       chosenSeat.value = '';
     };
 
     const start = () => store.commit('startGame');
 
     return {
-      join,
+      sit,
       chooseSeat,
       chosenSeat,
       name,

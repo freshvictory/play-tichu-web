@@ -3,7 +3,7 @@
     <Lobby v-if="sharedState.stage === 'lobby'" :lobby="sharedState.stageState"/>
     <ActiveGame v-else-if="sharedState.stage === 'game'"
       :game="sharedState.stageState"
-      seat="north"
+      :seat="mySeat"
     />
   </div>
 </template>
@@ -13,15 +13,16 @@ import ActiveGame from '@/components/ActiveGame.vue';
 import Lobby from '@/components/Lobby.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
+import { Seat } from '../logic/game'
 
 
 export default defineComponent({
   name: 'Game',
   beforeRouteEnter: async (to: unknown, from: unknown, next: Function) => {
-    if (store.state.sharedState.stage === 'none') {
+    if (store.state.clientState.gameId === undefined) {
       next('/');
     } else {
-      await store.dispatch('connect');
+      await store.dispatch('connect', { gameId: store.state.clientState.gameId });
       next();
     }
   },
@@ -31,9 +32,19 @@ export default defineComponent({
   },
   setup: () => {
     const sharedState = computed(() => store.state.sharedState);
+    const mySeat = computed(() => {
+      if(store.state.sharedState.stage === 'game' && store.state.clientState.userId != undefined) {
+        const seats = store.state.sharedState.stageState.seats;
+        for (const seat in seats) {
+          if (seats[seat as Seat].id === store.state.clientState.userId) return seat;
+        }
+      }
+      return undefined;
+    });
 
     return {
       sharedState,
+      mySeat
     };
   },
 });

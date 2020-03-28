@@ -1,11 +1,11 @@
 <template>
   <div>
-    <form :class="$style.form" @submit.prevent="submit">
+    <form :class="$style.form">
       <input id="name" :class="$style.input" v-model.trim="name" placeholder="Your name" />
-      <button :class="$style.submit" type="submit">Start a game!</button>
+      <button :class="$style.submit" type="button" v-on:click="submit">Start a game!</button>
 
       <input id="gameid" :class="$style.input" v-model.trim="gameid" placeholder="Game ID" />
-      <button :class="$style.submit" type="submit" v-on:click="join">Join a game!</button>
+      <button :class="$style.submit" type="button" v-on:click="join">Join a game!</button>
     </form>
   </div>
 </template>
@@ -22,12 +22,15 @@ export default defineComponent({
     const gameid = ref();
 
     const submit = async () => {
-      await store.dispatch('startLobby', { name: name.value });
+      console.log(`starting new game!`)
+      store.commit('startLobby', { name: name.value });
       router.push(store.getters.gameRoute);
     };
 
     const join = async () => {
-      router.push(store.getters.gameRoute);
+      console.log(`joining game ${gameid.value} ...`)
+      store.commit('joinLobby', { name: name.value, game: gameid.value });
+      router.push(`game/${gameid.value}`);
     }
 
     return {
