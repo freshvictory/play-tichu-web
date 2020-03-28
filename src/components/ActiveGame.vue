@@ -15,8 +15,9 @@
     <div v-if="seat" :class="$style.player">
       <Player :seat="seat" />
     </div>
-    <div v-if="showEndHandModal" :class="$style.modal">
-      <EndHandModal/>
+    <div v-if="showEndHandModal">
+      <div @click="toggleModal" :class="$style.shield"></div>
+      <EndHandModal :class="$style.modal"/>
     </div>
   </div>
 </template>
@@ -46,9 +47,14 @@ export default defineComponent({
     const showEndHandModal = computed(() => store.state.clientState.showEndHandModal);
     const seats = computed(() => store.getters.seats);
 
+    const toggleModal = () => {
+      store.commit('toggleEndHandModal');
+    };
+
     return {
       showEndHandModal,
       seats,
+      toggleModal
     };
   },
 });
@@ -93,5 +99,14 @@ export default defineComponent({
   left: 50%;
   top: 25%;
   transform: translate(-50%, -25%);
+}
+
+.shield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
 }
 </style>

@@ -27,7 +27,7 @@ export default defineComponent({
 
     const endHand = () => {
       store.commit('toggleEndHandModal');
-    }
+    };
 
     const take = async () => {
       await store.dispatch('take', { seat: props.seat, cards: currentTrick.value });
