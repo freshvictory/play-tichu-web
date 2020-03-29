@@ -20,7 +20,7 @@ export class Game {
 
   public readonly seats: { readonly [k in Seat]: Player };
 
-  public readonly cardsPassedTo: { readonly [k in Seat]: Set<Card> }
+  public cardsPassedTo: { readonly [k in Seat]: Set<Card> }
 
   public currentTrick: Trick;
 
@@ -37,12 +37,7 @@ export class Game {
   constructor(id: string, seats: { [k in Seat]: Player }) {
     this.id = id;
     this.seats = seats;
-    this.cardsPassedTo = {
-      north: new Set<Card>(),
-      south: new Set<Card>(),
-      east: new Set<Card>(),
-      west: new Set<Card>(),
-    };
+    this.cardsPassedTo = Game.emptyCardsPassed;
     this.currentTrick = [];
     this.dealCount = 0;
   }
@@ -64,6 +59,8 @@ export class Game {
     this.dealCount++;
     const seats = Object.keys(this.seats) as Seat[];
     const deal = Deck.deal(Tichu, ...seats);
+    this.currentTrick = []
+    this.cardsPassedTo = Game.emptyCardsPassed;
     
     for (const seat of seats) {
       const player = this.seats[seat];
@@ -136,5 +133,14 @@ export class Game {
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
     game.dealCount = data.dealCount;
     return game;
+  }
+
+  static get emptyCardsPassed(): {[k in Seat]: Set<Card>} {
+    return {
+      north: new Set<Card>(),
+      south: new Set<Card>(),
+      east: new Set<Card>(),
+      west: new Set<Card>(),
+    };
   }
 }
