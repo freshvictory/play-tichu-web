@@ -72,7 +72,10 @@ export class Game {
     }
   }
 
-  public pass(fromSeat: Seat, to: [Seat, Card][]) {
+  public pass(
+    fromSeat: Seat,
+    to: [[Seat, Card], [Seat, Card], [Seat, Card]]
+  ) {
     for(const pass of to) {
       const card = pass[1];
       this.seats[fromSeat].hand.delete(card)

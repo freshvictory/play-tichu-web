@@ -11,16 +11,6 @@ Vue.use(Vuex);
 
 const server = new Server(ApiBaseUrl);
 
-const inGame = new Game(
-  '1',
-  {
-    north: new Player('2', 'Justin'),
-    south: new Player('3', 'Lydia'),
-    east: new Player('4', 'Bailey'),
-    west: new Player('5', 'Nick'),
-  },
-);
-
 export type ClientState = {
   connected: boolean;
   host: boolean;
@@ -33,21 +23,23 @@ export type ClientState = {
 
 export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState; stateHistory: SerializedState[] }>({
   state: {
-    sharedState: { stage: 'none' },
-    // sharedState: { stage: 'lobby', stageState: new Lobby('Justin') },
-    // sharedState: { stage: 'game', stageState: inGame },    
+    sharedState: { stage: 'none' },   
     clientState: {
-      connected: false, pickedUpSecondDeal: false, showEndHandModal: false,
-      host: false, userId: undefined, name: undefined, gameId: undefined,
+      connected: false,
+      pickedUpSecondDeal: false,
+      showEndHandModal: false,
+      host: false,
+      userId: undefined,
+      name: undefined,
+      gameId: undefined,
       // host: true, userId: '5', name: 'Nick', gameId: '1',
     },
     stateHistory: []
   },
   mutations: {
-    setGame: (state, {gameId}: {gameId: string}) => {
+    setGame: (state, { gameId }: { gameId: string }) => {
       // See if gameId is truthy as a cheap check that it was actually set to something
-      if(gameId) state.clientState.gameId = gameId;
-      else state.clientState.gameId = undefined;
+      state.clientState.gameId = gameId || undefined;
     },
     connected: (state) => {
       state.clientState.connected = true;
@@ -168,12 +160,14 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     }
   },
   actions: {
-    connect: async ({ dispatch, commit, state }, { gameId }: {gameId: string}) => {
+    connect: async ({ dispatch, commit, state }, { gameId }: { gameId: string }) => {
       if(state.clientState.connected) return;
       if(state.clientState.userId === undefined) throw 'User ID is not set, cannot connect';
 
         const handlers = {
-          onReceiveState: (newState: {stage: string; stageState: SerializedGame}) => commit('deserialize', { newState }),
+          onReceiveState: (newState: { stage: string; stageState: SerializedGame }) => {
+            commit('deserialize', { newState })
+          },
           onRequestState: async () => { 
             if(state.clientState.host === true) {
               console.log("Received state request, sending because I'm the host");
@@ -191,17 +185,24 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         await server.joinGame(gameId, state.clientState.userId);
         commit('connected');
     },
-    takeSeat: async ({ dispatch, state }, {seat}: {seat: Seat}) => {
+    takeSeat: async ({ dispatch, state }, { seat }: { seat: Seat }) => {
       if(state.sharedState.stage === 'lobby') {        
         if(state.clientState.userId === undefined ||
           state.clientState.name === undefined ||
           state.sharedState.stageState.seats[seat] != undefined) return;
         
-        state.sharedState.stageState.join(seat, state.clientState.name, state.clientState.userId);
+        state.sharedState.stageState.join(
+          seat,
+          state.clientState.name,
+          state.clientState.userId
+        );
         await dispatch('sendState');
       }
     },    
-    ghostSeat: async ({dispatch, state}, {seat}: {seat: Seat}) => {
+    ghostSeat: async (
+      { dispatch, state },
+      { seat }: { seat: Seat }
+    ) => {
       if(state.sharedState.stage === 'lobby') {        
         if(state.sharedState.stageState.seats[seat] != undefined) return;
         
@@ -210,7 +211,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         await dispatch('sendState');
       }
     },
-    startGame: async({dispatch, state}) => {
+    startGame: async({ dispatch, state }) => {
       if (state.sharedState.stage === 'lobby') {
         if (state.sharedState.stageState.full) {
           console.log('Starting game...');
@@ -222,13 +223,15 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         }
       }
     },
-    passCards: async ({dispatch, state}, pass: {fromSeat: Seat; to: [Seat, Card][]}) => {
+    passCards: async (
+      { dispatch, state },
+      pass: { fromSeat: Seat; to: [[Seat, Card], [Seat, Card], [Seat, Card]] }) => {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.pass(pass.fromSeat, pass.to);
         await dispatch('sendState');
       }
     },
-    pickUpPassedCards: async ({dispatch, state}) => {
+    pickUpPassedCards: async ({ dispatch, state }) => {
       if (state.sharedState.stage === 'game' && state.sharedState.stageState.allCardsPassed) {
         state.sharedState.stageState.pickUpPassedCards();
         await dispatch('sendState');
@@ -246,27 +249,30 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         await dispatch('sendState');
       }
     },
-    deal: async ({dispatch, state}) => {
+    deal: async ({ dispatch, state }) => {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.deal();
         state.clientState.pickedUpSecondDeal = false;
         await dispatch('sendState');
       }
     },
-    rewind: async({state}) => {
+    rewind: async({ state }) => {
       // Discard the top of the history because that is the current state
       state.stateHistory.pop();
       // Then remove the previous history, because we'll get it back, and send it through pushState
       const lastState = state.stateHistory.pop();
       if(lastState != undefined) {
-        console.log('sending state for game '+ lastState.stageState.id)
+        console.log('sending state for game ' + lastState.stageState.id);
         await server.pushState(lastState.stageState.id, lastState);
       }
     },
-    sendState: async ({state}) => {
+    sendState: async ({ state }) => {
       if(state.sharedState.stage != 'none') {
-        console.log('sending state for game '+state.sharedState.stageState.id)
-        const serialized = {stage: state.sharedState.stage, stageState: state.sharedState.stageState.serialize()}
+        console.log('sending state for game ' + state.sharedState.stageState.id);
+        const serialized = {
+          stage: state.sharedState.stage,
+          stageState: state.sharedState.stageState.serialize()
+        };
         await server.pushState(state.sharedState.stageState.id, serialized);
       }
     }

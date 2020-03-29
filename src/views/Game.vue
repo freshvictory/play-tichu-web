@@ -13,14 +13,14 @@ import ActiveGame from '@/components/ActiveGame.vue';
 import Lobby from '@/components/Lobby.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
-import { Seat } from '../logic/game'
+import { Route } from 'vue-router';
 
 
 export default defineComponent({
   name: 'Game',
-  beforeRouteEnter: async (to: any, from: unknown, next: Function) => {
+  beforeRouteEnter: async (to: Route, from: unknown, next: Function) => {
     if (store.state.clientState.gameId === undefined) {
-      store.commit('setGame', {gameId: to.params.id});
+      store.commit('setGame', { gameId: to.params.id });
       next('/');
     } else {
       await store.dispatch('connect', { gameId: store.state.clientState.gameId });
