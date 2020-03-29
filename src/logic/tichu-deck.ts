@@ -18,8 +18,8 @@ const Tichu: Card[] = [
     serializedId: 0
   },
   {
-    id: 'pheonix',
-    name: 'Pheonix',
+    id: 'phoenix',
+    name: 'Phoenix',
     value: -25,
     rank: 15,
     suit: 'special',
