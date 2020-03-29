@@ -64,6 +64,7 @@ export class Game {
     
     for (const seat of seats) {
       const player = this.seats[seat];
+      player.secondDeal = new Set(deal[seat].slice(8));
       player.hand = new Set(deal[seat].sort((a, b) => a.rank - b.rank));
       player.tricks = [];
     }

@@ -2,9 +2,20 @@
   <div :class="$style.hand">
     <transition name="slide-fade">
       <button v-if="selected.length" @click="play" :class="$style.play">play</button>
+      <button v-if="hideDeal" @click="pickup" :class="$style.play">pick up</button>
     </transition>
+    <div v-if="hideDeal" :class="$style.hidden">
+      <div v-for="card of secondDeal" :key="card.id" :class="$style.hiddenCard">
+        <div :class="$style.detail"></div>
+      </div>
+    </div>
     <div :class="$style.list">
-      <label v-for="card in cards" :key="card.id" :class="$style['card-container']" :for="card.id">
+      <label
+        v-for="card of visibleHand"
+        :key="card.id"
+        :class="$style['card-container']"
+        :for="card.id"
+      >
         <input
           :id="card.id"
           :ref="card.id"
@@ -32,10 +43,19 @@ export default defineComponent({
   },
   props: {
     seat: { type: String as () => Seat, required: true },
-    cards: { type: (Set as unknown) as () => Set<Card>, required: true }
+    cards: { type: (Set as unknown) as () => Set<Card>, required: true },
+    secondDeal: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
   setup: (props, ctx) => {
     const selected = ref<Card[]>([]);
+    const hideDeal = computed(
+      () => !store.state.clientState.pickedUpSecondDeal
+    );
+    const visibleHand = computed(() =>
+      Array.from(props.cards).filter(
+        card => !hideDeal.value || !props.secondDeal.has(card)
+      )
+    );
 
     const toggle = (card: Card) => {
       const checkbox = (ctx as any).refs[card.id][0];
@@ -53,16 +73,23 @@ export default defineComponent({
       !!selected.value.find(c => c.id === card.id)
     );
 
-    const play = async () => {      
-      await store.dispatch('play', { seat: props.seat, cards: selected.value });
+    const play = async () => {
+      await store.dispatch("play", { seat: props.seat, cards: selected.value });
       selected.value = [];
     };
 
+    const pickup = () => {
+      store.commit("pickUpSecondDeal");
+    };
+
     return {
-      isSelected,
       selected,
+      hideDeal,
+      visibleHand,
       toggle,
-      play
+      isSelected,
+      play,
+      pickup
     };
   }
 });
@@ -77,6 +104,43 @@ export default defineComponent({
   gap: @px-grid-gap;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
+}
+
+.hidden {
+  display: flex;
+  z-index: -1;
+  position: absolute;
+  top: -57px;
+  justify-self: center;
+  height: 40px;
+  padding: 0px 20px;
+  overflow: hidden;
+
+  .hiddenCard {
+    --c-card: #333;
+    --c-card-light: #333;
+    --shadow-color: #ddd;
+
+    display: block;
+    height: 150px;
+    width: 100px;
+    position: relative;
+    margin-left: -30px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px 0 var(--shadow-color);
+    background-color: #fff;
+    color: var(--c-card);
+  }
+
+  .detail {
+    margin: 15px;
+    background-color: var(--c-card-light);
+    border-radius: 3px;
+    height: calc(100% - 2 * 15px);
+    width: calc(100% - 2 * 15px);
+  }
 }
 
 .play {
@@ -94,7 +158,7 @@ export default defineComponent({
   box-shadow: 2px 2px 6px 0 #ddd;
 
   &:hover {
-    transform: scale(1.1)
+    transform: scale(1.1);
   }
 }
 
@@ -104,7 +168,6 @@ export default defineComponent({
 }
 
 .card-container {
-
   &:focus-within {
     .card {
       box-shadow: 2px 2px 6px 0 #999;
@@ -119,7 +182,8 @@ export default defineComponent({
 </style>
 
 <style lang="less">
-.slide-fade-enter, .slide-fade-leave-to {
+.slide-fade-enter,
+.slide-fade-leave-to {
   opacity: 0;
 }
 </style>

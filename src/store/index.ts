@@ -33,13 +33,13 @@ export type ClientState = {
 
 export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState }>({
   state: {
-    sharedState: { stage: 'none' },
+    //sharedState: { stage: 'none' },
     // sharedState: { stage: 'lobby', stageState: new Lobby('Justin') },
-    //sharedState: { stage: 'game', stageState: inGame },    
+    sharedState: { stage: 'game', stageState: inGame },    
     clientState: {
       connected: false, pickedUpSecondDeal: false, showEndHandModal: false,
-      host: false, userId: undefined, name: undefined, gameId: undefined,
-      //host: true, userId: '5', name: 'Nick', gameId: '1',
+      //host: false, userId: undefined, name: undefined, gameId: undefined,
+      host: true, userId: '5', name: 'Nick', gameId: '1',
     }
   },
   mutations: {
@@ -80,6 +80,9 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     },
     toggleEndHandModal: (state) => {
       state.clientState.showEndHandModal = !state.clientState.showEndHandModal;
+    },
+    pickUpSecondDeal: (state) => {
+      state.clientState.pickedUpSecondDeal = true;
     },
     deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame | SerializedLobby} }) => {
       console.log('received new state for game '+newState.stageState.id);
@@ -241,6 +244,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     deal: async ({dispatch, state}) => {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.deal();
+        state.clientState.pickedUpSecondDeal = false;
         await dispatch('sendState');
       }
     },

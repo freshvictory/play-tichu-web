@@ -5,6 +5,7 @@ export type SerializedPlayer = {
   id: string;
   name: string;
   hand: number[];
+  secondDeal: number[];
   tricks: number[];
 }
 
@@ -14,6 +15,8 @@ export class Player {
   public name: string;
 
   public hand: Set<Card>;
+  
+  public secondDeal: Set<Card>;
 
   public tricks: Card[];
 
@@ -21,6 +24,7 @@ export class Player {
     this.id = id;
     this.name = name;
     this.hand = new Set([]);
+    this.secondDeal = new Set([]);
     this.tricks = [];
   }
 
@@ -29,6 +33,7 @@ export class Player {
       id: this.id,
       name: this.name,
       hand: Array.from(this.hand).map((card) => card.serializedId),
+      secondDeal: Array.from(this.secondDeal).map((card) => card.serializedId),
       tricks: this.tricks.map((card) => card.serializedId),
     }
   }
@@ -36,6 +41,7 @@ export class Player {
   static deserialize(data: SerializedPlayer) {
     const player = new Player(data.id, data.name);
     player.hand = new Set(data.hand.map((cardId) => Tichu[cardId]));
+    player.secondDeal = new Set(data.secondDeal.map((cardId) => Tichu[cardId]));
     player.tricks = data.tricks.map((id) => Tichu[id]);
     return player;
   }
