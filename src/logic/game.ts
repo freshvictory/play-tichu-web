@@ -72,14 +72,14 @@ export class Game {
     }
   }
 
-  public pass(
-    fromSeat: Seat,
-    to: [[Seat, Card], [Seat, Card], [Seat, Card]]
+  public pass<S extends Seat, T extends Exclude<Seat, S>>(
+    fromSeat: S,
+    to: Omit<SeatMap<Card>, S>
   ) {
-    for(const pass of to) {
-      const card = pass[1];
+    for(const seat in to) {
+      const card = to[seat as T];
       this.seats[fromSeat].hand.delete(card)
-      this.cardsPassedTo[pass[0]].add(card);
+      this.cardsPassedTo[seat as T].add(card);
     }
   }
 

@@ -75,16 +75,7 @@ export default defineComponent({
 
 .button {
   margin-left: 20px;
-  line-height: 1;
-
-  border: 2px dotted #efc940;
-  padding: 7px;
-  border-radius: 15px;
-
-  &:hover {
-    background-color: #efc940;
-    border-color: #fff;
-  }
+  .action;
 }
 
 .modal {

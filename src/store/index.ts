@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Seat, Game, Trick, SerializedGame } from '@/logic/game';
+import { Seat, Game, Trick, SerializedGame, SeatMap } from '@/logic/game';
 import { Lobby, SerializedLobby } from '@/logic/lobby';
 import { State as SharedState, SerializedState } from '@/logic/state';
 import { Player } from '@/logic/player';
@@ -226,11 +226,12 @@ export default new Vuex.Store<{
         }
       }
     },
-    passCards: async (
+    async passCards(
       { dispatch, state },
-      pass: { fromSeat: Seat; to: [[Seat, Card], [Seat, Card], [Seat, Card]] }) => {
+      pass: { fromSeat: Seat; to: SeatMap<Card> }) {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.pass(pass.fromSeat, pass.to);
+        state.clientState.handState.passedCards = true;
         await dispatch('sendState');
       }
     },

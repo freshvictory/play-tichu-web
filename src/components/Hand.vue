@@ -1,10 +1,13 @@
 <template>
   <div :class="$style.hand">
     <transition name="slide-fade">
-      <button v-if="selected.length" @click="play" :class="$style.play">play</button>
+      <button v-if="selected.length && !canPass" @click="play" :class="$style.play">play</button>
     </transition>
     <transition name="slide-fade">
       <button v-if="hideDeal" @click="pickup" :class="$style.play">pick up</button>
+    </transition>
+    <transition name="slide-fade">
+      <button v-if="canPass && availablePasses.length === 0" @click="pass" :class="$style.play">pass</button>
     </transition>
     <div v-if="hideDeal" :class="$style.hidden">
       <div v-for="card of secondDeal" :key="card.id" :class="$style.hiddenCard">
@@ -25,6 +28,29 @@
           :class="$style.checkbox"
           @change="toggle(card)"
         />
+        <transition name="play-slide">
+          <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
+            <div v-if="player = seatCardIsPassedTo(card)">
+              <span :class="$style['pass-player']">{{ getPlayer(player).name }}</span>
+              <button :class="$style.cancel" @click.prevent="cancelPass(card)">x</button>
+            </div>
+
+            <button
+              v-else-if="!passingCard"
+              :class="$style.pass"
+              @click.prevent="passingCard = card"
+            >
+            pass
+            </button>
+
+            <ol v-else-if="passingCard === card" :class="$style['pass-options']">
+              <li v-for="seat in availablePasses" :key="seat" :class="$style['pass-option']">
+                <button @click.prevent="passCardToSeat(card, seat)">{{ getPlayer(seat).name }}</button>
+              </li>
+              <li :class="$style.cancel"><button @click.prevent="cancelPass(card)">cancel</button></li>
+            </ol>
+          </div>
+        </transition>
         <Card :card="card" :class="$style.card" :selected="isSelected(card)" />
       </label>
     </div>
@@ -36,7 +62,7 @@ import CardComponent from "@/components/Card.vue";
 import { Card } from "@/logic/card";
 import { defineComponent, ref, computed } from "@vue/composition-api";
 import store from "../store";
-import { Seat } from "../logic/game";
+import { Seat, SeatMap } from "../logic/game";
 
 export default defineComponent({
   name: "Hand",
@@ -49,7 +75,106 @@ export default defineComponent({
     secondDeal: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
   setup: (props, ctx) => {
+
+
+    /**
+     * Selection
+     */
+
     const selected = ref<Card[]>([]);
+
+    const selectCard = (card: Card) => selected.value.push(card);
+    const deselectCard = (card: Card) => {
+      const index = selected.value.findIndex(c => c.id === card.id);
+      if (index >= 0) {
+        selected.value.splice(index, 1);
+      }
+    }
+
+    const isSelected = computed(() => (card: Card) =>
+      !!selected.value.find(c => c.id === card.id)
+    );
+
+
+    /**
+     * Passing
+     */
+
+    const passObject = { north: null, south: null, east: null, west: null };
+    delete passObject[props.seat];
+    const passes = ref<SeatMap<Card | null>>(passObject);
+    const availablePasses = computed(() => {
+      const available: Seat[] = [];
+      for (const seat in passes.value) {
+        if (!passes.value[seat as Seat]) {
+          available.push(seat as Seat);
+        }
+      }
+
+      return available;
+    });
+    const canPass = computed(() => {
+      const handState = store.state.clientState.handState;
+      return handState.pickedUpSecondDeal
+        && !handState.passedCards;
+    });
+    const passingCard = ref<Card | null>(null);
+
+    const passCardToSeat = (card: Card, seat: Seat) => {
+      passingCard.value = null;
+      passes.value[seat] = card;
+    };
+
+    const getPlayer = (seat: Seat) => store.getters.player(seat);
+
+    const seatCardIsPassedTo = (card: Card): Seat | undefined => {
+      for (const seat in passes.value) {
+        if (passes.value[seat as Seat]?.id === card.id) {
+          return seat as Seat;
+        }
+      }
+
+      return undefined;
+    };
+
+    const cancelPass = (card: Card) => {
+      deselectCard(card);
+      const checkbox = (ctx as any).refs[card.id][0];
+      if (checkbox) {
+        checkbox.checked = false;
+      }
+      passingCard.value = null;
+      const seat = seatCardIsPassedTo(card);
+      if (seat) {
+        passes.value[seat] = null;
+      }
+    };
+
+
+
+    const toggle = (card: Card) => {
+      const checkbox = (ctx as any).refs[card.id][0];
+      if (checkbox) {
+        if (checkbox.checked
+          && (!canPass
+            || (!passingCard.value
+              && (selected.value.length < 3)
+            )
+          )
+        ) {
+          deselectCard(card);
+          selectCard(card);
+        } else if(!(canPass && seatCardIsPassedTo(card))) {
+          deselectCard(card);
+        }
+      }
+    };
+
+
+    /**
+     * Two-stage deal
+     */
+
     const hideDeal = computed(
       () => !store.state.clientState.handState.pickedUpSecondDeal
     );
@@ -59,39 +184,36 @@ export default defineComponent({
       )
     );
 
-    const toggle = (card: Card) => {
-      const checkbox = (ctx as any).refs[card.id][0];
-      if (checkbox) {
-        if (checkbox.checked) {
-          selected.value.push(card);
-        } else {
-          const index = selected.value.findIndex(c => c.id === card.id);
-          selected.value.splice(index, 1);
-        }
-      }
+    const pickup = () => {
+      store.commit("pickUpSecondDeal");
     };
-
-    const isSelected = computed(() => (card: Card) =>
-      !!selected.value.find(c => c.id === card.id)
-    );
 
     const play = async () => {
       await store.dispatch("play", { seat: props.seat, cards: selected.value });
       selected.value = [];
     };
 
-    const pickup = () => {
-      store.commit("pickUpSecondDeal");
+    const pass = async () => {
+      await store.dispatch('passCards', { fromSeat: props.seat, to: passes.value });
     };
 
     return {
-      selected,
+      availablePasses,
+      canPass,
+      cancelPass,
       hideDeal,
-      visibleHand,
-      toggle,
       isSelected,
+      getPlayer,
+      pass,
+      passes,
+      passingCard,
+      passCardToSeat,
+      pickup,
       play,
-      pickup
+      seatCardIsPassedTo,
+      selected,
+      toggle,
+      visibleHand,
     };
   }
 });
@@ -180,6 +302,34 @@ export default defineComponent({
 .checkbox {
   opacity: 0;
   position: absolute;
+}
+
+.pass-actions {
+  position: absolute;
+  transform: translateY(calc(-100% - 30px));
+}
+
+.pass {
+  transform: translateX(50%);
+  .action;
+}
+
+.pass-options {
+  display: grid;
+}
+
+.pass-option {
+  .action;
+  margin-bottom: 10px;
+}
+
+.cancel {
+  .action(#ef5840);
+}
+
+.pass-player {
+  line-height: 1;
+  margin-right: 6px;
 }
 </style>
 

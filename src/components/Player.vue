@@ -1,6 +1,11 @@
 <template>
   <div :class="$style.player">
-    <Hand :class="$style.hand" :cards="player.hand" :secondDeal="player.secondDeal" :seat="seat"/>
+    <Hand
+      :class="$style.hand"
+      :cards="player.hand"
+      :secondDeal="player.secondDeal"
+      :seat="seat"
+    />
   </div>
 </template>
 

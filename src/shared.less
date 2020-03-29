@@ -13,3 +13,19 @@
     margin-right: calc(-1 * @px-overlap);
   }
 }
+
+.action(@color: #efc940) {
+  user-select: none;
+  line-height: 1;
+
+  border: 2px dotted @color;
+  padding: 7px;
+  border-radius: 15px;
+
+  background-color: #fff;
+
+  &:hover {
+    background-color: @color;
+    border-color: #fff;
+  }
+}
