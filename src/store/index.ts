@@ -97,6 +97,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         if(state.sharedState.stage === 'game' && 
           stageState.dealCount > state.sharedState.stageState.dealCount) { 
             state.clientState.pickedUpSecondDeal = false;
+            state.clientState.showEndHandModal = false;
           }
       }
       else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState as SerializedLobby)
