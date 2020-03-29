@@ -44,7 +44,9 @@ export default defineComponent({
     seat: { type: String },
   },
   setup: () => {
-    const showEndHandModal = computed(() => store.state.clientState.showEndHandModal);
+    const showEndHandModal = computed(() =>
+      store.state.clientState.handState.showEndHandModal
+    );
     const seats = computed(() => store.getters.seats);
 
     const toggleModal = () => {

@@ -51,7 +51,7 @@ export default defineComponent({
   setup: (props, ctx) => {
     const selected = ref<Card[]>([]);
     const hideDeal = computed(
-      () => !store.state.clientState.pickedUpSecondDeal
+      () => !store.state.clientState.handState.pickedUpSecondDeal
     );
     const visibleHand = computed(() =>
       Array.from(props.cards).filter(

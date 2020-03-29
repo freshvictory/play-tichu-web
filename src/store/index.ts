@@ -6,32 +6,30 @@ import { State as SharedState, SerializedState } from '@/logic/state';
 import { Player } from '@/logic/player';
 import { Card } from '@/logic/card';
 import { Server, ApiBaseUrl } from '@/server';
+import { ClientState } from '@/logic/client';
 
 Vue.use(Vuex);
 
 const server = new Server(ApiBaseUrl);
 
-export type ClientState = {
-  connected: boolean;
-  host: boolean;
-  userId: string | undefined;
-  name: string | undefined;
-  gameId: string | undefined;
-  pickedUpSecondDeal: boolean;
-  showEndHandModal: boolean;
-}
-
-export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState; stateHistory: SerializedState[] }>({
+export default new Vuex.Store<{
+  sharedState: SharedState;
+  clientState: ClientState;
+  stateHistory: SerializedState[];
+}>({
   state: {
     sharedState: { stage: 'none' },   
     clientState: {
       connected: false,
-      pickedUpSecondDeal: false,
-      showEndHandModal: false,
       host: false,
       userId: undefined,
       name: undefined,
       gameId: undefined,
+      handState: {
+        passedCards: false,
+        pickedUpSecondDeal: false,
+        showEndHandModal: false
+      }
       // host: true, userId: '5', name: 'Nick', gameId: '1',
     },
     stateHistory: []
@@ -72,10 +70,11 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       }
     },
     toggleEndHandModal: (state) => {
-      state.clientState.showEndHandModal = !state.clientState.showEndHandModal;
+      state.clientState.handState.showEndHandModal =
+        !state.clientState.handState.showEndHandModal;
     },
     pickUpSecondDeal: (state) => {
-      state.clientState.pickedUpSecondDeal = true;
+      state.clientState.handState.pickedUpSecondDeal = true;
     },
     deserialize: (state, { newState }: { newState: SerializedState }) => {
       console.log('received new state for game '+newState.stageState.id);
@@ -88,7 +87,11 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         stageState = Game.deserialize(newState.stageState as SerializedGame);
         if(state.sharedState.stage === 'game' && 
           stageState.dealCount > state.sharedState.stageState.dealCount) { 
-            state.clientState.pickedUpSecondDeal = false;
+            state.clientState.handState = {
+              passedCards: false,
+              pickedUpSecondDeal: false,
+              showEndHandModal: false
+            };
           }
       }
       else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState as SerializedLobby)
@@ -252,7 +255,11 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     deal: async ({ dispatch, state }) => {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.deal();
-        state.clientState.pickedUpSecondDeal = false;
+        state.clientState.handState = {
+          passedCards: false,
+          pickedUpSecondDeal: false,
+          showEndHandModal: false
+        };
         await dispatch('sendState');
       }
     },
