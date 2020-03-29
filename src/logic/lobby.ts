@@ -1,15 +1,15 @@
-import { Game, Seat } from './game';
+import { Game, Seat, SeatMap } from './game';
 import { Player, SerializedPlayer } from './player';
 
 export type SerializedLobby = {
   id: string;
-  seats: {[k in Seat]: SerializedPlayer | undefined};
+  seats: SeatMap<SerializedPlayer | undefined>;
 };
 
 export class Lobby {
   public readonly id: string;
 
-  public seats: { [k in Seat]: Player | undefined };
+  public seats: SeatMap<Player | undefined>;
 
   public get full(): boolean {
     return Object.values(this.seats).every((x) => !!x);
@@ -30,7 +30,7 @@ export class Lobby {
   }
 
   public start(): Game {
-    return new Game(this.id, this.seats as { [k in Seat]: Player });
+    return new Game(this.id, this.seats as SeatMap<Player>);
   }
   
   public serialize(): SerializedLobby {

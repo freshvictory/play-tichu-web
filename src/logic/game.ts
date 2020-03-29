@@ -5,12 +5,14 @@ import { Card } from './card';
 
 export type Seat = 'north' | 'south' | 'east' | 'west';
 
+export type SeatMap<T> = { [key in Seat]: T };
+
 export type Trick = [Seat, ReadonlyArray<Card>][];
 
 export type SerializedGame = {
   id: string;
-  seats: {[k in Seat]: SerializedPlayer};
-  cardsPassedTo: {[k in Seat]: number[] };
+  seats: SeatMap<SerializedPlayer>;
+  cardsPassedTo: SeatMap<number[]>;
   currentTrick: [string, number[]][];
   dealCount: number;
 };
@@ -18,9 +20,9 @@ export type SerializedGame = {
 export class Game {
   public readonly id: string;
 
-  public readonly seats: { readonly [k in Seat]: Player };
+  public readonly seats: SeatMap<Player>;
 
-  public cardsPassedTo: { readonly [k in Seat]: Set<Card> }
+  public cardsPassedTo: SeatMap<Set<Card>>;
 
   public currentTrick: Trick;
 
@@ -34,7 +36,7 @@ export class Game {
     return passCount === 12;
   }
 
-  constructor(id: string, seats: { [k in Seat]: Player }) {
+  constructor(id: string, seats: SeatMap<Player>) {
     this.id = id;
     this.seats = seats;
     this.cardsPassedTo = Game.emptyCardsPassed;
@@ -87,7 +89,7 @@ export class Game {
     }
   }
 
-  public score(): { [k in Seat]: { tricks: number; hand: number } } {
+  public score(): SeatMap<{ tricks: number; hand: number }> {
     const getTrickScore = (seat: Seat) => {
       return this.seats[seat]
         .tricks
@@ -136,7 +138,7 @@ export class Game {
     return game;
   }
 
-  static get emptyCardsPassed(): {[k in Seat]: Set<Card>} {
+  static get emptyCardsPassed(): SeatMap<Set<Card>> {
     return {
       north: new Set<Card>(),
       south: new Set<Card>(),
