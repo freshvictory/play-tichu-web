@@ -25,7 +25,6 @@
           />
         </div>
       </div>
-      <p v-if="chosenSeat">{{ name }}</p>
       <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">Sit Down</button>
       <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">Ghost</button>
     </form>

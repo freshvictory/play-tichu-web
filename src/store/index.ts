@@ -35,18 +35,19 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
   state: {
     sharedState: { stage: 'none' },
     // sharedState: { stage: 'lobby', stageState: new Lobby('Justin') },
-    //sharedState: { stage: 'game', stageState: inGame },
+    //sharedState: { stage: 'game', stageState: inGame },    
     clientState: {
-      connected: false,
-      host: false,
-      userId: undefined,
-      name: undefined,
-      gameId: undefined,
-      pickedUpSecondDeal: false,
-      showEndHandModal: false
+      connected: false, pickedUpSecondDeal: false, showEndHandModal: false,
+      host: false, userId: undefined, name: undefined, gameId: undefined,
+      //host: true, userId: '5', name: 'Nick', gameId: '1',
     }
   },
   mutations: {
+    setGame: (state, {gameId}: {gameId: string}) => {
+      // See if gameId is truthy as a cheap check that it was actually set to something
+      if(gameId) state.clientState.gameId = gameId;
+      else state.clientState.gameId = undefined;
+    },
     connected: (state) => {
       state.clientState.connected = true;
     },

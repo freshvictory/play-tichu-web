@@ -1,25 +1,32 @@
 <template>
   <div>
     <form :class="$style.form">
-      <input id="name" :class="$style.input" v-model.trim="name" placeholder="Your name" />
-      <button :class="$style.submit" type="button" v-on:click="submit">Start a game!</button>
+      <input id="name" :class="$style.input" v-model.trim="name" placeholder="Your Name" />
 
       <input id="gameid" :class="$style.input" v-model.trim="gameid" placeholder="Game ID" />
-      <button :class="$style.submit" type="button" v-on:click="join">Join a game!</button>
+      
+      <button v-if="gameid" :class="$style.submit" type="button" v-on:click="join">Join this game!</button>
+      <button v-else :class="$style.submit" type="button" v-on:click="submit">Start new game!</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import router from '../router';
 import store from '../store';
 
 export default defineComponent({
   name: 'NewGame',
   setup: () => {
-    const name = ref('Justin');
-    const gameid = ref();
+    const name = ref('');
+    const gameid = computed({
+      get: () => store.state.clientState.gameId, 
+      set: (newValue: string | undefined) => {
+          console.log('New game ID: '+newValue);
+          store.commit('setGame', {gameId: newValue});
+        } 
+    });
 
     const submit = async () => {
       console.log(`starting new game!`)
