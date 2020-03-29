@@ -33,13 +33,13 @@ export type ClientState = {
 
 export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState }>({
   state: {
-    //sharedState: { stage: 'none' },
+    sharedState: { stage: 'none' },
     // sharedState: { stage: 'lobby', stageState: new Lobby('Justin') },
-    sharedState: { stage: 'game', stageState: inGame },    
+    // sharedState: { stage: 'game', stageState: inGame },    
     clientState: {
       connected: false, pickedUpSecondDeal: false, showEndHandModal: false,
-      //host: false, userId: undefined, name: undefined, gameId: undefined,
-      host: true, userId: '5', name: 'Nick', gameId: '1',
+      host: false, userId: undefined, name: undefined, gameId: undefined,
+      // host: true, userId: '5', name: 'Nick', gameId: '1',
     }
   },
   mutations: {
