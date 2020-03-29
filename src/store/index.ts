@@ -213,6 +213,18 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         }
       }
     },
+    passCards: async ({dispatch, state}, pass: {fromSeat: Seat; to: [Seat, Card][]}) => {
+      if (state.sharedState.stage === 'game') {
+        state.sharedState.stageState.pass(pass.fromSeat, pass.to);
+        await dispatch('sendState');
+      }
+    },
+    pickUpPassedCards: async ({dispatch, state}) => {
+      if (state.sharedState.stage === 'game' && state.sharedState.stageState.allCardsPassed) {
+        state.sharedState.stageState.pickUpPassedCards();
+        await dispatch('sendState');
+      }
+    },
     play: async ({dispatch, state}, { seat, cards }: { seat: Seat; cards: Card[]}) => {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.play(seat, cards);

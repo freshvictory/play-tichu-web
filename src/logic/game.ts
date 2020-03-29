@@ -10,6 +10,7 @@ export type Trick = [Seat, ReadonlyArray<Card>][];
 export type SerializedGame = {
   id: string;
   seats: {[k in Seat]: SerializedPlayer};
+  cardsPassedTo: {[k in Seat]: number[] };
   currentTrick: [string, number[]][];
   dealCount: number;
 };
@@ -19,13 +20,29 @@ export class Game {
 
   public readonly seats: { readonly [k in Seat]: Player };
 
+  public readonly cardsPassedTo: { readonly [k in Seat]: Set<Card> }
+
   public currentTrick: Trick;
 
   public dealCount: number;
+  
+  public get allCardsPassed(): boolean {
+    let passCount = 0;
+    for(const seat in this.cardsPassedTo){
+      passCount += this.cardsPassedTo[seat as Seat].size;
+    }
+    return passCount === 12;
+  }
 
   constructor(id: string, seats: { [k in Seat]: Player }) {
     this.id = id;
     this.seats = seats;
+    this.cardsPassedTo = {
+      north: new Set<Card>(),
+      south: new Set<Card>(),
+      east: new Set<Card>(),
+      west: new Set<Card>(),
+    };
     this.currentTrick = [];
     this.dealCount = 0;
   }
@@ -55,6 +72,23 @@ export class Game {
     }
   }
 
+  public pass(fromSeat: Seat, to: [Seat, Card][]) {
+    for(const pass of to) {
+      const card = pass[1];
+      this.seats[fromSeat].hand.delete(card)
+      this.cardsPassedTo[pass[0]].add(card);
+    }
+  }
+
+  public pickUpPassedCards() {
+    for(const seat in this.seats) {
+      for(const card of this.cardsPassedTo[seat as Seat]) {
+        this.seats[seat as Seat].hand.add(card);
+      }
+      this.cardsPassedTo[seat as Seat].clear();
+    }
+  }
+
   public score(): { [k in Seat]: { tricks: number; hand: number } } {
     const getTrickScore = (seat: Seat) => {
       return this.seats[seat]
@@ -76,17 +110,15 @@ export class Game {
   }
 
   public serialize(): SerializedGame {
-    return {
-      id: this.id,
-      currentTrick: this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]),
-      dealCount: this.dealCount,
-      seats: {
-        north: this.seats.north.serialize(),
-        south: this.seats.south.serialize(),
-        east: this.seats.east.serialize(),
-        west: this.seats.west.serialize(),
-      }
+    const game = {seats: {}, cardsPassedTo: {}} as SerializedGame;
+    for(const seat in this.seats) {
+      game.seats[seat as Seat] = this.seats[seat as Seat].serialize();
+      game.cardsPassedTo[seat as Seat] = Array.from(this.cardsPassedTo[seat as Seat]).map((card) => card.serializedId);
     }
+    game.id = this.id;
+    game.currentTrick = this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]);
+    game.dealCount = this.dealCount;
+    return game;
   }
 
   static deserialize(data: SerializedGame) {
@@ -97,6 +129,10 @@ export class Game {
       west: Player.deserialize(data.seats.west),
     };
     const game = new Game(data.id, seats);
+    for(const seat in data.seats) {
+      data.cardsPassedTo[seat as Seat].forEach(cardId => 
+        game.cardsPassedTo[seat as Seat].add(Tichu[cardId]));
+    }
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
     game.dealCount = data.dealCount;
     return game;
