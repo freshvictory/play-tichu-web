@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { Seat, Game, Trick, SerializedGame } from '@/logic/game';
 import { Lobby, SerializedLobby } from '@/logic/lobby';
-import { State as SharedState } from '@/logic/state';
+import { State as SharedState, SerializedState } from '@/logic/state';
 import { Player } from '@/logic/player';
 import { Card } from '@/logic/card';
 import { Server, ApiBaseUrl } from '@/server';
@@ -31,7 +31,7 @@ export type ClientState = {
   showEndHandModal: boolean;
 }
 
-export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState }>({
+export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientState; stateHistory: SerializedState[] }>({
   state: {
     sharedState: { stage: 'none' },
     // sharedState: { stage: 'lobby', stageState: new Lobby('Justin') },
@@ -40,7 +40,8 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       connected: false, pickedUpSecondDeal: false, showEndHandModal: false,
       host: false, userId: undefined, name: undefined, gameId: undefined,
       // host: true, userId: '5', name: 'Nick', gameId: '1',
-    }
+    },
+    stateHistory: []
   },
   mutations: {
     setGame: (state, {gameId}: {gameId: string}) => {
@@ -84,7 +85,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
     pickUpSecondDeal: (state) => {
       state.clientState.pickedUpSecondDeal = true;
     },
-    deserialize: (state, { newState }: { newState: {stage: string; stageState: SerializedGame | SerializedLobby} }) => {
+    deserialize: (state, { newState }: { newState: SerializedState }) => {
       console.log('received new state for game '+newState.stageState.id);
 
       // Check the game ID to guard against old SignalR subscriptions
@@ -99,9 +100,13 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
           }
       }
       else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState as SerializedLobby)
-      else console.log('could not deserialize state for stage '+newState.stage)
+      else console.log('could not deserialize state for unknown stage')
       
-      if(stageState != null) state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
+      if(stageState != null) { 
+        state.stateHistory.push(newState);
+        console.log(`${state.stateHistory.length} items in history after push`);
+        state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
+      }
     }
   },
   getters: {
@@ -246,6 +251,16 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
         state.sharedState.stageState.deal();
         state.clientState.pickedUpSecondDeal = false;
         await dispatch('sendState');
+      }
+    },
+    rewind: async({state}) => {
+      // Discard the top of the history because that is the current state
+      state.stateHistory.pop();
+      // Then remove the previous history, because we'll get it back, and send it through pushState
+      const lastState = state.stateHistory.pop();
+      if(lastState != undefined) {
+        console.log('sending state for game '+ lastState.stageState.id)
+        await server.pushState(lastState.stageState.id, lastState);
       }
     },
     sendState: async ({state}) => {

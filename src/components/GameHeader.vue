@@ -8,6 +8,9 @@
       <li>
         <button :class="$style.button" @click="endHand">end hand</button>
       </li>
+      <li>
+        <button :class="$style.button" @click="rewind">rewind</button>
+      </li>
     </ul>
   </header>
 </template>
@@ -33,10 +36,15 @@ export default defineComponent({
       await store.dispatch('take', { seat: props.seat, cards: currentTrick.value });
     };
 
+    const rewind = async () => {
+      await store.dispatch('rewind');
+    };
+
     return {
       currentTrick,
       endHand,
-      take
+      take,
+      rewind
     }
   }
 });

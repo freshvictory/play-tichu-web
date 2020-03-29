@@ -2,6 +2,8 @@
   <div :class="$style.hand">
     <transition name="slide-fade">
       <button v-if="selected.length" @click="play" :class="$style.play">play</button>
+    </transition>
+    <transition name="slide-fade">
       <button v-if="hideDeal" @click="pickup" :class="$style.play">pick up</button>
     </transition>
     <div v-if="hideDeal" :class="$style.hidden">
