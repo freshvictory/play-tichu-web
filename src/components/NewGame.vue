@@ -1,9 +1,20 @@
 <template>
   <div>
     <form :class="$style.form">
-      <input id="name" :class="$style.input" v-model.trim="name" placeholder="Your Name" />
+      <input
+        id="name"
+        :class="$style.input"
+        v-model.trim="name"
+        placeholder="Your name"
+      />
 
-      <input id="gameid" :class="$style.input" v-model.trim="gameid" placeholder="Game ID" />
+      <input
+        id="gameid"
+        :class="$style.input"
+        v-model.trim="gameid"
+        placeholder="Game ID"
+        autocomplete="off"
+      />
       
       <button v-if="gameid" :class="$style.submit" type="button" v-on:click="join">Join this game!</button>
       <button v-else :class="$style.submit" type="button" v-on:click="submit">Start new game!</button>
