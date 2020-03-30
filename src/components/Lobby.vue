@@ -54,7 +54,7 @@ export default defineComponent({
     };
 
     const sit = () => {
-      console.log('Taking seat...');
+      console.log(`Taking seat as ${name.value}...`);
       store.dispatch('takeSeat', { seat: chosenSeat.value });
       chosenSeat.value = '';
     };

@@ -23,19 +23,19 @@ export default defineComponent({
     const gameid = computed({
       get: () => store.state.clientState.gameId, 
       set: (newValue: string | undefined) => {
-          console.log('New game ID: '+newValue);
           store.commit('setGame', {gameId: newValue});
         } 
     });
 
     const submit = async () => {
       console.log(`starting new game!`)
-      store.commit('startLobby', { name: name.value });
-      router.push(store.getters.gameRoute);
+      store.commit('startLobby');
+
+      store.commit('joinLobby', { name: name.value, game: gameid.value });
+      router.push(`game/${gameid.value}`);
     };
 
     const join = async () => {
-      console.log(`joining game ${gameid.value} ...`)
       store.commit('joinLobby', { name: name.value, game: gameid.value });
       router.push(`game/${gameid.value}`);
     }

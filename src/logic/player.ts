@@ -47,7 +47,7 @@ export class Player {
   }
 
   static getId(name: string): string {
-    const datepart = Date.now().toString(35).slice(-4).replace('0','z').toUpperCase();    
+    const datepart = Date.now().toString(35).slice(-8).replace('0','z').toUpperCase();    
     if(name === undefined || name.length < 1) { 
       return datepart; 
     }
@@ -55,7 +55,7 @@ export class Player {
     for(let i=1; i<name.length; i++){
       total *= name.charCodeAt(i);
     }
-    const namepart = total.toString(35).slice(-12).replace('0','z').toUpperCase();
+    const namepart = total.toString(35).slice(-8).replace('0','z').toUpperCase();
     return datepart.concat(namepart);
   }
 }
