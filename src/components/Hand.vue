@@ -195,6 +195,7 @@ export default defineComponent({
 
     const pass = async () => {
       await store.dispatch('passCards', { fromSeat: props.seat, to: passes.value });
+      selected.value = [];
     };
 
     return {
