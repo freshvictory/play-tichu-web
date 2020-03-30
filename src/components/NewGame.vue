@@ -44,18 +44,15 @@ export default defineComponent({
       console.log(`starting new game!`)
       store.commit('startLobby');
 
+      store.commit('makeUserId', {name: name.value});
       store.commit('joinLobby', { name: name.value, game: gameid.value });
-      router.push(`game/${gameid.value}`);
+      router.push({path:`game/${gameid.value}`, query: {userId: userid.value} });
     };
 
     const join = async () => {
-      if(name.value.toLowerCase() === 'ghost') {
-        router.push({path:`game/${gameid.value}`, query: {userId: Player.getId('')} });
-      }
-      else {
-        store.commit('joinLobby', {name: name.value, game: gameid.value})
-        router.push(`game/${gameid.value}`);
-      }
+      store.commit('makeUserId', {name: name.value});
+      store.commit('joinLobby', {name: name.value, game: gameid.value})
+      router.push({path:`game/${gameid.value}`, query: {userId: userid.value} });
     }
 
     return {

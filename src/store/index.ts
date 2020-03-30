@@ -42,6 +42,10 @@ export default new Vuex.Store<{
     setUserId: (state, { userId }: {userId: string}) => {
       state.clientState.userId = userId;
     },
+    makeUserId: (state, payload: { name: string }) => {
+      const userId = Player.getId(payload.name);
+      state.clientState.userId = userId;
+    }, 
     connected: (state) => {
       state.clientState.connected = true;
     },
@@ -53,16 +57,6 @@ export default new Vuex.Store<{
     },
     joinLobby: (state, payload: { name: string; game: string }) => {
       const ghostPlayer = payload.name.toLowerCase() === 'ghost';
-
-      if(state.clientState.userId === undefined) {
-        let userId = undefined;
-        if(!ghostPlayer) userId = localStorage.getItem('playtichu:userid') ?? undefined;
-        if(userId === undefined) userId = Player.getId(payload.name);
-
-        state.clientState.userId = userId;
-        if(!ghostPlayer) localStorage.setItem('playtichu:userid',userId);
-      }
-
       state.clientState.name = ghostPlayer ? state.clientState.userId : payload.name;
       state.clientState.gameId = payload.game;
     },

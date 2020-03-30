@@ -9,6 +9,9 @@
         <button :class="$style.button" @click="take">take trick</button>
       </li>
       <li>
+        <button :class="$style.button" @click="resync">resync</button>
+      </li>
+      <li>
         <button :class="$style.button" @click="rewind">rewind</button>
       </li>
       <li>
@@ -44,6 +47,10 @@ export default defineComponent({
       await store.dispatch('pickUpPassedCards');
     };
 
+    const resync = async () => {
+      await store.dispatch('sendState');
+    };
+
     const rewind = async () => {
       await store.dispatch('rewind');
     };
@@ -54,6 +61,7 @@ export default defineComponent({
       endHand,
       take,
       pickUp,
+      resync,
       rewind
     }
   }

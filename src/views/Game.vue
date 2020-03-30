@@ -19,15 +19,13 @@ import { Route } from 'vue-router';
 export default defineComponent({
   name: 'Game',
   beforeRouteEnter: async (to: Route, from: unknown, next: Function) => {
-    if(to.query.userId != undefined) {
+    if(store.state.clientState.userId === undefined && to.query.userId != undefined) {      
       store.commit('setUserId', { userId: to.query.userId });
       store.commit('joinLobby', {name: 'ghost', game: to.params.id})
-      await store.dispatch('connect', { gameId: store.state.clientState.gameId });
-      next();
     }
-    else if (store.state.clientState.gameId === undefined) {
+    if (store.state.clientState.gameId === undefined) {
       store.commit('setGame', { gameId: to.params.id });
-      next('/');
+      next('/');      
     } else {
       await store.dispatch('connect', { gameId: store.state.clientState.gameId });
       next();
