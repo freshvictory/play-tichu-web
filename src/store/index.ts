@@ -20,7 +20,7 @@ export default new Vuex.Store<{
   state: {
     sharedState: { stage: 'none' },   
     clientState: {
-      userId: localStorage.getItem('playtichu:userid') ?? undefined,
+      userId: undefined,
       connected: false,
       host: false,
       name: undefined,
@@ -39,6 +39,9 @@ export default new Vuex.Store<{
       // See if gameId is truthy as a cheap check that it was actually set to something
       state.clientState.gameId = gameId || undefined;
     },
+    setUserId: (state, { userId }: {userId: string}) => {
+      state.clientState.userId = userId;
+    },
     connected: (state) => {
       state.clientState.connected = true;
     },
@@ -49,12 +52,18 @@ export default new Vuex.Store<{
       state.clientState.gameId = lobby.id;
     },
     joinLobby: (state, payload: { name: string; game: string }) => {
+      const ghostPlayer = payload.name.toLowerCase() === 'ghost';
+
       if(state.clientState.userId === undefined) {
-        const userId = Player.getId(payload.name);
+        let userId = undefined;
+        if(!ghostPlayer) userId = localStorage.getItem('playtichu:userid') ?? undefined;
+        if(userId === undefined) userId = Player.getId(payload.name);
+
         state.clientState.userId = userId;
-        localStorage.setItem('playtichu:userid',userId);
+        if(!ghostPlayer) localStorage.setItem('playtichu:userid',userId);
       }
-      state.clientState.name = payload.name;
+
+      state.clientState.name = ghostPlayer ? state.clientState.userId : payload.name;
       state.clientState.gameId = payload.game;
     },
     newGame: (state) => {
@@ -134,6 +143,10 @@ export default new Vuex.Store<{
       }
 
       return [];
+    },
+    allCardsPassed: (state): boolean => {
+      if(state.sharedState.stage != 'game') return false;
+      return state.sharedState.stageState.allCardsPassed;
     },
     score: (state) => {
       if (state.sharedState.stage === 'game') {

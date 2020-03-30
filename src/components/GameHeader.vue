@@ -2,6 +2,9 @@
   <header :class="$style.header">
     <router-link to="/" title="Home"><h1 :class="$style.title">tichu</h1></router-link>
     <ul v-if="seat" :class="$style.options">
+      <li v-if="allCardsPassed">
+        <button :class="$style.button" @click="pickUp">everybody pick up</button>
+      </li>
       <li v-if="currentTrick.length">
         <button :class="$style.button" @click="take">take trick</button>
       </li>
@@ -27,6 +30,7 @@ export default defineComponent({
   },
   setup: (props) => {
     const currentTrick = computed(() => store.getters.currentTrick);
+    const allCardsPassed = computed(() => store.getters.allCardsPassed);
 
     const endHand = () => {
       store.commit('toggleEndHandModal');
@@ -36,14 +40,20 @@ export default defineComponent({
       await store.dispatch('take', { seat: props.seat, cards: currentTrick.value });
     };
 
+    const pickUp = async () => {
+      await store.dispatch('pickUpPassedCards');
+    };
+
     const rewind = async () => {
       await store.dispatch('rewind');
     };
 
     return {
       currentTrick,
+      allCardsPassed,
       endHand,
       take,
+      pickUp,
       rewind
     }
   }

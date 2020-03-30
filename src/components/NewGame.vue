@@ -26,6 +26,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import router from '../router';
 import store from '../store';
+import { Player } from '../logic/player';
 
 export default defineComponent({
   name: 'NewGame',
@@ -37,6 +38,7 @@ export default defineComponent({
           store.commit('setGame', {gameId: newValue});
         } 
     });
+    const userid = computed(() => store.state.clientState.userId);
 
     const submit = async () => {
       console.log(`starting new game!`)
@@ -47,8 +49,12 @@ export default defineComponent({
     };
 
     const join = async () => {
-      store.commit('joinLobby', { name: name.value, game: gameid.value });
-      router.push(`game/${gameid.value}`);
+      if(name.value.toLowerCase() === 'ghost') {
+        router.push({path:`game/${gameid.value}`, query: {userId: Player.getId('')} });
+      }
+      else {
+        router.push(`game/${gameid.value}`);
+      }
     }
 
     return {
