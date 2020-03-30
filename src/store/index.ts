@@ -21,10 +21,8 @@ export default new Vuex.Store<{
     sharedState: { stage: 'none' },   
     clientState: {
       userId: localStorage.getItem('playtichu:userid') ?? undefined,
-      }
       connected: false,
       host: false,
-      userId: undefined,
       name: undefined,
       gameId: undefined,
       handState: {
