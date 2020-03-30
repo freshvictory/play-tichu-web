@@ -53,6 +53,7 @@ export default defineComponent({
         router.push({path:`game/${gameid.value}`, query: {userId: Player.getId('')} });
       }
       else {
+        store.commit('joinLobby', {name: name.value, game: gameid.value})
         router.push(`game/${gameid.value}`);
       }
     }
