@@ -2,7 +2,7 @@
   <div :class="$style.view">
     <GameHeader :seat="seat"/>
     <ul :class="$style.players">
-      <li v-for="seat in ['north', 'east', 'south', 'west']" :key="seat" :class="$style.size">
+      <li v-for="seat in ['north', 'east', 'south', 'west']" :key="seat" :class="[$style.size, $style[seat]]">
         <span>
           <strong>{{ seats[seat].name }}</strong>:&nbsp;
           {{ seats[seat].hand.size }}&nbsp;|&nbsp;{{ seats[seat].tricks.length }}
@@ -73,14 +73,23 @@ export default defineComponent({
 }
 
 .players {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 
+    ". north ."
+    "west . east"
+    ". south .";
   justify-content: space-evenly;
   padding: 5px;
   margin-bottom: 5px;
   border: 2px dotted #ddd;
   border-radius: 20px;
   margin: 0 20px;
+  
+  .north { grid-area: north; }
+  .south { grid-area: south; }
+  .east { grid-area: east; }
+  .west { grid-area: west; }
 }
 
 .size {

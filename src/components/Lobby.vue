@@ -24,11 +24,13 @@
             :value="seat"
           />
         </div>
+        <div :class="$style.buttons">
+          <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">Sit Down</button>
+          <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">Ghost</button>
+          <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
+        </div>
       </div>
-      <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">Sit Down</button>
-      <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">Ghost</button>
     </form>
-    <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
   </div>
 </template>
 
@@ -93,8 +95,12 @@ export default defineComponent({
 
 .seats {
   display: grid;
-  grid-template-columns: 100px 100px;
-  grid-template-rows: 100px 100px;
+  grid-template-columns: 120px 120px 120px;
+  grid-template-rows: 120px 120px 120px;
+  grid-template-areas: 
+    ". north ."
+    "west buttons east"
+    ". south .";
   gap: @px-grid-gap;
 }
 
@@ -126,25 +132,10 @@ label {
   border-bottom: 2px dotted #fff;
 }
 
-.north {
-  grid-row: 1;
-  grid-column: 1;
-}
-
-.south {
-  grid-row: 2;
-  grid-column: 2;
-}
-
-.east {
-  grid-row: 1;
-  grid-column: 2;
-}
-
-.west {
-  grid-row: 2;
-  grid-column: 1;
-}
+.north { grid-area: north; }
+.south { grid-area: south; }
+.east { grid-area: east; }
+.west { grid-area: west; }
 
 .north, .south {
   --c-team: #ef5840;
@@ -152,6 +143,14 @@ label {
 
 .east, .west {
   --c-team: #efc940;
+}
+
+.buttons {
+  grid-area: buttons;
+  display: grid;
+  align-self: center;
+  grid-auto-rows: 32px;
+  gap: @px-grid-gap;
 }
 
 .join {
@@ -172,7 +171,6 @@ label {
 
 .start {
   color: #fff;
-  margin: 20px;
   padding: 10px 20px;
   background-color: #03a503;
   border-radius: 5px;
