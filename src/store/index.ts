@@ -53,7 +53,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       state.clientState.connected = true;
     },
     startLobby: (state, payload: { name: string }) => {
-      const userId = Lobby.getId();
+      const userId = Player.getId(payload.name);
       
       state.clientState.userId = userId;
       state.clientState.name = payload.name;
@@ -64,7 +64,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
       state.sharedState = { stage: 'lobby', stageState: lobby };
     },
     joinLobby: (state, payload: { name: string; game: string }) => {
-      const userId = Lobby.getId();      
+      const userId = Player.getId(payload.name);
       state.clientState.userId = userId;
       state.clientState.name = payload.name;
       state.clientState.gameId = payload.game;
@@ -184,6 +184,7 @@ export default new Vuex.Store<{ sharedState: SharedState; clientState: ClientSta
           }
         }
 
+        console.log(`Joining game ${gameId} as ${state.clientState.userId}...`);
         // Connect user to the server
         await server.start(state.clientState.userId, handlers);
         // Remove all subscriptions for this user, in case they are lingering

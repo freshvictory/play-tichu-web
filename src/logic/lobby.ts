@@ -55,6 +55,6 @@ export class Lobby {
   }
 
   static getId(): string {
-    return Math.ceil(Math.random() * 1000).toString();
+    return Date.now().toString(35).slice(-6).replace('0','z').toUpperCase();
   }
 }
