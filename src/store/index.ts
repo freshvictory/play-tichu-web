@@ -26,7 +26,6 @@ export default new Vuex.Store<{
       name: undefined,
       gameId: undefined,
       handState: {
-        passedCards: false,
         pickedUpSecondDeal: false,
         showEndHandModal: false
       }
@@ -87,9 +86,8 @@ export default new Vuex.Store<{
       if(newState.stage === 'game') { 
         stageState = Game.deserialize(newState.stageState as SerializedGame);
         if(state.sharedState.stage === 'game' && 
-          stageState.dealCount > state.sharedState.stageState.dealCount) { 
+          stageState.dealCount > state.sharedState.stageState.dealCount) {            
             state.clientState.handState = {
-              passedCards: false,
               pickedUpSecondDeal: false,
               showEndHandModal: false
             };
@@ -237,7 +235,6 @@ export default new Vuex.Store<{
       pass: { fromSeat: Seat; to: SeatMap<Card> }) {
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.pass(pass.fromSeat, pass.to);
-        state.clientState.handState.passedCards = true;
         await dispatch('sendState');
       }
     },
@@ -263,7 +260,6 @@ export default new Vuex.Store<{
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.deal();
         state.clientState.handState = {
-          passedCards: false,
           pickedUpSecondDeal: false,
           showEndHandModal: false
         };

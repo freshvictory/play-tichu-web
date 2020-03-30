@@ -68,6 +68,7 @@ export class Game {
       const player = this.seats[seat];
       player.secondDeal = new Set(deal[seat].slice(8));
       player.hand = new Set(deal[seat].sort((a, b) => a.rank - b.rank));
+      player.passedCards = false;
       player.tricks = [];
     }
   }
@@ -79,6 +80,7 @@ export class Game {
     for(const seat in to) {
       const card = to[seat as T];
       this.seats[fromSeat].hand.delete(card)
+      this.seats[fromSeat].passedCards = true;
       this.cardsPassedTo[seat as T].add(card);
     }
   }

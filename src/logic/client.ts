@@ -8,7 +8,6 @@ export type ClientState = {
 }
 
 export type HandState = {
-  passedCards: boolean;
   pickedUpSecondDeal: boolean;
   showEndHandModal: boolean;
 }

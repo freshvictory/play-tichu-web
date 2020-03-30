@@ -50,10 +50,10 @@
 
 <script lang="ts">
 import CardComponent from "@/components/Card.vue";
-import { Card } from "@/logic/card";
 import { defineComponent, ref, computed } from "@vue/composition-api";
 import store from "../store";
-import { Seat, SeatMap } from "../logic/game";
+import { Card } from "@/logic/card";
+import { Seat, SeatMap } from "@/logic/game";
 
 export default defineComponent({
   name: "Hand",
@@ -66,7 +66,7 @@ export default defineComponent({
     secondDeal: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
   setup: (props, ctx) => {
-
+    const getPlayer = (seat: Seat) => store.getters.player(seat);
 
     /**
      * Passing
@@ -87,8 +87,9 @@ export default defineComponent({
     });
     const canPass = computed(() => {
       const handState = store.state.clientState.handState;
+      const player = getPlayer(props.seat);
       return handState.pickedUpSecondDeal
-        && !handState.passedCards;
+        && !player.passedCards;
     });
     const passingCard = ref<Card | null>(null);
 
@@ -96,8 +97,6 @@ export default defineComponent({
       passingCard.value = null;
       passes.value[seat] = card;
     };
-
-    const getPlayer = (seat: Seat) => store.getters.player(seat);
 
     const seatCardIsPassedTo = (card: Card): Seat | undefined => {
       for (const seat in passes.value) {
