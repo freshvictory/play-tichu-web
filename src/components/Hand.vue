@@ -30,19 +30,12 @@
         />
         <transition name="play-slide">
           <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
-            <div v-if="player = seatCardIsPassedTo(card)">
-              <span :class="$style['pass-player']">{{ getPlayer(player).name }}</span>
+            <div v-if="player = seatCardIsPassedTo(card)" :class="$style['pass-player']">
+              <div :class="$style.passing">passing</div>
+              <span>{{ getPlayer(player).name }}</span>
             </div>
 
-            <button
-              v-else-if="!passingCard"
-              :class="$style.pass"
-              @click.prevent="passingCard = card"
-            >
-            pass
-            </button>
-
-            <ol v-else-if="passingCard === card" :class="$style['pass-options']">
+            <ol v-else-if="availablePasses.length" :class="$style['pass-options']">
               <li v-for="seat in availablePasses" :key="seat" :class="$style['pass-option']">
                 <button @click.prevent="passCardToSeat(card, seat)">{{ getPlayer(seat).name }}</button>
               </li>
@@ -174,11 +167,11 @@ export default defineComponent({
     );
 
     const pickup = () => {
-      store.commit("pickUpSecondDeal");
+      store.commit('pickUpSecondDeal');
     };
 
     const play = async () => {
-      await store.dispatch("play", { seat: props.seat, cards: selected.value });
+      await store.dispatch('play', { seat: props.seat, cards: selected.value });
       selected.value = [];
     };
 
@@ -186,6 +179,7 @@ export default defineComponent({
       await store.dispatch('passCards', { fromSeat: props.seat, to: passes.value });
       selected.value = [];
       passes.value = { north: null, south: null, east: null, west: null };
+      delete passes.value[props.seat];
       passingCard.value = null;
     };
 
@@ -281,9 +275,16 @@ export default defineComponent({
 }
 
 .card-container {
+  position: relative;
   &:focus-within {
     .card {
       box-shadow: 2px 2px 6px 0 #999;
+    }
+  }
+
+  &:hover {
+    .pass-player {
+      transform: translateY(-20px);
     }
   }
 }
@@ -295,21 +296,30 @@ export default defineComponent({
 
 .pass-actions {
   position: absolute;
-  transform: translateY(calc(-100% - 30px));
-}
-
-.pass {
-  transform: translateX(50%);
-  .action;
+  left: 50%;
+  transform: translate(-50%, calc(-100% - 25px));
+  pointer-events: none;
 }
 
 .pass-options {
   display: grid;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+  padding: 10px;
+  border: 2px dotted #ddd;
+  border-radius: 20px;
 }
 
 .pass-option {
-  .action;
-  margin-bottom: 10px;
+  pointer-events: auto;
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+    .action;
+  }
 }
 
 .cancel {
@@ -317,8 +327,17 @@ export default defineComponent({
 }
 
 .pass-player {
-  line-height: 1;
-  margin-right: 6px;
+  background-color: gold;
+  padding: 0 5px;
+  border-radius: 5px;
+
+  transform: translateY(calc(100% - 14px)) scaleX(0.8);
+  transition: transform 300ms;
+  will-change: transform;
+}
+
+.passing {
+  font-size: 14px;
 }
 </style>
 
