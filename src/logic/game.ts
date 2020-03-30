@@ -86,8 +86,12 @@ export class Game {
   public pickUpPassedCards() {
     for(const seat in this.seats) {
       for(const card of this.cardsPassedTo[seat as Seat]) {
-        this.seats[seat as Seat].hand.add(card);
+        this.seats[seat as Seat].hand.add(card)
       }
+      this.seats[seat as Seat].hand = new Set(
+        [...this.seats[seat as Seat].hand]
+        .sort((a, b) => a.rank - b.rank)
+      );
       this.cardsPassedTo[seat as Seat].clear();
     }
   }
