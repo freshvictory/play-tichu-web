@@ -20,6 +20,8 @@ export default new Vuex.Store<{
   state: {
     sharedState: { stage: 'none' },   
     clientState: {
+      userId: localStorage.getItem('playtichu:userid') ?? undefined,
+      }
       connected: false,
       host: false,
       userId: undefined,
@@ -42,20 +44,18 @@ export default new Vuex.Store<{
     connected: (state) => {
       state.clientState.connected = true;
     },
-    startLobby: (state, payload: { name: string }) => {
-      const userId = Lobby.getId();
-      
-      state.clientState.userId = userId;
-      state.clientState.name = payload.name;
+    startLobby: (state) => {
       state.clientState.host = true;
-
       const lobby = new Lobby(Lobby.getId());
-      state.clientState.gameId = lobby.id;
       state.sharedState = { stage: 'lobby', stageState: lobby };
+      state.clientState.gameId = lobby.id;
     },
     joinLobby: (state, payload: { name: string; game: string }) => {
-      const userId = Lobby.getId();      
-      state.clientState.userId = userId;
+      if(state.clientState.userId === undefined) {
+        const userId = Player.getId(payload.name);
+        state.clientState.userId = userId;
+        localStorage.setItem('playtichu:userid',userId);
+      }
       state.clientState.name = payload.name;
       state.clientState.gameId = payload.game;
     },
@@ -180,6 +180,7 @@ export default new Vuex.Store<{
           }
         }
 
+        console.log(`Joining game ${gameId} as ${state.clientState.userId}...`);
         // Connect user to the server
         await server.start(state.clientState.userId, handlers);
         // Remove all subscriptions for this user, in case they are lingering

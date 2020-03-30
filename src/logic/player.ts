@@ -45,4 +45,17 @@ export class Player {
     player.tricks = data.tricks.map((id) => Tichu[id]);
     return player;
   }
+
+  static getId(name: string): string {
+    const datepart = Date.now().toString(35).slice(-8).replace('0','z').toUpperCase();    
+    if(name === undefined || name.length < 1) { 
+      return datepart; 
+    }
+    let total = name.charCodeAt(0);
+    for(let i=1; i<name.length; i++){
+      total *= name.charCodeAt(i);
+    }
+    const namepart = total.toString(35).slice(-8).replace('0','z').toUpperCase();
+    return datepart.concat(namepart);
+  }
 }
