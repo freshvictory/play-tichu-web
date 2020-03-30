@@ -61,7 +61,7 @@ export default defineComponent({
       chosenSeat.value = '';
     };
     
-    const ghost = () => {
+  const ghost = () => {
       store.dispatch('ghostSeat', { seat: chosenSeat.value });
       chosenSeat.value = '';
     };
@@ -149,7 +149,6 @@ label {
   grid-area: buttons;
   display: grid;
   align-self: center;
-  grid-auto-rows: 32px;
   gap: @px-grid-gap;
 }
 

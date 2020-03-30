@@ -32,7 +32,6 @@
           <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
             <div v-if="player = seatCardIsPassedTo(card)">
               <span :class="$style['pass-player']">{{ getPlayer(player).name }}</span>
-              <button :class="$style.cancel" @click.prevent="cancelPass(card)">x</button>
             </div>
 
             <button
@@ -47,7 +46,6 @@
               <li v-for="seat in availablePasses" :key="seat" :class="$style['pass-option']">
                 <button @click.prevent="passCardToSeat(card, seat)">{{ getPlayer(seat).name }}</button>
               </li>
-              <li :class="$style.cancel"><button @click.prevent="cancelPass(card)">cancel</button></li>
             </ol>
           </div>
         </transition>
@@ -75,25 +73,6 @@ export default defineComponent({
     secondDeal: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
   setup: (props, ctx) => {
-
-
-    /**
-     * Selection
-     */
-
-    const selected = ref<Card[]>([]);
-
-    const selectCard = (card: Card) => selected.value.push(card);
-    const deselectCard = (card: Card) => {
-      const index = selected.value.findIndex(c => c.id === card.id);
-      if (index >= 0) {
-        selected.value.splice(index, 1);
-      }
-    }
-
-    const isSelected = computed(() => (card: Card) =>
-      !!selected.value.find(c => c.id === card.id)
-    );
 
 
     /**
@@ -138,11 +117,6 @@ export default defineComponent({
     };
 
     const cancelPass = (card: Card) => {
-      deselectCard(card);
-      const checkbox = (ctx as any).refs[card.id][0];
-      if (checkbox) {
-        checkbox.checked = false;
-      }
       passingCard.value = null;
       const seat = seatCardIsPassedTo(card);
       if (seat) {
@@ -151,20 +125,35 @@ export default defineComponent({
     };
 
 
+    /**
+     * Selection
+     */
+
+    const selected = ref<Card[]>([]);
+
+    const selectCard = (card: Card) => selected.value.push(card);
+    const deselectCard = (card: Card) => {
+      const index = selected.value.findIndex(c => c.id === card.id);
+      if (index >= 0) {
+        selected.value.splice(index, 1);
+        if (canPass) {
+          cancelPass(card);
+        }
+      }
+    }
+
+    const isSelected = computed(() => (card: Card) =>
+      !!selected.value.find(c => c.id === card.id)
+    );
+
+
 
     const toggle = (card: Card) => {
       const checkbox = (ctx as any).refs[card.id][0];
       if (checkbox) {
-        if (checkbox.checked
-          && (!canPass
-            || (!passingCard.value
-              && (selected.value.length < 3)
-            )
-          )
-        ) {
-          deselectCard(card);
+        if (checkbox.checked) {
           selectCard(card);
-        } else if(!(canPass && seatCardIsPassedTo(card))) {
+        } else {
           deselectCard(card);
         }
       }
@@ -196,6 +185,8 @@ export default defineComponent({
     const pass = async () => {
       await store.dispatch('passCards', { fromSeat: props.seat, to: passes.value });
       selected.value = [];
+      passes.value = { north: null, south: null, east: null, west: null };
+      passingCard.value = null;
     };
 
     return {
