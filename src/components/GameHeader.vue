@@ -9,10 +9,10 @@
         <button :class="$style.button" @click="take">take trick</button>
       </li>
       <li>
-        <button :class="$style.button" @click="endHand">end hand</button>
+        <button :class="$style.button" @click="rewind">rewind</button>
       </li>
       <li>
-        <button :class="$style.button" @click="rewind">rewind</button>
+        <button :class="$style.button" @click="endHand">end hand</button>
       </li>
     </ul>
   </header>
