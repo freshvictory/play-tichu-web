@@ -238,30 +238,27 @@ export default defineComponent({
   top: -57px;
   justify-self: center;
   height: 40px;
-  padding: 0px 20px;
+  padding: 0px 80px;
   overflow: hidden;
 
   .hiddenCard {
-    --c-card: #333;
-    --c-card-light: #333;
-    --shadow-color: #ddd;
-
     display: block;
     height: 150px;
     width: 100px;
     position: relative;
-    margin-left: -30px;
+    margin-left: -40px;
 
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-shadow: 2px 2px 6px 0 var(--shadow-color);
+    box-shadow: 2px 2px 6px 0 #ddd;
     background-color: #fff;
-    color: var(--c-card);
+    color: #333;
   }
 
   .detail {
     margin: 15px;
-    background-color: var(--c-card-light);
+    background: rgb(218,218,218);
+    background: linear-gradient(120deg, rgba(218,218,218,1) 10%, rgba(216,241,216,1) 20%, rgba(255,217,211,1) 30%, rgba(207,223,255,1) 40%, rgba(252,244,219,1) 50%);
     border-radius: 3px;
     height: calc(100% - 2 * 15px);
     width: calc(100% - 2 * 15px);
