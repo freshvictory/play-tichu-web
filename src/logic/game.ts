@@ -11,6 +11,7 @@ export type Trick = [Seat, ReadonlyArray<Card>][];
 
 export type SerializedGame = {
   id: string;
+  lastAction: string;
   seats: SeatMap<SerializedPlayer>;
   cardsPassedTo: SeatMap<number[]>;
   currentTrick: [string, number[]][];
@@ -19,6 +20,8 @@ export type SerializedGame = {
 
 export class Game {
   public readonly id: string;
+
+  public lastAction: string;
 
   public readonly seats: SeatMap<Player>;
 
@@ -38,6 +41,7 @@ export class Game {
 
   constructor(id: string, seats: SeatMap<Player>) {
     this.id = id;
+    this.lastAction = 'new game';
     this.seats = seats;
     this.cardsPassedTo = Game.emptyCardsPassed;
     this.currentTrick = [];
@@ -45,6 +49,7 @@ export class Game {
   }
 
   public play(seat: Seat, cards: Card[]): void {
+    this.lastAction = this.seats[seat].name + ' plays';
     for (const card of cards) {
       this.seats[seat].hand.delete(card);
     }
@@ -53,12 +58,14 @@ export class Game {
   }
 
   public take(seat: Seat, trick: Trick): void {
+    this.lastAction = this.seats[seat].name + ' takes trick';
     this.seats[seat].tricks.push(...trick.flatMap((play) => play[1]));
     this.currentTrick = [];
   }
 
   public deal(): void {
     this.dealCount++;
+    this.lastAction = 'new deal';
     const seats = Object.keys(this.seats) as Seat[];
     const deal = Deck.deal(Tichu, ...seats);
     this.currentTrick = []
@@ -77,6 +84,7 @@ export class Game {
     fromSeat: S,
     to: Omit<SeatMap<Card>, S>
   ) {
+    this.lastAction = 'pass from '+ this.seats[fromSeat].name;
     for(const seat in to) {
       const card = to[seat as T];
       this.seats[fromSeat].hand.delete(card)
@@ -86,6 +94,7 @@ export class Game {
   }
 
   public pickUpPassedCards() {
+    this.lastAction = 'everybody picks up';
     for(const seat in this.seats) {
       for(const card of this.cardsPassedTo[seat as Seat]) {
         this.seats[seat as Seat].hand.add(card)
@@ -119,7 +128,7 @@ export class Game {
   }
 
   public serialize(): SerializedGame {
-    const game = {seats: {}, cardsPassedTo: {}} as SerializedGame;
+    const game = {seats: {}, cardsPassedTo: {}, lastAction: this.lastAction} as SerializedGame;
     for(const seat in this.seats) {
       game.seats[seat as Seat] = this.seats[seat as Seat].serialize();
       game.cardsPassedTo[seat as Seat] = Array.from(this.cardsPassedTo[seat as Seat]).map((card) => card.serializedId);
@@ -144,6 +153,7 @@ export class Game {
     }
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
     game.dealCount = data.dealCount;
+    game.lastAction = data.lastAction; // ?
     return game;
   }
 

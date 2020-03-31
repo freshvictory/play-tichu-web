@@ -98,7 +98,6 @@ export default new Vuex.Store<{
       
       if(stageState != null) { 
         state.stateHistory.push(newState);
-        console.log(`${state.stateHistory.length} items in history after push`);
         state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
       }
     }
@@ -273,6 +272,7 @@ export default new Vuex.Store<{
       const lastState = state.stateHistory.pop();
       if(lastState != undefined) {
         console.log('sending state for game ' + lastState.stageState.id);
+        lastState.rewind = true;
         await server.pushState(lastState.stageState.id, lastState);
       }
     },
@@ -281,6 +281,7 @@ export default new Vuex.Store<{
         console.log('sending state for game ' + state.sharedState.stageState.id);
         const serialized = {
           stage: state.sharedState.stage,
+          rewind: false,
           stageState: state.sharedState.stageState.serialize()
         };
         await server.pushState(state.sharedState.stageState.id, serialized);

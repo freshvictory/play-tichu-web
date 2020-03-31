@@ -9,8 +9,13 @@
         </span>
       </li>
     </ul>
-    <div :class="$style.table">
-      <Table />
+    <div :class="$style.row">
+      <div :class="$style.table">
+        <Table />
+      </div>
+      <div :class="$style.history">
+        <History :actions="actionHistory" />
+      </div>
     </div>
     <div v-if="seat" :class="$style.player">
       <Player :seat="seat" />
@@ -27,6 +32,7 @@ import EndHandModal from '@/components/EndHandModal.vue';
 import GameHeader from '@/components/GameHeader.vue';
 import Table from '@/components/Table.vue';
 import Player from '@/components/Player.vue';
+import History from '@/components/History.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import { Game } from '../logic/game';
 import store from '../store';
@@ -38,6 +44,7 @@ export default defineComponent({
     GameHeader,
     Table,
     Player,
+    History
   },
   props: {
     game: { type: Game, required: true },
@@ -48,6 +55,7 @@ export default defineComponent({
       store.state.clientState.handState.showEndHandModal
     );
     const seats = computed(() => store.getters.seats);
+    const actionHistory = computed(() => store.state.stateHistory.filter(s => s.stage === 'game').reverse());
 
     const toggleModal = () => {
       store.commit('toggleEndHandModal');
@@ -83,6 +91,7 @@ export default defineComponent({
     return {
       showEndHandModal,
       seats,
+      actionHistory,
       toggleModal,
       seatArrangement
     };
@@ -124,9 +133,24 @@ export default defineComponent({
     margin: 0 10px;
 }
 
+.row {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+
 .table {
   overflow: auto;
   // padding-bottom: 300px;
+}
+
+.history {  
+  border: 2px dotted #ddd;
+  border-radius: 20px;
+  margin: 5px 20px 60px 5px;
+  padding: 10px;
+  // Height would ideally be calculated to resize, but it needs to be capped to prevent stretching the page
+  height: 400px;
+  overflow: hidden;
 }
 
 .player {
