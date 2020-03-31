@@ -2,10 +2,10 @@
   <div :class="$style.view">
     <GameHeader :seat="seat"/>
     <ul :class="$style.players">
-      <li v-for="seat in ['north', 'east', 'south', 'west']" :key="seat" :class="[$style.size, $style[seat]]">
+      <li v-for="loopSeat in ['north', 'east', 'south', 'west']" :key="loopSeat" :class="[$style.size, $style[seatArrangement[seat][loopSeat]]]">
         <span>
-          <strong>{{ seats[seat].name }}</strong>:&nbsp;
-          {{ seats[seat].hand.size }}&nbsp;|&nbsp;{{ seats[seat].tricks.length }}
+          <strong>{{ seats[loopSeat].name }}</strong>:&nbsp;
+          {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}
         </span>
       </li>
     </ul>
@@ -53,10 +53,38 @@ export default defineComponent({
       store.commit('toggleEndHandModal');
     };
 
+    const seatArrangement = {
+      south: {
+        north: 'north',
+        east: 'east',
+        south: 'south',
+        west: 'west'
+      },
+      west: {
+        north: 'east',
+        east: 'south',
+        south: 'west',
+        west: 'north'
+      },
+      north: {
+        north: 'south',
+        east: 'west',
+        south: 'north',
+        west: 'east'
+      },
+      east: {
+        north: 'west',
+        east: 'north',
+        south: 'east',
+        west: 'south'
+      }
+    };
+
     return {
       showEndHandModal,
       seats,
-      toggleModal
+      toggleModal,
+      seatArrangement
     };
   },
 });
