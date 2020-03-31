@@ -26,7 +26,8 @@
           :ref="card.id"
           type="checkbox"
           :class="$style.checkbox"
-          @change="toggle(card)"
+          v-model="selected"
+          :value="card.id"
         />
         <transition name="play-slide">
           <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
@@ -121,36 +122,11 @@ export default defineComponent({
      * Selection
      */
 
-    const selected = ref<Card[]>([]);
-
-    const selectCard = (card: Card) => selected.value.push(card);
-    const deselectCard = (card: Card) => {
-      const index = selected.value.findIndex(c => c.id === card.id);
-      if (index >= 0) {
-        selected.value.splice(index, 1);
-        if (canPass) {
-          cancelPass(card);
-        }
-      }
-    }
+    const selected = ref<string[]>([]);
 
     const isSelected = computed(() => (card: Card) =>
-      !!selected.value.find(c => c.id === card.id)
+      !!selected.value.find(c => c === card.id)
     );
-
-
-
-    const toggle = (card: Card) => {
-      const checkbox = (ctx as any).refs[card.id][0];
-      if (checkbox) {
-        if (checkbox.checked) {
-          selectCard(card);
-        } else {
-          deselectCard(card);
-        }
-      }
-    };
-
 
     /**
      * Two-stage deal
@@ -170,7 +146,9 @@ export default defineComponent({
     };
 
     const play = async () => {
-      await store.dispatch('play', { seat: props.seat, cards: selected.value });
+      const selectedCards: Card[] = [];
+      props.cards.forEach(card => { if(selected.value.findIndex(c => c === card.id) >= 0) selectedCards.push(card); });
+      await store.dispatch('play', { seat: props.seat, cards: selectedCards });
       selected.value = [];
     };
 
@@ -197,7 +175,6 @@ export default defineComponent({
       play,
       seatCardIsPassedTo,
       selected,
-      toggle,
       visibleHand,
     };
   }
