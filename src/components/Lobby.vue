@@ -30,6 +30,8 @@
           <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
         </div>
       </div>
+      <button type="button" :class="$style.submit" @click="copyLink">Copy Invite Link</button>
+      <!-- <button type="button" :class="$style.submit" @click="ghostTab">Ghost Tab =></button> -->
     </form>
   </div>
 </template>
@@ -39,13 +41,14 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import { Lobby } from '../logic/lobby';
 import store from '../store';
 import { Seat } from '../logic/game';
+import { Player } from '../logic/player';
 
 export default defineComponent({
   name: 'Lobby',
   props: {
     lobby: { type: Lobby, required: true }
   },
-  setup: () => {
+  setup: (props, ctx) => {
     const chosenSeat = ref('');
     const name = computed(() => store.state.clientState.name);
     const mySeat = computed(() => store.getters.mySeat);
@@ -61,12 +64,28 @@ export default defineComponent({
       chosenSeat.value = '';
     };
     
-  const ghost = () => {
+    const ghost = () => {
       store.dispatch('ghostSeat', { seat: chosenSeat.value });
       chosenSeat.value = '';
     };
 
     const start = () => store.dispatch('startGame');
+
+    const copyLink = async () => {
+      const gameId = store.state.clientState.gameId;
+      if(gameId === undefined) return;
+      const routeData = ctx.root.$router.resolve({name: 'Game', params: {id: gameId}});
+      const uri = `https://${location.host}${routeData.href}`;
+      await navigator.clipboard.writeText(uri);
+    };
+  
+    const ghostTab = () => {
+      const gameId = store.state.clientState.gameId;
+      if(gameId === undefined) return;
+      const ghostId = Player.getId('');
+      const routeData = ctx.root.$router.resolve({name: 'Game', query: {userId: ghostId}, params: {id: gameId}});
+      window.open(routeData.href,'_blank');
+    }
 
     return {
       sit,
@@ -76,6 +95,8 @@ export default defineComponent({
       name,
       mySeat,
       start,
+      copyLink,
+      ghostTab
     };
   },
 });
