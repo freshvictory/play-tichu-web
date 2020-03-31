@@ -4,7 +4,7 @@
     <ul :class="$style.players">
       <li v-for="loopSeat in ['north', 'east', 'south', 'west']" :key="loopSeat" :class="[$style.size, $style[seatArrangement[seat][loopSeat]]]">
         <span>
-          <strong>{{ seats[loopSeat].name }}</strong>:&nbsp;
+          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''">{{ seats[loopSeat].name }}</strong>:&nbsp;
           {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}
         </span>
       </li>
@@ -61,10 +61,10 @@ export default defineComponent({
         west: 'west'
       },
       west: {
-        north: 'east',
-        east: 'south',
-        south: 'west',
-        west: 'north'
+        north: 'west',
+        east: 'north',
+        south: 'east',
+        west: 'south'
       },
       north: {
         north: 'south',
@@ -73,10 +73,10 @@ export default defineComponent({
         west: 'east'
       },
       east: {
-        north: 'west',
-        east: 'north',
-        south: 'east',
-        west: 'south'
+        north: 'east',
+        east: 'south',
+        south: 'west',
+        west: 'north'
       }
     };
 
@@ -147,5 +147,9 @@ export default defineComponent({
   right: 0;
   bottom: 0;
   backdrop-filter: blur(5px);
+}
+
+.out {
+  color: lightgray;
 }
 </style>
