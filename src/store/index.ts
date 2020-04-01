@@ -265,6 +265,18 @@ export default new Vuex.Store<{
         await dispatch('sendState');
       }
     },
+    changeName: async ({dispatch, state}, {seat, name}: {seat: Seat; name: string}) => {
+      if(!name) return;
+      state.clientState.name = name;
+
+      if(state.sharedState.stage == 'none') return;
+      const player = state.sharedState.stageState.seats[seat];
+      if(player === undefined) return;
+
+      player.name = name;
+      if(state.sharedState.stage === 'game') state.sharedState.stageState.lastAction = 'name change';
+      await dispatch('sendState');
+    },
     rewind: async({ state }) => {
       // Discard the top of the history because that is the current state
       state.stateHistory.pop();
