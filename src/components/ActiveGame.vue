@@ -174,7 +174,7 @@ export default defineComponent({
   margin: 5px 20px 60px 5px;
   padding: 10px;
   // Height would ideally be calculated to resize, but it needs to be capped to prevent stretching the page
-  height: 400px;
+  height: 180px;
   overflow: hidden;
 }
 

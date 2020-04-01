@@ -153,17 +153,21 @@ label {
   border-bottom: 2px dotted #fff;
 }
 
-.north { grid-area: north; }
-.south { grid-area: south; }
-.east { grid-area: east; }
-.west { grid-area: west; }
-
-.north, .south {
-  --c-team: #ef5840;
+.north {
+  grid-area: north;
+  --c-team: @north-color;
 }
-
-.east, .west {
-  --c-team: #efc940;
+.south { 
+  grid-area: south;
+  --c-team: @south-color;
+}
+.east {
+  grid-area: east;
+  --c-team: @east-color;
+}
+.west { 
+  grid-area: west;
+  --c-team: @west-color;
 }
 
 .buttons {

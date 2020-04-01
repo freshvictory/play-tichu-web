@@ -3,7 +3,7 @@
     <span>History</span>
     <ul :class="$style.actions">
       <li v-for="(action, index) in actions" :key="index">
-        <strong v-if="action.rewind">rw: </strong>
+        <strong v-if="action.rewind">rw to: </strong>
         {{action.stageState.lastAction ? action.stageState.lastAction : 'unknown'}}
       </li>
     </ul>
