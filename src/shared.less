@@ -1,5 +1,17 @@
 @px-grid-gap: 15px;
 
+@north-color: #72E2E2;
+@south-color: #D2FA7E;
+@east-color: #A97FE7;
+@west-color: #FFD680;
+
+@north-gradient: linear-gradient(120deg, @north-color 30%, @south-color 50%, @north-color 70%);
+@south-gradient: linear-gradient(120deg, @south-color 30%, @north-color 50%, @south-color 70%);
+@east-gradient: linear-gradient(120deg, @west-color 30%, @east-color 50%, @west-color 70%);
+@west-gradient: linear-gradient(120deg, @east-color 30%, @west-color 50%, @east-color 70%);
+
+@card-back-gradient: linear-gradient(120deg, rgba(218,218,218,1) 10%, rgba(216,241,216,1) 20%, rgba(255,217,211,1) 30%, rgba(207,223,255,1) 40%, rgba(252,244,219,1) 50%);
+
 .card-grid(@px-overlap: 50px) {
   display: flex;
   flex-wrap: wrap;

@@ -7,7 +7,7 @@
           v-for="([seat, cards], i) in currentTrick"
           :key="i"
         >
-          <div :class="$style.name"><p>{{ name(seat) }}</p></div>
+          <div :class="[$style.name, $style[seat]]"><p>{{ name(seat) }}</p></div>
           <ol :class="$style.list">
             <li v-for="card in cards" :key="card.id" :class="$style.card" >
               <Card :card="card"/>
@@ -85,6 +85,24 @@ export default defineComponent({
   line-height: 1;
   text-align: right;
   background: #eee;
+  font-weight: bold;
+
+  &.north {
+    background: @north-color;
+    color: black;
+  }
+  &.south {
+    background: @south-color;
+    color: black;
+  }
+  &.east {
+    background: @east-color;
+    color: black;
+  }
+  &.west {
+    background: @west-color;
+    color: black;
+  }
 }
 
 .list {

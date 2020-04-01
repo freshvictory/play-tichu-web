@@ -3,9 +3,10 @@
     <GameHeader :seat="seat"/>
     <ul :class="$style.players">
       <li v-for="loopSeat in ['north', 'east', 'south', 'west']" :key="loopSeat" :class="[$style.size, $style[seatArrangement[seat][loopSeat]]]">
-        <span>
-          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''" @dblclick="log(seats[loopSeat].id)">{{ seats[loopSeat].name }}</strong>:&nbsp;
-          {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}
+        <span :class="$style.container">
+          <span :class="[$style.gem, $style[loopSeat]]"></span>
+          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''" @dblclick="log(seats[loopSeat].id)">{{ seats[loopSeat].name }}:</strong>
+          <span> {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}</span>
         </span>
       </li>
     </ul>
@@ -133,6 +134,25 @@ export default defineComponent({
   .east { grid-area: east; }
   .west { grid-area: west; }
 }
+
+.container {
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.gem {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      margin-right: 5px;
+
+      &.north { background: @north-color; }
+      &.south { background: @south-color; }
+      &.east { background: @east-color; }
+      &.west { background: @west-color; }
+    }
 
 .size {
     margin: 0 10px;

@@ -219,7 +219,7 @@ export default defineComponent({
   .detail {
     margin: 15px;
     background: rgb(218,218,218);
-    background: linear-gradient(120deg, rgba(218,218,218,1) 10%, rgba(216,241,216,1) 20%, rgba(255,217,211,1) 30%, rgba(207,223,255,1) 40%, rgba(252,244,219,1) 50%);
+    background: @card-back-gradient;
     border-radius: 3px;
     height: calc(100% - 2 * 15px);
     width: calc(100% - 2 * 15px);
