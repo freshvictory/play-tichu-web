@@ -4,7 +4,7 @@
     <ul :class="$style.players">
       <li v-for="loopSeat in ['north', 'east', 'south', 'west']" :key="loopSeat" :class="[$style.size, $style[seatArrangement[seat][loopSeat]]]">
         <span>
-          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''">{{ seats[loopSeat].name }}</strong>:&nbsp;
+          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''" @dblclick="log(seats[loopSeat].id)">{{ seats[loopSeat].name }}</strong>:&nbsp;
           {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}
         </span>
       </li>
@@ -61,6 +61,10 @@ export default defineComponent({
       store.commit('toggleEndHandModal');
     };
 
+    const log = (id: string) => {
+      console.log(id);
+    }
+
     const seatArrangement = {
       south: {
         north: 'north',
@@ -93,7 +97,8 @@ export default defineComponent({
       seats,
       actionHistory,
       toggleModal,
-      seatArrangement
+      seatArrangement,
+      log
     };
   },
 });
