@@ -98,7 +98,6 @@ export default new Vuex.Store<{
       
       if(stageState != null) { 
         state.stateHistory.push(newState);
-        console.log(`${state.stateHistory.length} items in history after push`);
         state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
       }
     }
@@ -266,6 +265,18 @@ export default new Vuex.Store<{
         await dispatch('sendState');
       }
     },
+    changeName: async ({dispatch, state}, {seat, name}: {seat: Seat; name: string}) => {
+      if(!name) return;
+      state.clientState.name = name;
+
+      if(state.sharedState.stage == 'none') return;
+      const player = state.sharedState.stageState.seats[seat];
+      if(player === undefined) return;
+
+      player.name = name;
+      if(state.sharedState.stage === 'game') state.sharedState.stageState.lastAction = 'name change';
+      await dispatch('sendState');
+    },
     rewind: async({ state }) => {
       // Discard the top of the history because that is the current state
       state.stateHistory.pop();
@@ -273,6 +284,7 @@ export default new Vuex.Store<{
       const lastState = state.stateHistory.pop();
       if(lastState != undefined) {
         console.log('sending state for game ' + lastState.stageState.id);
+        lastState.rewind = true;
         await server.pushState(lastState.stageState.id, lastState);
       }
     },
@@ -281,6 +293,7 @@ export default new Vuex.Store<{
         console.log('sending state for game ' + state.sharedState.stageState.id);
         const serialized = {
           stage: state.sharedState.stage,
+          rewind: false,
           stageState: state.sharedState.stageState.serialize()
         };
         await server.pushState(state.sharedState.stageState.id, serialized);

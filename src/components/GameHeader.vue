@@ -1,6 +1,7 @@
 <template>
   <header :class="$style.header">
     <router-link to="/" title="Home"><h1 :class="$style.title">tichu</h1></router-link>
+    <PlayerName :seat="seat" />
     <ul v-if="seat" :class="$style.options">
       <li v-if="allCardsPassed">
         <button :class="$style.button" @click="pickUp">everybody pick up</button>
@@ -22,12 +23,16 @@
 </template>
 
 <script lang="ts">
+import PlayerName from '../components/PlayerName.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
 import { Seat } from '../logic/game';
 
 export default defineComponent({
   name: 'GameHeader',
+  components: {
+    PlayerName
+  },
   props: {
     seat: { type: String as () => Seat, required: false },
   },
@@ -76,7 +81,7 @@ export default defineComponent({
   padding: @px-grid-gap;
   // padding-bottom: 0;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .title {
@@ -89,6 +94,8 @@ export default defineComponent({
 
 .options {
   display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
 .button {

@@ -3,14 +3,20 @@
     <GameHeader :seat="seat"/>
     <ul :class="$style.players">
       <li v-for="loopSeat in ['north', 'east', 'south', 'west']" :key="loopSeat" :class="[$style.size, $style[seatArrangement[seat][loopSeat]]]">
-        <span>
-          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''">{{ seats[loopSeat].name }}</strong>:&nbsp;
-          {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}
+        <span :class="$style.container">
+          <span :class="[$style.gem, $style[loopSeat]]"></span>
+          <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''" @dblclick="log(seats[loopSeat].id)">{{ seats[loopSeat].name }}:</strong>
+          <span> {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}</span>
         </span>
       </li>
     </ul>
-    <div :class="$style.table">
-      <Table />
+    <div :class="$style.row">
+      <div :class="$style.table">
+        <Table />
+      </div>
+      <div :class="$style.history">
+        <History :actions="actionHistory" />
+      </div>
     </div>
     <div v-if="seat" :class="$style.player">
       <Player :seat="seat" />
@@ -27,6 +33,7 @@ import EndHandModal from '@/components/EndHandModal.vue';
 import GameHeader from '@/components/GameHeader.vue';
 import Table from '@/components/Table.vue';
 import Player from '@/components/Player.vue';
+import History from '@/components/History.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import { Game } from '../logic/game';
 import store from '../store';
@@ -38,6 +45,7 @@ export default defineComponent({
     GameHeader,
     Table,
     Player,
+    History
   },
   props: {
     game: { type: Game, required: true },
@@ -48,10 +56,15 @@ export default defineComponent({
       store.state.clientState.handState.showEndHandModal
     );
     const seats = computed(() => store.getters.seats);
+    const actionHistory = computed(() => store.state.stateHistory.filter(s => s.stage === 'game').reverse());
 
     const toggleModal = () => {
       store.commit('toggleEndHandModal');
     };
+
+    const log = (id: string) => {
+      console.log(id);
+    }
 
     const seatArrangement = {
       south: {
@@ -83,8 +96,10 @@ export default defineComponent({
     return {
       showEndHandModal,
       seats,
+      actionHistory,
       toggleModal,
-      seatArrangement
+      seatArrangement,
+      log
     };
   },
 });
@@ -120,13 +135,47 @@ export default defineComponent({
   .west { grid-area: west; }
 }
 
+.container {
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.gem {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      margin-right: 5px;
+
+      &.north { background: @north-color; }
+      &.south { background: @south-color; }
+      &.east { background: @east-color; }
+      &.west { background: @west-color; }
+    }
+
 .size {
     margin: 0 10px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr max-content;
 }
 
 .table {
   overflow: auto;
   // padding-bottom: 300px;
+}
+
+.history {  
+  border: 2px dotted #ddd;
+  border-radius: 20px;
+  margin: 5px 20px 60px 5px;
+  padding: 10px;
+  // Height would ideally be calculated to resize, but it needs to be capped to prevent stretching the page
+  height: 400px;
+  overflow: hidden;
 }
 
 .player {
