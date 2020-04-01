@@ -28,6 +28,7 @@
           :class="$style.checkbox"
           v-model="selected"
           :value="card.id"
+          @change="toggle(card)"
         />
         <transition name="play-slide">
           <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
@@ -128,6 +129,15 @@ export default defineComponent({
       !!selected.value.find(c => c === card.id)
     );
 
+    const toggle = (card: Card) => {
+      const checkbox = (ctx as any).refs[card.id][0];
+      if (checkbox) {
+        if (!checkbox.checked) {
+          cancelPass(card);
+        }
+      }
+    };
+
     /**
      * Two-stage deal
      */
@@ -176,6 +186,7 @@ export default defineComponent({
       seatCardIsPassedTo,
       selected,
       visibleHand,
+      toggle
     };
   }
 });
