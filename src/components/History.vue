@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { SerializedState } from '../logic/state';
 
 export default defineComponent({
@@ -21,7 +21,6 @@ export default defineComponent({
     actions: { type: Array as () => SerializedState[], required: true }
   },
   setup: () => {
-
     return {
     };
   },

@@ -33,7 +33,6 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import router from '../router';
 import store from '../store';
-import { Player } from '../logic/player';
 
 export default defineComponent({
   name: 'NewGame',

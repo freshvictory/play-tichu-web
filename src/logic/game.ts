@@ -15,6 +15,8 @@ export type SerializedGame = {
   seats: SeatMap<SerializedPlayer>;
   cardsPassedTo: SeatMap<number[]>;
   currentTrick: [string, number[]][];
+  firstOut: Seat | undefined;
+  lastOut: Seat | undefined;
   dealCount: number;
   sequence: number;
 };
@@ -30,6 +32,9 @@ export class Game {
 
   public currentTrick: Trick;
 
+  public firstOut: Seat | undefined;
+  public lastOut: Seat | undefined;
+
   public dealCount: number;
   public sequence: number;
   
@@ -41,23 +46,47 @@ export class Game {
     return passCount === 12;
   }
 
+  public get playersOut(): number {
+    let out = 0;
+    for(const seat in this.seats) {      
+      if(this.seats[seat as Seat].hand.size === 0) out++;
+    }
+    return out;
+  }
+
   constructor(id: string, seats: SeatMap<Player>) {
     this.id = id;
     this.lastAction = 'new game';
     this.seats = seats;
     this.cardsPassedTo = Game.emptyCardsPassed;
     this.currentTrick = [];
+    this.firstOut = undefined;
+    this.lastOut = undefined;
     this.dealCount = 0;
     this.sequence = 0;
   }
 
   public play(seat: Seat, cards: Card[]): void {
+    if(cards.length === 0) return;
     this.lastAction = this.seats[seat].name + ' plays';
     for (const card of cards) {
       this.seats[seat].hand.delete(card);
     }
 
     this.currentTrick.push([seat, cards.sort((c0, c1) => c0.rank - c1.rank)]);
+
+    // Resolve any tracking of first and last player out
+    if(this.seats[seat].hand.size === 0) {
+      if(this.firstOut === undefined) this.firstOut = seat;
+      else if(this.lastOut === undefined && this.playersOut === 3){
+        for(const lastSeat in this.seats) {
+          if(this.seats[lastSeat as Seat].hand.size > 0) {
+            this.lastOut = lastSeat as Seat;
+            break;
+          }
+        }
+      }
+    }    
   }
 
   public take(seat: Seat, trick: Trick): void {
@@ -73,6 +102,8 @@ export class Game {
     const deal = Deck.deal(Tichu, ...seats);
     this.currentTrick = []
     this.cardsPassedTo = Game.emptyCardsPassed;
+    this.firstOut = undefined;
+    this.lastOut = undefined;
     
     for (const seat of seats) {
       const player = this.seats[seat];
@@ -138,6 +169,8 @@ export class Game {
     }
     game.id = this.id;
     game.currentTrick = this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]);
+    game.firstOut = this.firstOut;
+    game.lastOut = this.lastOut;
     game.dealCount = this.dealCount;
     game.sequence = this.sequence+1;
     return game;
@@ -156,6 +189,8 @@ export class Game {
         game.cardsPassedTo[seat as Seat].add(Tichu[cardId]));
     }
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
+    game.firstOut = data.firstOut;
+    game.lastOut = data.lastOut;
     game.dealCount = data.dealCount;
     game.sequence = data.sequence;
     game.lastAction = data.lastAction; // ?

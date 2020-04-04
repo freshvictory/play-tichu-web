@@ -5,6 +5,8 @@
       <li v-for="loopSeat in ['north', 'east', 'south', 'west']" :key="loopSeat" :class="[$style.size, $style[seatArrangement[seat][loopSeat]]]">
         <span :class="$style.container">
           <span :class="[$style.gem, $style[loopSeat]]"></span>
+          <span v-if="loopSeat === game.firstOut" :class="[$style.first, $style[loopSeat]]">1st</span>
+          <span v-if="loopSeat === game.lastOut" :class="[$style.last, $style[loopSeat]]">Last</span>
           <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''" @dblclick="log(seats[loopSeat].id)">{{ seats[loopSeat].name }}:</strong>
           <span> {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}</span>
         </span>
@@ -142,17 +144,26 @@ export default defineComponent({
 }
 
 .gem {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border-radius: 5px;
-      margin-right: 5px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  margin-right: 5px;
 
-      &.north { background: @north-color; }
-      &.south { background: @south-color; }
-      &.east { background: @east-color; }
-      &.west { background: @west-color; }
-    }
+  &.north { background: @north-color; }
+  &.south { background: @south-color; }
+  &.east { background: @east-color; }
+  &.west { background: @west-color; }
+}
+
+.first, .last {
+  font-weight: bold;
+  margin-right: 5px;
+  &.north { color: @north-color; }
+  &.south { color: @south-color; }
+  &.east { color: @east-color; }
+  &.west { color: @west-color; }
+}
 
 .size {
     margin: 0 10px;
