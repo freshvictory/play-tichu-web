@@ -20,6 +20,7 @@
         :key="card.id"
         :class="$style['card-container']"
         :for="card.id"
+        @contextmenu.prevent="rightclick(card)"
       >
         <input
           :id="card.id"
@@ -129,6 +130,11 @@ export default defineComponent({
       !!selected.value.find(c => c === card.id)
     );
 
+    const rightclick = (card: Card) => {
+      const checkbox = (ctx as any).refs[card.id][0];
+      checkbox.click();
+    }
+
     const toggle = (card: Card) => {
       const checkbox = (ctx as any).refs[card.id][0];
       if (checkbox) {
@@ -186,6 +192,7 @@ export default defineComponent({
       seatCardIsPassedTo,
       selected,
       visibleHand,
+      rightclick,
       toggle
     };
   }
