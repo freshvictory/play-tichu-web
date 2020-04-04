@@ -22,11 +22,13 @@ export type SerializedState = SerializedGameState | SerializedLobbyState;
 type SerializedGameState = {
   stage: 'game';
   rewind: boolean;
+  sender: string;
   stageState: SerializedGame;
 }
 
 type SerializedLobbyState = {
   stage: 'lobby';
   rewind: boolean;
+  sender: string;
   stageState: SerializedLobby;
 }

@@ -3,6 +3,7 @@
     <span>History</span>
     <ul :class="$style.actions">
       <li v-for="(action, index) in actions" :key="index">
+        {{action.stageState.sequence}}.
         <strong v-if="action.rewind">rw to: </strong>
         {{action.stageState.lastAction ? action.stageState.lastAction : 'unknown'}}
       </li>
@@ -36,7 +37,6 @@ export default defineComponent({
   flex-direction: column;
   align-items: flex-start;
 
-  list-style-type: square;
-  list-style-position: inside;
+  list-style-type: none;
 }
 </style>

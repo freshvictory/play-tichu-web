@@ -16,6 +16,7 @@ export type SerializedGame = {
   cardsPassedTo: SeatMap<number[]>;
   currentTrick: [string, number[]][];
   dealCount: number;
+  sequence: number;
 };
 
 export class Game {
@@ -30,6 +31,7 @@ export class Game {
   public currentTrick: Trick;
 
   public dealCount: number;
+  public sequence: number;
   
   public get allCardsPassed(): boolean {
     let passCount = 0;
@@ -46,6 +48,7 @@ export class Game {
     this.cardsPassedTo = Game.emptyCardsPassed;
     this.currentTrick = [];
     this.dealCount = 0;
+    this.sequence = 0;
   }
 
   public play(seat: Seat, cards: Card[]): void {
@@ -136,6 +139,7 @@ export class Game {
     game.id = this.id;
     game.currentTrick = this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]);
     game.dealCount = this.dealCount;
+    game.sequence = this.sequence+1;
     return game;
   }
 
@@ -153,6 +157,7 @@ export class Game {
     }
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
     game.dealCount = data.dealCount;
+    game.sequence = data.sequence;
     game.lastAction = data.lastAction; // ?
     return game;
   }
