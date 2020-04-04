@@ -3,21 +3,28 @@
     <form :class="$style.form">
       <input
         id="name"
-        :class="$style.input"
+        :class="[$style.input, !name ? $style.glow : '']"
         v-model.trim="name"
-        placeholder="Your name"
+        placeholder="Enter your name"
+        maxlength="20"
+        pattern="[A-Za-z0-9 '\-!]+"
       />
 
-      <input
-        id="gameid"
-        :class="$style.input"
-        v-model.trim="gameid"
-        placeholder="Game ID"
-        autocomplete="off"
-      />
-      
-      <button v-if="gameid" :class="$style.submit" type="button" v-on:click="join">Join this game!</button>
-      <button v-else :class="$style.submit" type="button" v-on:click="submit">Start new game!</button>
+      <div :class="$style.box">      
+        <button :class="$style.submit" type="button" v-on:click="submit" :disabled="!name" >Host new game!</button>
+      </div>
+
+      <div :class="$style.box">
+        <input
+          id="gameid"
+          :class="$style.input"
+          v-model.trim="gameid"
+          placeholder="Game ID"
+          autocomplete="off"
+          maxlength="20"
+        />
+        <button :class="$style.submit" type="button" v-on:click="join" :disabled="!name || !gameid">Join this game!</button>
+      </div>
     </form>
   </div>
 </template>
@@ -68,7 +75,17 @@ export default defineComponent({
 <style lang="less" module>
 @import '../shared.less';
 
+@submit-color: #efc940;
+
 .form {
+  display: grid;
+  gap: @px-grid-gap;
+}
+
+.box {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
   display: grid;
   gap: @px-grid-gap;
 }
@@ -78,11 +95,26 @@ export default defineComponent({
   padding: 5px;
   border: 1px solid #ddd;
   border-radius: 3px;
+
+  &:invalid {
+    border: 2px solid red;
+    box-shadow: 0 0 5px darkred;
+  }
+}
+
+.glow {
+  box-shadow: 0 0 10px @submit-color;
 }
 
 .submit {
   border-radius: 3px;
   padding: 5px;
-  background-color: #efc940;
+  background-color: @submit-color; 
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: lightgray;
+    color:gray;
+  }
 }
 </style>

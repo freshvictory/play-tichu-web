@@ -35,8 +35,5 @@ export default defineComponent({
   padding: @px-grid-gap;
   display: grid;
   row-gap: @px-grid-gap;
-
-  border: 1px solid #ddd;
-  border-radius: 5px;
 }
 </style>
