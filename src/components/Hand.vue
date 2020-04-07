@@ -24,6 +24,7 @@
       >
         <label :for="card.id">
         <input
+          v-if="card.suit != 'blank'"
           :id="card.id"
           :ref="card.id"
           type="checkbox"
@@ -135,6 +136,7 @@ export default defineComponent({
     );
 
     const rightclick = (card: Card) => {
+      if(card.suit === 'blank') return;
       const checkbox = (ctx as any).refs[card.id][0];
       checkbox.click();
     }
@@ -161,19 +163,40 @@ export default defineComponent({
       )
     );
     
+    let blankCounter = 0;
+    function createBlankCard(): Card {
+      blankCounter++;
+      return {
+        id: 'blank'+blankCounter,
+        name: '',
+        value: 0,
+        rank: -1,
+        suit: 'blank',
+        serializedId: -1
+      };
+    }
+
     const sortedHand = ref<Card[]>([]);
     watch(visibleHand, (newHand, oldHand) => {
       const newHandSet = new Set(newHand);
-      const newSortedHand: Card[] = [];
+      let newSortedHand: Card[] = [createBlankCard()];
+
       sortedHand.value.forEach((card) => {
         if(newHandSet.has(card)) {
           newSortedHand.push(card);
           newHandSet.delete(card);
         }
+        else if(card.suit === 'blank'){
+          newSortedHand.push(card);
+        }
       });
-      const remaining = Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
 
-      sortedHand.value = newSortedHand.concat(remaining);
+      // TODO: toggle default sort direction
+      const remaining = Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
+      newSortedHand = newSortedHand.concat(remaining);
+      newSortedHand.push(createBlankCard());
+
+      sortedHand.value = newSortedHand;
     });
 
     const pickup = () => {

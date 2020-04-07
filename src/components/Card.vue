@@ -6,7 +6,7 @@
       selected ? $style.selected : ''
     ]"
   >
-    <div :class="$style.detail">
+    <div :class="$style.detail" v-if="card.suit != 'blank'">
       <p :class="[$style.name, $style.top]">{{ card.name }}</p>
       <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
     </div>
@@ -81,6 +81,12 @@ export default defineComponent({
   &.special {
     --c-card: #efc940;
     --c-card-light: #fcf4db;
+  }
+
+  &.blank {
+    border: none;
+    background: none;
+    box-shadow: none;
   }
 }
 
