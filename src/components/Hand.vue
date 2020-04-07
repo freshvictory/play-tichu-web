@@ -14,14 +14,15 @@
         <div :class="$style.detail"></div>
       </div>
     </div>
-    <div :class="$style.list">
-      <label
-        v-for="card of visibleHand"
+    <draggable v-model="sortedHand" tag="div" :class="$style.list" :ghost-class="$style.ghost" :drag-class="$style.dragged">
+      <div
+        v-for="card of sortedHand"
         :key="card.id"
         :class="$style['card-container']"
         :for="card.id"
         @contextmenu.prevent="rightclick(card)"
       >
+        <label :for="card.id">
         <input
           :id="card.id"
           :ref="card.id"
@@ -46,14 +47,16 @@
           </div>
         </transition>
         <Card :card="card" :class="$style.card" :selected="isSelected(card)" />
-      </label>
-    </div>
+        </label>
+      </div>
+    </draggable>    
   </div>
 </template>
 
 <script lang="ts">
+import draggable from 'vuedraggable';
 import CardComponent from "@/components/Card.vue";
-import { defineComponent, ref, computed } from "@vue/composition-api";
+import { defineComponent, ref, computed, watch } from "@vue/composition-api";
 import store from "../store";
 import { Card } from "@/logic/card";
 import { Seat, SeatMap } from "@/logic/game";
@@ -61,7 +64,8 @@ import { Seat, SeatMap } from "@/logic/game";
 export default defineComponent({
   name: "Hand",
   components: {
-    Card: CardComponent
+    Card: CardComponent,
+    Draggable: draggable
   },
   props: {
     seat: { type: String as () => Seat, required: true },
@@ -176,6 +180,25 @@ export default defineComponent({
       passingCard.value = null;
     };
 
+    /**
+     *  Sorting
+     */
+
+    const sortedHand = ref<Card[]>([]);
+    watch(visibleHand, (newHand, oldHand) => {
+      const newHandSet = new Set(newHand);
+      const newSortedHand: Card[] = [];
+      sortedHand.value.forEach((card) => {
+        if(newHandSet.has(card)) {
+          newSortedHand.push(card);
+          newHandSet.delete(card);
+        }
+      });
+      const remaining = Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
+
+      sortedHand.value = newSortedHand.concat(remaining);
+    });
+
     return {
       availablePasses,
       canPass,
@@ -193,7 +216,9 @@ export default defineComponent({
       selected,
       visibleHand,
       rightclick,
-      toggle
+      toggle,      
+      sortedHand
+
     };
   }
 });
@@ -269,6 +294,7 @@ export default defineComponent({
 }
 
 .card-container {
+  display: inline-block;
   position: relative;
   &:focus-within {
     .card {
@@ -281,6 +307,15 @@ export default defineComponent({
       transform: translateY(-20px);
     }
   }
+
+  &.ghost .card {
+    border-color: gold;
+    margin-top: -20px;
+  }
+}
+
+.dragged {
+  opacity: 0;
 }
 
 .checkbox {
