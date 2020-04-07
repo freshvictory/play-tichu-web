@@ -160,30 +160,7 @@ export default defineComponent({
         card => !hideDeal.value || !props.secondDeal.has(card)
       )
     );
-
-    const pickup = () => {
-      store.commit('pickUpSecondDeal');
-    };
-
-    const play = async () => {
-      const selectedCards: Card[] = [];
-      props.cards.forEach(card => { if(selected.value.findIndex(c => c === card.id) >= 0) selectedCards.push(card); });
-      await store.dispatch('play', { seat: props.seat, cards: selectedCards });
-      selected.value = [];
-    };
-
-    const pass = async () => {
-      await store.dispatch('passCards', { fromSeat: props.seat, to: passes.value });
-      selected.value = [];
-      passes.value = { north: null, south: null, east: null, west: null };
-      delete passes.value[props.seat];
-      passingCard.value = null;
-    };
-
-    /**
-     *  Sorting
-     */
-
+    
     const sortedHand = ref<Card[]>([]);
     watch(visibleHand, (newHand, oldHand) => {
       const newHandSet = new Set(newHand);
@@ -198,6 +175,25 @@ export default defineComponent({
 
       sortedHand.value = newSortedHand.concat(remaining);
     });
+
+    const pickup = () => {
+      store.commit('pickUpSecondDeal');
+    };
+
+    const play = async () => {
+      const selectedCards: Card[] = [];            
+      sortedHand.value.forEach(card => { if(selected.value.findIndex(c => c === card.id) >= 0) selectedCards.push(card); });
+      await store.dispatch('play', { seat: props.seat, cards: selectedCards });
+      selected.value = [];
+    };
+
+    const pass = async () => {
+      await store.dispatch('passCards', { fromSeat: props.seat, to: passes.value });
+      selected.value = [];
+      passes.value = { north: null, south: null, east: null, west: null };
+      delete passes.value[props.seat];
+      passingCard.value = null;
+    };
 
     return {
       availablePasses,

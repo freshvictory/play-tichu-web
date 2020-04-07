@@ -9,7 +9,7 @@
         >
           <div :class="[$style.name, $style[seat]]"><p>{{ name(seat) }}</p></div>
           <ol :class="$style.list">
-            <li v-for="card in cards" :key="card.id" :class="$style.card" >
+            <li v-for="card in cards" :key="card.id" :class="[$style.card, $style['card-container']]" >
               <Card :card="card"/>
             </li>
           </ol>

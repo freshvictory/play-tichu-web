@@ -69,11 +69,17 @@ export class Game {
   public play(seat: Seat, cards: Card[]): void {
     if(cards.length === 0) return;
     this.lastAction = this.seats[seat].name + ' plays';
+    const hand = this.seats[seat].hand;
     for (const card of cards) {
-      this.seats[seat].hand.delete(card);
+      if(hand.has(card)) {
+        hand.delete(card);
+      }
+      else {
+        throw `Seat ${seat} does not have card ${card.id}`;
+      }
     }
 
-    this.currentTrick.push([seat, cards.sort((c0, c1) => c0.rank - c1.rank)]);
+    this.currentTrick.push([seat, cards]);
 
     // Resolve any tracking of first and last player out
     if(this.seats[seat].hand.size === 0) {
