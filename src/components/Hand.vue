@@ -181,12 +181,14 @@ export default defineComponent({
       const newHandSet = new Set(newHand);
       let newSortedHand: Card[] = [createBlankCard()];
 
-      sortedHand.value.forEach((card) => {
+      sortedHand.value.forEach((card, index) => {
         if(newHandSet.has(card)) {
           newSortedHand.push(card);
           newHandSet.delete(card);
         }
         else if(card.suit === 'blank'){
+          if(index == 0) return;
+          if(index == sortedHand.value.length-1) return;
           newSortedHand.push(card);
         }
       });
