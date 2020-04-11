@@ -1,3 +1,5 @@
+import { Card } from '@/logic/card';
+
 export type ClientState = {
   connected: boolean;
   host: boolean;
@@ -10,4 +12,5 @@ export type ClientState = {
 export type HandState = {
   pickedUpSecondDeal: boolean;
   showEndHandModal: boolean;
+  sortedHand: Card[];
 }

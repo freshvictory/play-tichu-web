@@ -14,7 +14,8 @@
         <div :class="$style.detail"></div>
       </div>
     </div>
-    <draggable v-model="sortedHand" tag="div" :class="$style.list" :ghost-class="$style.ghost" :drag-class="$style.dragged">
+    <draggable v-model="sortedHand" tag="div" :class="$style.list"
+      :ghost-class="$style.ghost" :drag-class="$style.dragged">
       <div
         v-for="card of sortedHand"
         :key="card.id"
@@ -162,6 +163,8 @@ export default defineComponent({
         card => !hideDeal.value || !props.secondDeal.has(card)
       )
     );
+
+    const sortReverse = ref(false);
     
     let blankCounter = 0;
     function createBlankCard(): Card {
@@ -176,10 +179,14 @@ export default defineComponent({
       };
     }
 
-    const sortedHand = ref<Card[]>([]);
+    const sortedHand = computed({
+      get: () => store.state.clientState.handState.sortedHand,
+      set: (value) => store.state.clientState.handState.sortedHand = value
+    });
     watch(visibleHand, (newHand, oldHand) => {
       const newHandSet = new Set(newHand);
-      let newSortedHand: Card[] = [createBlankCard()];
+      const addBlanks = sortedHand.value.length === 0;
+      let newSortedHand: Card[] = addBlanks ? [createBlankCard()] : [];
 
       sortedHand.value.forEach((card, index) => {
         if(newHandSet.has(card)) {
@@ -194,9 +201,11 @@ export default defineComponent({
       });
 
       // TODO: toggle default sort direction
-      const remaining = Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
+      const remaining = sortReverse.value 
+        ? Array.from(newHandSet).sort((a, b) => b.rank - a.rank)
+        : Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
       newSortedHand = newSortedHand.concat(remaining);
-      newSortedHand.push(createBlankCard());
+      if(addBlanks) newSortedHand.push(createBlankCard());
 
       sortedHand.value = newSortedHand;
     });
@@ -238,8 +247,7 @@ export default defineComponent({
       visibleHand,
       rightclick,
       toggle,      
-      sortedHand
-
+      sortedHand,
     };
   }
 });

@@ -27,7 +27,8 @@ export default new Vuex.Store<{
       gameId: undefined,
       handState: {
         pickedUpSecondDeal: false,
-        showEndHandModal: false
+        showEndHandModal: false,
+        sortedHand: []
       }
       // host: true, userId: '5', name: 'Nick', gameId: '1',
     },
@@ -89,7 +90,8 @@ export default new Vuex.Store<{
           stageState.dealCount > state.sharedState.stageState.dealCount) {            
             state.clientState.handState = {
               pickedUpSecondDeal: false,
-              showEndHandModal: false
+              showEndHandModal: false,
+              sortedHand: []
             };
           }
       }
@@ -260,7 +262,8 @@ export default new Vuex.Store<{
         state.sharedState.stageState.deal();
         state.clientState.handState = {
           pickedUpSecondDeal: false,
-          showEndHandModal: false
+          showEndHandModal: false,
+          sortedHand: []
         };
         await dispatch('sendState');
       }
