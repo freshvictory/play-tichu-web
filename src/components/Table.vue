@@ -7,8 +7,9 @@
           v-for="([seat, cards], i) in currentTrick"
           :key="i"
         >
-          <div :class="[$style.name, $style[seat]]"><p>{{ name(seat) }}</p></div>
+          <div :class="[$style.name, $style[seat]]"><p>{{ name(seat) }}</p></div>          
           <ol :class="$style.list">
+            <span v-if="cards.length > 5" :class="$style.cardCount">{{cards.length}} cards</span>
             <li v-for="card in cards" :key="card.id" :class="[$style.card, $style['card-container']]" >
               <Card :card="card"/>
             </li>
@@ -109,6 +110,13 @@ export default defineComponent({
   .card-grid;
   justify-content: center;
   margin: 15px 15px 15px 0;
+}
+
+.cardCount {
+  position: absolute;
+  top:-10px;
+  background:white;
+  padding: 2px;
 }
 </style>
 

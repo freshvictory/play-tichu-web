@@ -1,14 +1,19 @@
 <template>
   <div :class="$style.hand">
     <transition name="slide-fade">
-      <button v-if="selected.length && !canPass" @click="play" :class="$style.play">play</button>
+      <button v-if="selected.length && !canPass" @click="play" :class="[$style.button, $style.right]">play</button>
     </transition>
     <transition name="slide-fade">
-      <button v-if="hideDeal" @click="pickup" :class="$style.play">pick up</button>
+      <button v-if="hideDeal" @click="pickup" :class="[$style.button, $style.right]">pick up</button>
     </transition>
     <transition name="slide-fade">
-      <button v-if="canPass && availablePasses.length === 0" @click="pass" :class="$style.play">pass</button>
+      <button v-if="canPass && availablePasses.length === 0" @click="pass" :class="[$style.button, $style.right]">pass</button>
     </transition>
+    <button @click="sort" :class="[$style.button, $style.left]">sort</button>
+    <label :class="[$style.switch, $style.left]">
+      <input v-model="sortReverse" type="checkbox">
+      <span :class="$style.slider"></span>
+    </label>
     <div v-if="hideDeal" :class="$style.hidden">
       <div v-for="card of secondDeal" :key="card.id" :class="$style.hiddenCard">
         <div :class="$style.detail"></div>
@@ -166,37 +171,36 @@ export default defineComponent({
 
     const sortReverse = ref(false);
     
-    let blankCounter = 0;
-    function createBlankCard(): Card {
-      blankCounter++;
-      return {
-        id: 'blank'+blankCounter,
+    const minBlank: Card = {
+        id: 'blankMin',
         name: '',
         value: 0,
-        rank: -1,
+        rank: -100000,
         suit: 'blank',
         serializedId: -1
-      };
+    }
+
+    const maxBlank: Card = {
+        id: 'blankMax',
+        name: '',
+        value: 0,
+        rank: 100000,
+        suit: 'blank',
+        serializedId: -1
     }
 
     const sortedHand = computed({
       get: () => store.state.clientState.handState.sortedHand,
       set: (value) => store.state.clientState.handState.sortedHand = value
     });
-    watch(visibleHand, (newHand, oldHand) => {
-      const newHandSet = new Set(newHand);
-      const addBlanks = sortedHand.value.length === 0;
-      let newSortedHand: Card[] = addBlanks ? [createBlankCard()] : [];
+    watch(visibleHand, (newHand, oldHand) => {      
+      const newHandSet = new Set(newHand.concat(minBlank, maxBlank));
+      let newSortedHand: Card[] = [];
 
       sortedHand.value.forEach((card, index) => {
         if(newHandSet.has(card)) {
           newSortedHand.push(card);
           newHandSet.delete(card);
-        }
-        else if(card.suit === 'blank'){
-          if(index == 0) return;
-          if(index == sortedHand.value.length-1) return;
-          newSortedHand.push(card);
         }
       });
 
@@ -205,10 +209,16 @@ export default defineComponent({
         ? Array.from(newHandSet).sort((a, b) => b.rank - a.rank)
         : Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
       newSortedHand = newSortedHand.concat(remaining);
-      if(addBlanks) newSortedHand.push(createBlankCard());
 
       sortedHand.value = newSortedHand;
     });
+
+    const sort = () => {
+      const sorted = sortReverse.value 
+        ? Array.from(sortedHand.value).sort((a, b) => b.rank - a.rank)
+        : Array.from(sortedHand.value).sort((a, b) => a.rank - b.rank);
+      sortedHand.value = sorted;
+    }
 
     const pickup = () => {
       store.commit('pickUpSecondDeal');
@@ -246,8 +256,10 @@ export default defineComponent({
       selected,
       visibleHand,
       rightclick,
-      toggle,      
+      toggle,
       sortedHand,
+      sortReverse,
+      sort
     };
   }
 });
@@ -298,11 +310,10 @@ export default defineComponent({
   }
 }
 
-.play {
+.button {
   padding: 5px 20px;
   position: absolute;
   top: -57px;
-  justify-self: flex-end;
 
   will-change: transform;
   transform: scale(1);
@@ -314,6 +325,52 @@ export default defineComponent({
 
   &:hover {
     transform: scale(1.1);
+  }
+
+  &.right {
+    justify-self: flex-end;
+  }
+
+  &.left {
+    justify-self: flex-start;
+  }
+}
+
+.switch {
+  padding: 5px;
+  margin-left: 80px;
+  position: absolute;
+  top: -57px;
+
+  border-radius: 20px;
+  background-color: #efc940;
+  box-shadow: 2px 2px 6px 0 #ddd;
+
+  &.right {
+    justify-self: flex-end;
+  }
+
+  &.left {
+    justify-self: flex-start;
+  }
+
+  .slider {
+    display: inline-block;
+    width: 20px;
+    height:20px;
+    margin-left: 20px;
+    margin-right: 0px;
+    border-radius: 10px;
+    background-color: white;
+  }
+
+  input {
+    display: none;
+  }
+
+  input:checked + .slider {
+    margin-left: 0px;
+    margin-right: 20px;
   }
 }
 
