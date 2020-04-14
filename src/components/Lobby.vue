@@ -31,7 +31,7 @@
         </div>
       </div>
       <button type="button" :class="$style.submit" @click="copyLink">Copy Invite Link</button>
-      <button type="button" :class="$style.submit" @click="ghostTab">Ghost Tab =></button>
+      <!-- <button type="button" :class="$style.submit" @click="ghostTab">Ghost Tab =></button> -->
     </form>
   </div>
 </template>
