@@ -1,7 +1,12 @@
 <template>
   <header :class="$style.header">
-    <router-link to="/" title="Home"><h1 :class="$style.title">tichu</h1></router-link>
-    <PlayerName :seat="seat" />
+    <div :class="$style.flex">
+      <router-link to="/" title="Home"><h1 :class="$style.title">tichu</h1></router-link>
+      <PlayerName :seat="seat" />
+    </div>
+    <div :class="$style.suits">
+      <span v-for="suit in suits" :key="suit" :class="[$style.gem, $style[suit]]"></span>
+    </div>
     <ul v-if="seat" :class="$style.options">
       <li v-if="allCardsPassed">
         <button :class="$style.button" @click="pickUp">everybody pick up</button>
@@ -27,6 +32,7 @@ import PlayerName from '../components/PlayerName.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
 import { Seat } from '../logic/game';
+import { Suit } from '../logic/gems-deck';
 
 export default defineComponent({
   name: 'GameHeader',
@@ -39,6 +45,13 @@ export default defineComponent({
   setup: (props) => {
     const currentTrick = computed(() => store.getters.currentTrick);
     const allCardsPassed = computed(() => store.getters.allCardsPassed);
+
+    const suits = computed(() => {
+      if(store.state.sharedState.stage === 'none') return undefined;
+      if(store.state.sharedState.stageState.type === 'tichu') return [];
+      const gemsuits: Suit[] = ['green', 'blue', 'red', 'black'];
+      return gemsuits;
+    });
 
     const endHand = () => {
       store.commit('toggleEndHandModal');
@@ -63,6 +76,7 @@ export default defineComponent({
     return {
       currentTrick,
       allCardsPassed,
+      suits,
       endHand,
       take,
       pickUp,
@@ -77,11 +91,17 @@ export default defineComponent({
 @import '../shared.less';
 
 .header {
+  width: 100%;
   display: flex;
   padding: @px-grid-gap;
   // padding-bottom: 0;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
 }
 
 .title {
@@ -95,7 +115,7 @@ export default defineComponent({
 .options {
   display: flex;
   justify-content: flex-end;
-  flex-grow: 1;
+  align-items: center;
 }
 
 .button {
@@ -106,5 +126,23 @@ export default defineComponent({
 .modal {
   position: relative;
   top: 10px;
+}
+
+.suits {
+  display: flex;
+  justify-content: center;
+  flex-grow: 2;
+}
+
+.gem {
+  .suit-gem(12px);
+  margin:10px;
+  & + span::before {
+    content: '>';
+    font-weight: bold;
+    left:-26px;
+    position: relative;
+    top:3px;
+  }
 }
 </style>

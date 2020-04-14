@@ -17,6 +17,38 @@
 @suit-green: #00b82e;
 @suit-black: #444444;
 
+.suit-gem(@px-size: 8px) {
+  display: inline-block;
+  height: 0;
+  width: 0;
+  position: relative;
+  border: @px-size solid transparent;
+  border-bottom-color: var(--c-gem);
+  top: -@px-size;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left:-@px-size;
+    top:@px-size;
+    border:@px-size solid transparent;
+    border-top-color: var(--c-gem);
+  }
+
+  &.green {
+    --c-gem: @suit-green;
+  }  
+  &.blue {
+    --c-gem: @suit-blue;
+  }
+  &.red {
+    --c-gem: @suit-red;
+  }
+  &.black {
+    --c-gem: @suit-black;
+  }
+}
+
 .card-grid(@px-overlap: 50px) {
   display: flex;
   flex-wrap: wrap;
