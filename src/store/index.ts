@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { Seat, Game, Trick, SerializedGame, SeatMap } from '@/logic/game';
+import { Seat, Game, Trick, SerializedGame, SeatMap, GameType } from '@/logic/game';
 import { Lobby, SerializedLobby } from '@/logic/lobby';
 import { State as SharedState, SerializedState } from '@/logic/state';
 import { Player } from '@/logic/player';
@@ -49,9 +49,9 @@ export default new Vuex.Store<{
     connected: (state) => {
       state.clientState.connected = true;
     },
-    startLobby: (state) => {
+    startLobby: (state, {type}: {type: GameType}) => {
       state.clientState.host = true;
-      const lobby = new Lobby(Lobby.getId());
+      const lobby = new Lobby(Lobby.getId(), type);
       state.sharedState = { stage: 'lobby', stageState: lobby };
       state.clientState.gameId = lobby.id;
     },
@@ -67,7 +67,7 @@ export default new Vuex.Store<{
           players[player as Seat].hand = new Set([]);
           players[player as Seat].tricks = [];
         }
-        state.sharedState.stageState = new Game(state.sharedState.stageState.id, players);
+        state.sharedState.stageState = new Game(state.sharedState.stageState.id, 'tichu', players);
       }
     },
     toggleEndHandModal: (state) => {
@@ -78,7 +78,7 @@ export default new Vuex.Store<{
       state.clientState.handState.pickedUpSecondDeal = true;
     },
     deserialize: (state, { newState }: { newState: SerializedState }) => {
-      console.log(`received new state ${newState.stage === 'game' ? newState.stageState.sequence : 0} for game ${newState.stageState.id} from ${newState.sender}`);
+      console.log(`received new state ${newState.stage === 'game' ? newState.stageState.sequence : 0} for ${newState.stageState.type} game ${newState.stageState.id} from ${newState.sender}`);
 
       // Check the game ID to guard against old SignalR subscriptions
       if(state.clientState.gameId != newState.stageState.id) return;
@@ -89,7 +89,8 @@ export default new Vuex.Store<{
         if(state.sharedState.stage === 'game' && 
           stageState.dealCount > state.sharedState.stageState.dealCount) {            
             state.clientState.handState = {
-              pickedUpSecondDeal: false,
+              // TODO: maybe invert pickedUpSecondDeal so the condition is simpler for other games
+              pickedUpSecondDeal: stageState.type === 'tichu' ? false : true,
               showEndHandModal: false,
               sortedHand: []
             };
@@ -261,7 +262,7 @@ export default new Vuex.Store<{
       if (state.sharedState.stage === 'game') {
         state.sharedState.stageState.deal();
         state.clientState.handState = {
-          pickedUpSecondDeal: false,
+          pickedUpSecondDeal: state.sharedState.stageState.type === 'tichu' ? false : true,
           showEndHandModal: false,
           sortedHand: []
         };

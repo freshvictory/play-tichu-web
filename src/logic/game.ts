@@ -1,7 +1,7 @@
 import { Player, SerializedPlayer } from './player';
 import { Deck } from './deck';
-import { Tichu } from './tichu-deck';
 import { Card } from './card';
+import { Suit } from './gems-deck';
 
 export type Seat = 'north' | 'south' | 'east' | 'west';
 
@@ -9,20 +9,26 @@ export type SeatMap<T> = { [key in Seat]: T };
 
 export type Trick = [Seat, ReadonlyArray<Card>][];
 
+export type GameType = 'tichu' | 'gems';
+
+export type Score = { tricks: number; hand: number; gems: Suit[]; bonus: number | undefined };
+
 export type SerializedGame = {
   id: string;
+  type: GameType;
   lastAction: string;
   seats: SeatMap<SerializedPlayer>;
   cardsPassedTo: SeatMap<number[]>;
   currentTrick: [string, number[]][];
-  firstOut: Seat | undefined;
-  lastOut: Seat | undefined;
+  out: Seat[];
   dealCount: number;
   sequence: number;
 };
 
 export class Game {
   public readonly id: string;
+
+  public readonly type: GameType;
 
   public lastAction: string;
 
@@ -32,8 +38,7 @@ export class Game {
 
   public currentTrick: Trick;
 
-  public firstOut: Seat | undefined;
-  public lastOut: Seat | undefined;
+  public out: Seat[];
 
   public dealCount: number;
   public sequence: number;
@@ -46,6 +51,18 @@ export class Game {
     return passCount === 12;
   }
 
+  public get firstOut(): Seat | undefined {
+    return this.out[0];
+  }
+  
+  public get secondOut(): Seat | undefined {
+    return this.out[1];
+  }
+  
+  public get lastOut(): Seat | undefined {
+    return this.out[3];
+  }
+
   public get playersOut(): number {
     let out = 0;
     for(const seat in this.seats) {      
@@ -54,20 +71,22 @@ export class Game {
     return out;
   }
 
-  constructor(id: string, seats: SeatMap<Player>) {
+  constructor(id: string, type: GameType, seats: SeatMap<Player>) {
     this.id = id;
+    this.type = type;
     this.lastAction = 'new game';
     this.seats = seats;
     this.cardsPassedTo = Game.emptyCardsPassed;
     this.currentTrick = [];
-    this.firstOut = undefined;
-    this.lastOut = undefined;
+    this.out = [];
     this.dealCount = 0;
     this.sequence = 0;
   }
 
   public play(seat: Seat, cards: Card[]): void {
     if(cards.length === 0) return;
+    if(this.seats[seat].hand.size === 0) return;
+
     this.lastAction = this.seats[seat].name + ' plays';
     const hand = this.seats[seat].hand;
     for (const card of cards) {
@@ -83,11 +102,11 @@ export class Game {
 
     // Resolve any tracking of first and last player out
     if(this.seats[seat].hand.size === 0) {
-      if(this.firstOut === undefined) this.firstOut = seat;
-      else if(this.lastOut === undefined && this.playersOut === 3){
+      this.out.push(seat);
+      if(this.out.length === 3) {
         for(const lastSeat in this.seats) {
           if(this.seats[lastSeat as Seat].hand.size > 0) {
-            this.lastOut = lastSeat as Seat;
+            this.out.push(lastSeat as Seat);
             break;
           }
         }
@@ -105,16 +124,25 @@ export class Game {
     this.dealCount++;
     this.lastAction = 'new deal';
     const seats = Object.keys(this.seats) as Seat[];
-    const deal = Deck.deal(Tichu, ...seats);
+    const deal = Deck.dealByType(this.type, ...seats);
     this.currentTrick = []
     this.cardsPassedTo = Game.emptyCardsPassed;
-    this.firstOut = undefined;
-    this.lastOut = undefined;
+    this.out = [];
     
     for (const seat of seats) {
       const player = this.seats[seat];
-      player.secondDeal = new Set(deal[seat].slice(8));
-      player.hand = new Set(deal[seat].sort((a, b) => a.rank - b.rank));
+
+      if(this.type === 'tichu') {
+        player.secondDeal = new Set(deal[seat].slice(8));
+        player.hand = new Set(deal[seat]);
+      }
+      if(this.type === 'gems') {
+        player.secondDeal = new Set();
+        // Only deal 10 of the 11 cards to the player
+        deal[seat].pop();
+        player.hand = new Set(deal[seat]);
+      }
+
       player.passedCards = false;
       player.tricks = [];
     }
@@ -147,7 +175,7 @@ export class Game {
     }
   }
 
-  public score(): SeatMap<{ tricks: number; hand: number }> {
+  public score(): SeatMap<Score> {
     const getTrickScore = (seat: Seat) => {
       return this.seats[seat]
         .tricks
@@ -159,11 +187,47 @@ export class Game {
         .reduce((n, c) => n + c.value, 0);
     }
 
+    const getBonusScore = (seat: Seat) => {
+      if(this.type === 'tichu') return undefined;
+      if(this.out[0] === seat) return 20;
+      if(this.out[1] === seat) return 10;
+      return 0;
+    }
+
+    const getGems = (seat: Seat): Suit[] => {
+      if(this.type === 'tichu') return [];
+      const counts: { [key in Suit]: number } = {
+        green: 0,
+        blue: 0,
+        red: 0,
+        black: 0
+      }
+      this.seats[seat].tricks
+      .forEach((card) => {
+        if(card.name != 'G') return;
+        counts[card.suit as Suit]++;
+      });
+      const gems: Suit[] = [];
+      for(const suit in counts) {
+        if(counts[suit as Suit] === 4) gems.push(suit as Suit);
+      }
+      return gems;
+    }
+
+    const scoreSeat = (seat: Seat) => {
+      return { 
+        tricks: getTrickScore(seat), 
+        hand: getHandScore(seat), 
+        gems: getGems(seat),
+        bonus: getBonusScore(seat)
+      }
+    }
+
     return {
-      north: { tricks: getTrickScore('north'), hand: getHandScore('north') },
-      east: { tricks: getTrickScore('east'), hand: getHandScore('east') },
-      south: { tricks: getTrickScore('south'), hand: getHandScore('south') },
-      west: { tricks: getTrickScore('west'), hand: getHandScore('west') }
+      north: scoreSeat('north'),
+      east: scoreSeat('east'),
+      south: scoreSeat('south'),
+      west: scoreSeat('west')
     };
   }
 
@@ -174,29 +238,30 @@ export class Game {
       game.cardsPassedTo[seat as Seat] = Array.from(this.cardsPassedTo[seat as Seat]).map((card) => card.serializedId);
     }
     game.id = this.id;
+    game.type = this.type;
     game.currentTrick = this.currentTrick.map((play) => [play[0] as string, play[1].map((card) => card.serializedId)]);
-    game.firstOut = this.firstOut;
-    game.lastOut = this.lastOut;
+    game.out = this.out;
     game.dealCount = this.dealCount;
     game.sequence = this.sequence+1;
     return game;
   }
 
   static deserialize(data: SerializedGame) {
+    const deck = Deck.getDeckByType(data.type);
     const seats = {
-      north: Player.deserialize(data.seats.north),
-      south: Player.deserialize(data.seats.south),
-      east: Player.deserialize(data.seats.east),
-      west: Player.deserialize(data.seats.west),
+      north: Player.deserialize(data.seats.north, deck),
+      south: Player.deserialize(data.seats.south, deck),
+      east: Player.deserialize(data.seats.east, deck),
+      west: Player.deserialize(data.seats.west, deck),
     };
-    const game = new Game(data.id, seats);
+    const game = new Game(data.id, data.type, seats);
+
     for(const seat in data.seats) {
       data.cardsPassedTo[seat as Seat].forEach(cardId => 
-        game.cardsPassedTo[seat as Seat].add(Tichu[cardId]));
+        game.cardsPassedTo[seat as Seat].add(deck[cardId]));
     }
-    game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => Tichu[cardId] ) ]) as Trick
-    game.firstOut = data.firstOut;
-    game.lastOut = data.lastOut;
+    game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => deck[cardId] ) ]) as Trick
+    game.out = data.out;
     game.dealCount = data.dealCount;
     game.sequence = data.sequence;
     game.lastAction = data.lastAction; // ?

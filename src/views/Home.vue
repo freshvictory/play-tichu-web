@@ -1,22 +1,43 @@
 <template>
   <div id="home" :class="$style.home">
-    <h1>Tichu?</h1>
+    <h1>{{gameType | capitalize}}?</h1>
 
     <div :class="$style.start">
-      <NewGame/>
+      <NewGame v-on:changegame="changeGame" :gameType="gameType" />
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import NewGame from '@/components/NewGame.vue';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
+import { GameType } from '@/logic/game';
 
 export default defineComponent({
   name: 'Home',
   components: {
     NewGame,
   },
+  filters: {
+    capitalize: (value: string) => {
+      if (!value) return '';
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  },
+  setup: () => {
+    const gameType = ref<GameType>('tichu');
+     
+    const changeGame = () => {
+      if(gameType.value === 'tichu') gameType.value = 'gems';
+      else gameType.value = 'tichu';
+    }
+
+    return {
+      gameType,
+      changeGame
+    };
+  }
 });
 </script>
 

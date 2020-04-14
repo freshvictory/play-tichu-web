@@ -1,5 +1,4 @@
 import { Card } from './card';
-import { Tichu } from './tichu-deck';
 
 export type SerializedPlayer = {
   id: string;
@@ -43,12 +42,12 @@ export class Player {
     }
   }
 
-  static deserialize(data: SerializedPlayer) {
+  static deserialize(data: SerializedPlayer, deck: Card[]) {
     const player = new Player(data.id, data.name);
-    player.hand = new Set(data.hand.map((cardId) => Tichu[cardId]));
-    player.secondDeal = new Set(data.secondDeal.map((cardId) => Tichu[cardId]));
+    player.hand = new Set(data.hand.map((cardId) => deck[cardId]));
+    player.secondDeal = new Set(data.secondDeal.map((cardId) => deck[cardId]));
     player.passedCards = data.passedCards;
-    player.tricks = data.tricks.map((id) => Tichu[id]);
+    player.tricks = data.tricks.map((id) => deck[id]);
     return player;
   }
 

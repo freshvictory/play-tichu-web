@@ -7,7 +7,7 @@ describe('Game', () => {
   
     describe('#serialize()', () => {
       it('should be able to deserialize the result', () => {
-        const game = new Game('testgame', {
+        const game = new Game('testgame', 'tichu', {
             north: new Player('p1', 'p1'),
             south: new Player('p2', 'p2'),
             east: new Player('p3', 'p3'),

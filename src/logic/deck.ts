@@ -1,6 +1,21 @@
 import { Card } from './card';
+import { Tichu } from './tichu-deck';
+import { Gems } from './gems-deck';
+import { GameType } from './game'
 
-export class Deck {
+export class Deck {  
+  static getDeckByType(type: GameType): Card[] {
+    switch(type){
+      case 'tichu': return Tichu;
+      case 'gems': return Gems;
+    }
+  }
+
+  static dealByType(type: GameType, ...players: string[]) {
+    const deck = this.getDeckByType(type);
+    return this.deal(deck, ...players);
+  }
+
   static deal(
     deck: ReadonlyArray<Card>,
     ...players: string[]

@@ -1,6 +1,10 @@
 <template>
   <div>
     <form :class="$style.form">
+      <div>
+        <button type="button" :class="$style.link" @click="$emit('changegame')">Change game</button>
+      </div>
+
       <input
         id="name"
         :class="[$style.input, !name ? $style.glow : '']"
@@ -33,10 +37,14 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import router from '../router';
 import store from '../store';
+import { GameType } from '../logic/game';
 
 export default defineComponent({
   name: 'NewGame',
-  setup: () => {
+  props: {
+    gameType: { type: String as () => GameType, required: true }
+  },
+  setup: (props) => {
     const name = ref('');
     const gameid = computed({
       get: () => store.state.clientState.gameId, 
@@ -48,7 +56,7 @@ export default defineComponent({
 
     const submit = async () => {
       console.log(`starting new game!`)
-      store.commit('startLobby');
+      store.commit('startLobby', {type: props.gameType});
 
       store.commit('makeUserId', {name: name.value});
       store.commit('joinLobby', { name: name.value, game: gameid.value });
@@ -65,7 +73,7 @@ export default defineComponent({
       name,
       gameid,
       submit,
-      join
+      join,
     };
   },
 });
@@ -115,5 +123,11 @@ export default defineComponent({
     background-color: lightgray;
     color:gray;
   }
+}
+
+.link {
+  color: blue;
+  text-decoration: underline;
+  border: none;
 }
 </style>

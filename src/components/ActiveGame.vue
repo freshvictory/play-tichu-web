@@ -6,6 +6,7 @@
         <span :class="$style.container">
           <span :class="[$style.gem, $style[loopSeat]]"></span>
           <span v-if="loopSeat === game.firstOut" :class="[$style.first, $style[loopSeat]]">1st</span>
+          <span v-if="loopSeat === game.secondOut" :class="[$style.last, $style[loopSeat]]">2nd</span>
           <span v-if="loopSeat === game.lastOut" :class="[$style.last, $style[loopSeat]]">Last</span>
           <strong :class="seats[loopSeat].hand.size === 0 ? $style.out : ''" @dblclick="log(seats[loopSeat].id)">{{ seats[loopSeat].name }}:</strong>
           <span> {{ seats[loopSeat].hand.size }}&nbsp;|&nbsp;{{ seats[loopSeat].tricks.length }}</span>

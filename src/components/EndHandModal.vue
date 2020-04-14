@@ -10,6 +10,11 @@
         <strong>{{ getPlayer(seat).name }}</strong>:
         <ul>
           <li>{{ score.tricks }} points</li>
+          <li v-if="score.bonus">{{ score.bonus }} bonus</li>
+          <li v-if="score.gems.length">
+            Gems:
+            <span v-for="suit in score.gems" :key="suit" :class="[$style.gem, $style[suit]]"></span>
+          </li>
           <li v-if="score.hand">{{ score.hand }} left in hand</li>
         </ul>
       </li>
@@ -87,6 +92,38 @@ export default defineComponent({
   &:hover {
     background-color: #efc940;
     border-color: #fff;
+  }
+}
+
+.gem {
+  display: inline-block;
+  height: 0;
+  width: 0;
+  position: relative;
+  border: 8px solid transparent;
+  border-bottom-color: var(--c-gem);
+  top: -8px;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left:-8px;
+    top:8px;
+    border:8px solid transparent;
+    border-top-color: var(--c-gem);
+  }
+
+  &.green {
+    --c-gem: @suit-green;
+  }  
+  &.blue {
+    --c-gem: @suit-blue;
+  }
+  &.red {
+    --c-gem: @suit-red;
+  }
+  &.black {
+    --c-gem: @suit-black;
   }
 }
 </style>
