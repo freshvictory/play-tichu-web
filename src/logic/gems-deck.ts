@@ -359,6 +359,7 @@ const Gems: Card[] = [
 
 for(let index = 0; index < Gems.length; index ++) {
   Gems[index].serializedId = index;
+  Gems[index].style = 'gemGame';
 }
 
 export { Gems };

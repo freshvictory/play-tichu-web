@@ -3,7 +3,8 @@
     :class="[
       $style.card,
       $style[card.suit],
-      selected ? $style.selected : ''
+      selected ? $style.selected : '',
+      $style[card.style]
     ]"
   >
     <div :class="$style.detail" v-if="card.suit != 'blank'">
@@ -60,7 +61,7 @@ export default defineComponent({
 
   &.red {
     --c-card: #ff2f00;
-    --c-card-light: #ffd9d3;
+    --c-card-light: #ffd9d3;    
   }
 
   &.blue {
@@ -90,9 +91,27 @@ export default defineComponent({
   }
 }
 
+.gemGame {    
+  &.card.red {
+    --c-card-img: url('/img/fire.svg');
+  }
+  &.card.blue {
+    --c-card-img: url('/img/water.svg');
+  }
+  &.card.green {
+    --c-card-img: url('/img/earth.svg');
+  }
+  &.card.black {
+    --c-card-img: url('/img/air.svg');
+  }
+}
+
 .detail {
   margin: 15px;
   background-color: var(--c-card-light);
+  background-image: var(--c-card-img);
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 3px;
   height: calc(100% - 2 * 15px);
   width: calc(100% - 2 * 15px);

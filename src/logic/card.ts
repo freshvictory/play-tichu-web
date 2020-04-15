@@ -5,4 +5,5 @@ export type Card = {
   value: number;
   suit: string;
   serializedId: number;
+  style?: string | undefined;
 }

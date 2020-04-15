@@ -49,7 +49,7 @@ export default defineComponent({
     const suits = computed(() => {
       if(store.state.sharedState.stage === 'none') return undefined;
       if(store.state.sharedState.stageState.type === 'tichu') return [];
-      const gemsuits: Suit[] = ['green', 'blue', 'red', 'black'];
+      const gemsuits: Suit[] = ['blue', 'green', 'black', 'red'];
       return gemsuits;
     });
 
@@ -135,14 +135,27 @@ export default defineComponent({
 }
 
 .gem {
-  .suit-gem(12px);
+  background-color: var(--c-gem);
+  width: 30px;
+  height: 30px;
+  border-radius: 40%;
   margin:10px;
-  & + span::before {
-    content: '>';
-    font-weight: bold;
-    left:-26px;
-    position: relative;
-    top:3px;
+  
+  &.green {
+    --c-gem: @suit-green;    
+    background-image: url('/img/earth.svg');
+  }  
+  &.blue {
+    --c-gem: @suit-blue;
+    background-image: url('/img/water.svg');
+  }
+  &.red {
+    --c-gem: @suit-red;
+    background-image: url('/img/fire.svg');
+  }
+  &.black {
+    --c-gem: @suit-black;
+    background-image: url('/img/air.svg');
   }
 }
 </style>
