@@ -1,24 +1,31 @@
 <template>
   <div :class="$style.modal">
-    <ol :class="$style.scores" v-if="showScores">
+    <div v-if="showScores">
       <h3 :class="$style.header">Scores</h3>
+      <ol :class="$style.scores" v-for="(team, index) in scores" :key="index">
+      <li>        
+        <strong>Team {{index+1}}</strong>
+        <div>
+          {{team.points}} points total
+          <span v-if="team.gems.length">
+            <span v-for="suit in team.gems" :key="suit" :class="[$style.gem, $style[suit]]"></span>
+          </span>
+        </div>
+      </li>
       <li
-        v-for="(score, seat) in scores"
-        :key="seat"
+        v-for="score in team.players"
+        :key="score.seat"
         :class="$style['score-list']"
       >
-        <strong>{{ getPlayer(seat).name }}</strong>:
+        <strong>{{ getPlayer(score.seat).name }}</strong>:
         <ul>
           <li>{{ score.tricks }} points</li>
           <li v-if="score.bonus">{{ score.bonus }} bonus</li>
-          <li v-if="score.gems.length">
-            Gems:
-            <span v-for="suit in score.gems" :key="suit" :class="[$style.gem, $style[suit]]"></span>
-          </li>
           <li v-if="score.hand">{{ score.hand }} left in hand</li>
         </ul>
       </li>
-    </ol>
+      </ol>
+    </div>
     <button v-else-if="seatsOut.length > 0" @click="showScores = true" :class="$style.button">show scores</button>
     <button @click="deal" :class="$style.button">deal new hand</button>
   </div>
@@ -71,10 +78,13 @@ export default defineComponent({
 
 .scores {
   display: block;
+  > li {
+    margin-bottom: 10px;
+  }
 }
 
 .score-list {
-  margin-bottom: 10px;
+  margin-left: 10px;
 }
 
 .header {

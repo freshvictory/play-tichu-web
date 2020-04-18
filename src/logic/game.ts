@@ -11,7 +11,10 @@ export type Trick = [Seat, ReadonlyArray<Card>][];
 
 export type GameType = 'tichu' | 'gems';
 
-export type Score = { tricks: number; hand: number; gems: Suit[]; bonus: number | undefined };
+export type SuitMap<T> = {[key in Suit]: T}
+
+export type PlayerScore = { seat: Seat; tricks: number; hand: number; gems: SuitMap<number> | undefined; bonus: number | undefined };
+export type TeamScore = {players: PlayerScore[]; points: number; gems: Suit[]};
 
 export type SerializedGame = {
   id: string;
@@ -175,7 +178,7 @@ export class Game {
     }
   }
 
-  public score(): SeatMap<Score> {
+  public score(): TeamScore[] {
     const getTrickScore = (seat: Seat) => {
       return this.seats[seat]
         .tricks
@@ -194,8 +197,8 @@ export class Game {
       return 0;
     }
 
-    const getGems = (seat: Seat): Suit[] => {
-      if(this.type === 'tichu') return [];
+    const getGems = (seat: Seat) => {
+      if(this.type === 'tichu') return undefined;
       const counts: { [key in Suit]: number } = {
         green: 0,
         blue: 0,
@@ -207,15 +210,12 @@ export class Game {
         if(card.name != 'G') return;
         counts[card.suit as Suit]++;
       });
-      const gems: Suit[] = [];
-      for(const suit in counts) {
-        if(counts[suit as Suit] === 4) gems.push(suit as Suit);
-      }
-      return gems;
+      return counts;
     }
 
-    const scoreSeat = (seat: Seat) => {
+    const scoreSeat = (seat: Seat): PlayerScore => {
       return { 
+        seat: seat,
         tricks: getTrickScore(seat), 
         hand: getHandScore(seat), 
         gems: getGems(seat),
@@ -223,12 +223,59 @@ export class Game {
       }
     }
 
-    return {
+    const scoreTeams = (players: SeatMap<PlayerScore>) => {
+      const teams = {
+        north: 0,
+        south: 0,
+        east: 1,
+        west: 1
+      };
+      const scores: TeamScore[] = [
+        {players: [], points: 0, gems: []},
+        {players: [], points: 0, gems: []},
+      ];
+      
+      for(const seatString in players) {
+        const seat = seatString as Seat;
+        const score = scores[teams[seat]];
+        const player = players[seat];
+
+        score.players.push(player);
+        score.points += (player.bonus??0);
+
+        if(this.out[3] === seat && this.type === 'tichu') {          
+          scores[teams[seat]+1 % 2].points += player.hand;
+          scores[teams[this.out[0]]].points += player.tricks
+        }
+        else {          
+          score.points += player.tricks;
+        }
+      }
+
+      if(this.type === 'gems') {
+        for(const score of scores) {
+          if(score.players.length != 2) continue;
+          if(score.players[1].gems === undefined) continue;
+          for(const suitString in score.players[0].gems){
+            const suit = suitString as Suit;
+            if(score.players[0].gems[suit] + score.players[1].gems[suit] === 4) {
+              score.gems.push(suit);
+            }
+          }
+        }
+      }
+
+      return scores;
+    };
+
+    const teamScores = scoreTeams({
       north: scoreSeat('north'),
       east: scoreSeat('east'),
       south: scoreSeat('south'),
       west: scoreSeat('west')
-    };
+    });
+
+    return teamScores;
   }
 
   public serialize(): SerializedGame {
