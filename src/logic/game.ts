@@ -244,7 +244,7 @@ export class Game {
         score.points += (player.bonus??0);
 
         if(this.out[3] === seat && this.type === 'tichu') {          
-          scores[teams[seat]+1 % 2].points += player.hand;
+          scores[(teams[seat]+1) % 2].points += player.hand;
           scores[teams[this.out[0]]].points += player.tricks
         }
         else {          
