@@ -32,6 +32,12 @@ export class Lobby {
     this.seats[seat] = new Player(id, name);
   }
 
+  public leave(seat: Seat, id: string): boolean {
+    if(this.seats[seat] === undefined || this.seats[seat]?.id != id) return false;
+    this.seats[seat] = undefined;
+    return true;
+  }
+
   public start(): Game {
     return new Game(this.id, this.type, this.seats as SeatMap<Player>);
   }

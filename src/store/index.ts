@@ -210,6 +210,18 @@ export default new Vuex.Store<{
         await dispatch('sendState');
       }
     },    
+    stand: async ({ dispatch, state }, { seat }: { seat: Seat }) => {
+      if(state.sharedState.stage === 'lobby') {        
+        if(state.clientState.userId === undefined ||
+          state.clientState.name === undefined) return;
+        
+        const left = state.sharedState.stageState.leave(
+          seat,
+          state.clientState.userId
+        );
+        if(left) await dispatch('sendState');
+      }
+    },
     ghostSeat: async (
       { dispatch, state },
       { seat }: { seat: Seat }

@@ -26,6 +26,7 @@
         </div>
         <div :class="$style.buttons">
           <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">Sit Down</button>
+          <button v-if="mySeat" type="button" :class="$style.submit" @click="stand">Stand Up</button>
           <!-- <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">Ghost</button> -->
           <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
         </div>
@@ -63,6 +64,11 @@ export default defineComponent({
       store.dispatch('takeSeat', { seat: chosenSeat.value });
       chosenSeat.value = '';
     };
+
+    const stand = () => {
+      store.dispatch('stand', {seat: mySeat.value});
+      chosenSeat.value = '';
+    }
     
     const ghost = () => {
       store.dispatch('ghostSeat', { seat: chosenSeat.value });
@@ -96,7 +102,8 @@ export default defineComponent({
       mySeat,
       start,
       copyLink,
-      ghostTab
+      ghostTab,
+      stand
     };
   },
 });
