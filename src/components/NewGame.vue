@@ -15,7 +15,7 @@
       />
 
       <div :class="$style.box">      
-        <button :class="$style.submit" type="button" v-on:click="submit" :disabled="!name" >Host new game!</button>
+        <button :class="$style.submit" type="button" v-on:click="submit" :disabled="!name || starting" >Host new game!</button>
       </div>
 
       <div :class="$style.box">
@@ -27,7 +27,7 @@
           autocomplete="off"
           maxlength="20"
         />
-        <button :class="$style.submit" type="button" v-on:click="join" :disabled="!name || !gameid">Join this game!</button>
+        <button :class="$style.submit" type="button" v-on:click="join" :disabled="!name || !gameid || starting">Join this game!</button>
       </div>
     </form>
   </div>
@@ -46,6 +46,7 @@ export default defineComponent({
   },
   setup: (props) => {
     const name = ref('');
+    const starting = ref(false);
     const gameid = computed({
       get: () => store.state.clientState.gameId, 
       set: (newValue: string | undefined) => {
@@ -56,6 +57,7 @@ export default defineComponent({
 
     const submit = async () => {
       console.log(`starting new game!`)
+      starting.value = true;
       store.commit('startLobby', {type: props.gameType});
 
       store.commit('makeUserId', {name: name.value});
@@ -64,6 +66,7 @@ export default defineComponent({
     };
 
     const join = async () => {
+      starting.value = true;
       store.commit('makeUserId', {name: name.value});
       store.commit('joinLobby', {name: name.value, game: gameid.value})
       router.push({path:`game/${gameid.value}`, query: {userId: userid.value} });
@@ -74,6 +77,7 @@ export default defineComponent({
       gameid,
       submit,
       join,
+      starting
     };
   },
 });
