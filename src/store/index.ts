@@ -86,8 +86,10 @@ export default new Vuex.Store<{
       let stageState = null;
       if(newState.stage === 'game') { 
         stageState = Game.deserialize(newState.stageState as SerializedGame);
-        if(state.sharedState.stage === 'game' && 
-          stageState.dealCount > state.sharedState.stageState.dealCount) {            
+        // If we started a new game or dealt a new hand, reset client hand state
+        if((state.sharedState.stage === 'game' && 
+          stageState.dealCount > state.sharedState.stageState.dealCount) ||
+          state.sharedState.stage === 'lobby') {            
             state.clientState.handState = {
               // TODO: maybe invert pickedUpSecondDeal so the condition is simpler for other games
               pickedUpSecondDeal: stageState.type === 'tichu' ? false : true,

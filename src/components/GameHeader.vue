@@ -129,33 +129,43 @@ export default defineComponent({
 }
 
 .suits {
-  display: flex;
+  display: grid;
+  margin-top: -10px;
+  grid-template-areas: 
+    ". red ."
+    "black . blue"
+    ". green .";
+  grid-auto-columns: 25px;
+  grid-auto-rows: 25px;
   justify-content: center;
   flex-grow: 2;
 }
 
 .gem {
   background-color: var(--c-gem);
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border-radius: 40%;
-  margin:10px;
   
   &.green {
     --c-gem: @suit-green;    
     background-image: url('/img/earth.svg');
+    grid-area: green;
   }  
   &.blue {
     --c-gem: @suit-blue;
     background-image: url('/img/water.svg');
+    grid-area: blue;
   }
   &.red {
     --c-gem: @suit-red;
     background-image: url('/img/fire.svg');
+    grid-area: red;
   }
   &.black {
     --c-gem: @suit-black;
     background-image: url('/img/air.svg');
+    grid-area: black;
   }
 }
 </style>
