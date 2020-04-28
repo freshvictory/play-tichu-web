@@ -95,6 +95,7 @@ export default defineComponent({
   display: flex;
   padding: @px-grid-gap;
   // padding-bottom: 0;
+  margin-bottom: 5px;
   align-items: center;
   justify-content: space-between;
 }
@@ -130,15 +131,17 @@ export default defineComponent({
 
 .suits {
   display: grid;
-  margin-top: -10px;
   grid-template-areas: 
     ". red ."
     "black . blue"
     ". green .";
   grid-auto-columns: 25px;
   grid-auto-rows: 25px;
-  justify-content: center;
-  flex-grow: 2;
+
+  position:absolute;
+  top:5px;
+  left:50%;
+  margin-left:-32px;
 }
 
 .gem {
