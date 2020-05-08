@@ -132,9 +132,9 @@ export default defineComponent({
 .suits {
   display: grid;
   grid-template-areas: 
-    ". red ."
-    "black . blue"
-    ". green .";
+    ". fire ."
+    "air . water"
+    ". earth .";
   grid-auto-columns: 25px;
   grid-auto-rows: 25px;
 
@@ -153,22 +153,22 @@ export default defineComponent({
   &.green {
     --c-gem: @suit-green;    
     background-image: url('/img/earth.svg');
-    grid-area: green;
+    grid-area: earth;
   }  
   &.blue {
     --c-gem: @suit-blue;
     background-image: url('/img/water.svg');
-    grid-area: blue;
+    grid-area: water;
   }
   &.red {
     --c-gem: @suit-red;
     background-image: url('/img/fire.svg');
-    grid-area: red;
+    grid-area: fire;
   }
   &.black {
     --c-gem: @suit-black;
     background-image: url('/img/air.svg');
-    grid-area: black;
+    grid-area: air;
   }
 }
 </style>
