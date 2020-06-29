@@ -1,33 +1,43 @@
 <template>
   <div>
-    <form :class="$style.form">
-      <div>
-        <button type="button" :class="$style.link" @click="$emit('changegame')">Change game</button>
-      </div>
-
-      <input
-        id="name"
-        :class="[$style.input, !name ? $style.glow : '']"
-        v-model.trim="name"
-        placeholder="Enter your name"
-        maxlength="20"
-        pattern="[A-Za-z0-9 '\-!]+"
-      />
-
+    <form :class="$style.form" @submit.prevent="() => gameid ? join() : submit()">
       <div :class="$style.box">      
-        <button :class="$style.submit" type="button" v-on:click="submit" :disabled="!name || starting" >Host new game!</button>
+        <input
+          id="name"
+          :class="[$style.input, !name ? $style.glow : '']"
+          v-model.trim="name"
+          placeholder="Enter your name"
+          maxlength="20"
+          pattern="[A-Za-z0-9 '\-!]+"
+          autocomplete="off"
+        />
+
+        <button
+          v-if="!gameid"
+          :class="$style.submit"
+          type="submit"
+          :disabled="!name || starting"
+        >
+          Host new game!
+        </button>
+        <button
+          v-else
+          :class="$style.submit"
+          type="submit"
+          :disabled="!name || starting"
+        >
+          Join this game!
+        </button>
       </div>
 
-      <div :class="$style.box">
-        <input
-          id="gameid"
-          :class="$style.input"
-          v-model.trim="gameid"
-          placeholder="Game ID"
-          autocomplete="off"
-          maxlength="20"
-        />
-        <button :class="$style.submit" type="button" v-on:click="join" :disabled="!name || !gameid || starting">Join this game!</button>
+      <div>
+        <button
+          type="button"
+          :class="$style.link"
+          @click="$emit('changegame')"
+        >
+          Change game
+        </button>
       </div>
     </form>
   </div>
@@ -94,9 +104,9 @@ export default defineComponent({
 }
 
 .box {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
+  background: #fff;
+  border-radius: 25px;
+  padding: @px-grid-gap;
   display: grid;
   gap: @px-grid-gap;
 }
@@ -105,7 +115,8 @@ export default defineComponent({
   width: 100%;
   padding: 5px;
   border: 1px solid #ddd;
-  border-radius: 3px;
+  border-radius: 10px;
+  box-sizing: border-box;
 
   &:invalid {
     border: 2px solid red;
@@ -114,11 +125,11 @@ export default defineComponent({
 }
 
 .glow {
-  box-shadow: 0 0 10px @submit-color;
+  border: 2px solid gold;
 }
 
 .submit {
-  border-radius: 3px;
+  border-radius: 10px;
   padding: 5px;
   background-color: @submit-color; 
 

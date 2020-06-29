@@ -1,24 +1,25 @@
 <template>
   <div :class="$style.hand">
-    <transition name="slide-fade">
-      <button v-if="selected.length && !canPass" @click="play" :class="[$style.button, $style.right]">play</button>
-    </transition>
-    <transition name="slide-fade">
-      <button v-if="hideDeal" @click="pickup" :class="[$style.button, $style.right]">pick up</button>
-    </transition>
-    <transition name="slide-fade">
-      <button v-if="canPass && availablePasses.length === 0" @click="pass" :class="[$style.button, $style.right]">pass</button>
-    </transition>
-    <button @click="sort" :class="[$style.button, $style.left]">sort</button>
-    <label :class="[$style.switch, $style.left]">
-      <input v-model="sortReverse" type="checkbox">
-      <span :class="$style.slider"></span>
-    </label>
-    <div v-if="hideDeal" :class="$style.hidden">
-      <div v-for="card of secondDeal" :key="card.id" :class="$style.hiddenCard">
-        <div :class="$style.detail"></div>
+    <div :class="$style.header">
+      <PlayerName :class="$style.name" :seat="seat" />
+      <div :class="$style.actions">
+        <button @click="sort" :class="$style.button">sort</button>
+        <label :class="$style.switch">
+          <input v-model="sortReverse" type="checkbox">
+          <span :class="$style.slider"></span>
+        </label>
+        <transition name="slide-fade">
+          <button v-if="selected.length && !canPass" @click="play" :class="$style.button">play</button>
+        </transition>
+        <transition name="slide-fade">
+          <button v-if="hideDeal" @click="pickup" :class="$style.button">pick up</button>
+        </transition>
+        <transition name="slide-fade">
+          <button v-if="canPass && availablePasses.length === 0" @click="pass" :class="$style.button">pass</button>
+        </transition>
       </div>
     </div>
+
     <draggable v-model="sortedHand" tag="div" :class="$style.list"
       :ghost-class="$style.ghost" :drag-class="$style.dragged">
       <div
@@ -41,13 +42,12 @@
         />
         <transition name="play-slide">
           <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
-            <div v-if="player = seatCardIsPassedTo(card)" :class="$style['pass-player']">
-              <div :class="$style.passing">passing</div>
-              <span>{{ getPlayer(player).name }}</span>
+            <div v-if="player = seatCardIsPassedTo(card)" :class="[$style['pass-player'], $style[player]]">
+              <span :class="$style.passing">{{ getPlayer(player).name }}</span>
             </div>
 
             <ol v-else-if="availablePasses.length" :class="$style['pass-options']">
-              <li v-for="seat in availablePasses" :key="seat" :class="$style['pass-option']">
+              <li v-for="seat in availablePasses" :key="seat" :class="[$style['pass-option'], $style[seat]]">
                 <button @click.prevent="passCardToSeat(card, seat)">{{ getPlayer(seat).name }}</button>
               </li>
             </ol>
@@ -63,6 +63,7 @@
 <script lang="ts">
 import draggable from 'vuedraggable';
 import CardComponent from "@/components/Card.vue";
+import PlayerName from "@/components/PlayerName.vue";
 import { defineComponent, ref, computed, watch } from "@vue/composition-api";
 import store from "../store";
 import { Card } from "@/logic/card";
@@ -72,7 +73,8 @@ export default defineComponent({
   name: "Hand",
   components: {
     Card: CardComponent,
-    Draggable: draggable
+    Draggable: draggable,
+    PlayerName
   },
   props: {
     seat: { type: String as () => Seat, required: true },
@@ -151,7 +153,7 @@ export default defineComponent({
       const checkbox = (ctx as any).refs[card.id][0];
       if (checkbox) {
         if (!checkbox.checked) {
-          cancelPass(card);
+        cancelPass(card);
         }
       }
     };
@@ -276,88 +278,42 @@ export default defineComponent({
   grid-auto-rows: max-content;
 }
 
-.hidden {
+.header {
+  display: grid;
+  align-items: center;
+  grid-template-columns: max-content 1fr;
+}
+
+.actions {
   display: flex;
-  z-index: -1;
-  position: absolute;
-  top: -57px;
-  justify-self: center;
-  height: 40px;
-  padding: 0px 80px;
-  overflow: hidden;
+  align-items: center;
+  justify-content: flex-end;
+}
 
-  .hiddenCard {
-    display: block;
-    height: 150px;
-    width: 100px;
-    position: relative;
-    margin-left: -40px;
-
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 2px 2px 6px 0 #ddd;
-    background-color: #fff;
-    color: #333;
-  }
-
-  .detail {
-    margin: 15px;
-    background: rgb(218,218,218);
-    background: @card-back-gradient;
-    border-radius: 3px;
-    height: calc(100% - 2 * 15px);
-    width: calc(100% - 2 * 15px);
-  }
+.name {
+  margin-right: 20px;
 }
 
 .button {
-  padding: 5px 20px;
-  position: absolute;
-  top: -57px;
-
+  .action;
   will-change: transform;
-  transform: scale(1);
-  transition: transform 300ms, opacity 300ms;
-
-  border-radius: 5px;
-  background-color: #efc940;
-  box-shadow: 2px 2px 6px 0 #ddd;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  &.right {
-    justify-self: flex-end;
-  }
-
-  &.left {
-    justify-self: flex-start;
-  }
+  transition: opacity 300ms;
 }
 
 .switch {
   padding: 5px;
-  margin-left: 80px;
-  position: absolute;
-  top: -57px;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
 
   border-radius: 20px;
   background-color: #efc940;
-  box-shadow: 2px 2px 6px 0 #ddd;
-
-  &.right {
-    justify-self: flex-end;
-  }
-
-  &.left {
-    justify-self: flex-start;
-  }
+  background: linear-gradient(to right, #eca73f, #f0cb66);
 
   .slider {
     display: inline-block;
-    width: 20px;
-    height:20px;
+    width: 15px;
+    height: 15px;
     margin-left: 20px;
     margin-right: 0px;
     border-radius: 10px;
@@ -384,13 +340,14 @@ export default defineComponent({
   position: relative;
   &:focus-within {
     .card {
-      box-shadow: 2px 2px 6px 0 #999;
+      outline: 1px solid #ddd;
+      
     }
   }
 
   &:hover {
     .pass-player {
-      transform: translateY(-20px);
+      transform: translateY(-10px);
     }
   }
 
@@ -418,15 +375,16 @@ export default defineComponent({
 
 .pass-options {
   display: grid;
-  z-index: 2;
-  backdrop-filter: blur(10px);
-  padding: 10px;
-  border: 2px dotted #ddd;
-  border-radius: 20px;
+  z-index: 1;
+  background-color: #fff;
+  padding: @px-grid-gap;
+  border-radius: 25px;
 }
 
 .pass-option {
   pointer-events: auto;
+  padding: 10px;
+  border-radius: 10px;
   &:not(:last-child) {
     margin-bottom: 10px;
   }
@@ -437,22 +395,23 @@ export default defineComponent({
   }
 }
 
+.north { background-color: @north-color; }
+.south { background-color: @south-color; }
+.east { background-color: @east-color; }
+.west { background-color: @west-color; }
+
 .cancel {
-  .action(#ef5840);
+  .action;
 }
 
 .pass-player {
-  background-color: gold;
-  padding: 0 5px;
+  padding: 10px 5px;
   border-radius: 5px;
+  min-width: 100px;
 
-  transform: translateY(calc(100% - 14px)) scaleX(0.8);
+  transform: translateY(calc(100% - 7px)) scaleX(0.8);
   transition: transform 300ms;
   will-change: transform;
-}
-
-.passing {
-  font-size: 14px;
 }
 </style>
 

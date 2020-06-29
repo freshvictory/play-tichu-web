@@ -64,10 +64,9 @@ export default defineComponent({
 @import '../shared.less';
 
 .modal {
-  border: 2px dotted #ddd;
-  padding: 20px;
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
+  padding: @px-grid-gap;
+  border-radius: 25px;
+  background-color: #fff;
   text-align: left;
 
   width: 200px;
@@ -93,16 +92,12 @@ export default defineComponent({
 }
 
 .button {
-  line-height: 1;
+  .action;
 
-  border: 2px dotted #efc940;
-  padding: 7px;
-  border-radius: 5px;
+  padding: 10px;
+  border-radius: 10px;
 
-  &:hover {
-    background-color: #efc940;
-    border-color: #fff;
-  }
+  background: linear-gradient(45deg, #efa940, #f0cb66);
 }
 
 .gem {

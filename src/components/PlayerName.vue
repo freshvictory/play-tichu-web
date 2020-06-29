@@ -1,12 +1,13 @@
 <template>
   <div :class="$style.name">
     <form v-if="edit" :class="$style.edit" @submit.prevent="submitName">
-        <input type="text" placeholder="Enter your name!" v-model="inputName" size="30" />
-        <button type="button" :class="$style.cancel" @click="cancelEdit">X</button>
-        <button type="submit" :class="$style.submit">change name</button>
-    </form>
+      <input type="text" placeholder="Enter your name!" v-model="inputName" size="30" />
+      <button type="button" :class="$style.cancel" @click="cancelEdit">X</button>
+      <button type="submit" :class="$style.submit">change name</button>
+  </form>
     <span v-else :class="$style.display" @click="editName">
-        <strong>{{playerName}}</strong> <small :class="$style.edit">edit name</small>
+      <strong>{{playerName}}</strong>
+      <Edit :class="[$style.icon, $style[seat]]"/>
     </span>
   </div>
 </template>
@@ -14,10 +15,14 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import store from '../store';
+import Edit from '@/components/svg/Edit.vue';
 import { Seat } from '../logic/game';
 
 export default defineComponent({
   name: 'PlayerName',
+  components: {
+    Edit
+  },
   props: {
     seat: { type: String as () => Seat, required: false },
   },
@@ -64,11 +69,10 @@ export default defineComponent({
 <style lang="less" module>
 @import '../shared.less';
 
-.name {
-  margin: 0px 20px;
-}
-
 .display {
+  display: flex;
+  align-items: center;
+
   :hover {
     cursor: pointer;
   }
@@ -77,11 +81,23 @@ export default defineComponent({
   }
 }
 
+.icon {
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
+  color: gray;
+
+  &.north { --background: @north-color; }
+  &.south { --background: @south-color; }
+  &.east { --background: @east-color; }
+  &.west { --background: @west-color; }
+}
+
 .edit {
   input {
-    border: solid 1px lightskyblue;
+    background-color: #fff;
     border-radius: 10px;
-    padding: 10px;
+    padding: 5px 10px;
   }
 
   .submit {
@@ -89,7 +105,7 @@ export default defineComponent({
     .action;
   }
   .cancel {
-    margin-left:-20px;
+    margin-left:-25px;
     .action;
   }
 }
