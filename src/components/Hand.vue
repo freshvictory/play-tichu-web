@@ -40,7 +40,7 @@
           :value="card.id"
           @change="toggle(card)"
         />
-        <transition name="play-slide">
+        <transition name="slide-fade">
           <div :class="$style['pass-actions']" v-if="canPass && isSelected(card)">
             <div v-if="player = seatCardIsPassedTo(card)" :class="[$style['pass-player'], $style[player]]">
               <span :class="$style.passing">{{ getPlayer(player).name }}</span>
@@ -371,6 +371,7 @@ export default defineComponent({
   left: 50%;
   transform: translate(-50%, calc(-100% - 25px));
   pointer-events: none;
+  transition: opacity 300ms;
 }
 
 .pass-options {

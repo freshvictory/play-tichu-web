@@ -135,6 +135,7 @@ export default defineComponent({
   left: 50%;
   top: 25%;
   transform: translate(-50%, -25%);
+  z-index: 3;
 }
 
 .shield {
@@ -145,6 +146,7 @@ export default defineComponent({
   bottom: 0;
   opacity: 0.3;
   background-color: #000;
+  z-index: 2;
 }
 
 .out {
