@@ -5,7 +5,7 @@
       :key="s"
       :class="[$style.player, $style[placement[i]], $style[s]]"
     >
-      <Player :class="$style.details" :seat="s" :active="seat" />
+      <Player :class="$style.details" :seat="s" :active="seat" :game="game" />
     </div>
     <div :class="$style.tricks">
       <Tricks :seat="seat"/>
@@ -24,7 +24,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import Hand from '@/components/svg/Hand.vue';
 import Player from '@/components/Player.vue';
 import Tricks from '@/components/Tricks.vue';
-import { Seat } from '@/logic/game';
+import { Seat, Game } from '@/logic/game';
 import store from '@/store';
 import { Card } from '../logic/card';
 
@@ -36,6 +36,7 @@ export default defineComponent({
     Tricks
   },
   props: {
+    game: { type: Game, required: true },
     seat: { type: String as () => Seat, required: false },
     secondDeal: { type: (Set as unknown) as () => Set<Card>, required: false }
   },

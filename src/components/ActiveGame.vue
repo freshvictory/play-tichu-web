@@ -2,7 +2,7 @@
   <div :class="$style.view">
     <GameHeader :seat="seat"/>
     <div :class="$style.table">
-      <Table :seat="seat" />
+      <Table :seat="seat" :game="game" />
     </div>
     <div v-if="showEndHandModal">
       <div @click="toggleModal" :class="$style.shield"></div>

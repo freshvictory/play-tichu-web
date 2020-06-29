@@ -383,7 +383,6 @@ export default defineComponent({
 
 .pass-option {
   pointer-events: auto;
-  padding: 10px;
   border-radius: 10px;
   &:not(:last-child) {
     margin-bottom: 10px;
@@ -392,6 +391,7 @@ export default defineComponent({
   button {
     width: 100%;
     .action;
+    padding: 10px;
   }
 }
 
