@@ -62,7 +62,6 @@ export default defineComponent({
   display: grid;
   grid-template-rows: max-content 1fr;
   height: 100vh;
-  // gap: @px-grid-gap;
 }
 
 .game {
@@ -79,54 +78,12 @@ export default defineComponent({
   overflow: hidden;
 }
 
-.container {
-  display: inline-flex;
-  align-items: center;
-  justify-items: center;
-}
-
-.gem {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  margin-right: 5px;
-
-  &.north { background: @north-color; }
-  &.south { background: @south-color; }
-  &.east { background: @east-color; }
-  &.west { background: @west-color; }
-}
-
-.first, .last {
-  font-weight: bold;
-  margin-right: 5px;
-  &.north { color: @north-color; }
-  &.south { color: @south-color; }
-  &.east { color: @east-color; }
-  &.west { color: @west-color; }
-}
-
-.size {
-    margin: 0 10px;
-}
-
 .table {
   background-color: #fff;
   border-radius: 25px;
   margin: @px-grid-gap;
   margin-top: 0;
   padding: @px-grid-gap;
-  overflow: hidden;
-}
-
-.history {  
-  border: 2px dotted #ddd;
-  border-radius: 20px;
-  margin: 5px 20px 60px 5px;
-  padding: 10px;
-  // Height would ideally be calculated to resize, but it needs to be capped to prevent stretching the page
-  height: 180px;
   overflow: hidden;
 }
 
