@@ -5,9 +5,9 @@
       <button type="button" :class="$style.cancel" @click="cancelEdit">X</button>
       <button type="submit" :class="$style.submit">change name</button>
   </form>
-    <span v-else :class="$style.display" @click="editName">
+    <span v-else :class="$style.display">
       <strong>{{playerName}}</strong>
-      <Edit :class="[$style.icon, $style[seat]]"/>
+      <Edit v-if="active === seat" @click.native="editName" :class="[$style.icon, $style[seat]]"/>
     </span>
   </div>
 </template>
@@ -25,6 +25,7 @@ export default defineComponent({
   },
   props: {
     seat: { type: String as () => Seat, required: false },
+    active: String
   },
   setup: (props) => {
     const inputName = ref('');
@@ -73,9 +74,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
 
-  :hover {
-    cursor: pointer;
-  }
   .edit {
       color: gray;
   }
@@ -85,6 +83,7 @@ export default defineComponent({
   width: 15px;
   height: 15px;
   margin-left: 5px;
+  cursor: pointer;
   color: gray;
 
   &.north { --background: @north-color; }

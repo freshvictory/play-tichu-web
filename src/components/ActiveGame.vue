@@ -64,26 +64,11 @@ export default defineComponent({
   height: 100vh;
 }
 
-.game {
-  display: grid;
-  grid-template-rows: [table] 1fr;
-  grid-auto-rows: auto;
-  gap: @px-grid-gap;
-
-  background-color: #fff;
-  border-radius: 25px;
-  margin: @px-grid-gap;
-  margin-top: 0;
-  padding: @px-grid-gap;
-  overflow: hidden;
-}
-
 .table {
-  background-color: #fff;
-  border-radius: 25px;
-  margin: @px-grid-gap;
+  background-color: #49bd66;
   margin-top: 0;
   padding: @px-grid-gap;
+  padding-top: 0;
   overflow: hidden;
 }
 

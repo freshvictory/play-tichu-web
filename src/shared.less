@@ -71,3 +71,22 @@
   line-height: 1;
   font-weight: bold;
 }
+
+.button {
+  .action;
+  will-change: transform;
+  transition: opacity 300ms;
+  padding: 5px;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: 3px 3px #2c3e50;
+  text-decoration: underline dotted;
+  text-underline-position: under;
+
+  /* Safari hack for underline position */
+  text-underline-offset: -4px;
+
+  &:active {
+    box-shadow: 1px 1px;
+  }
+}

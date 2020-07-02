@@ -34,7 +34,6 @@ export default defineComponent({
 
 .card {
   --c-card: #000;
-  --shadow-color: #ababab;
 
   display: block;
   height: 150px;
@@ -45,8 +44,9 @@ export default defineComponent({
   will-change: transform;
   transition: transform 200ms;
 
-  border: 1px solid #eee;
+  border: 1px solid #000;
   border-radius: 5px;
+  box-shadow: 3px 3px #000;
   background-color: #fff;
   color: var(--c-card);
 

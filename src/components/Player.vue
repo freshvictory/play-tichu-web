@@ -6,44 +6,17 @@
       :cards="player.hand"
       :secondDeal="player.secondDeal"
       :seat="seat"
+      :active="active"
+      :game="game"
     />
 
-    <div v-else :class="$style.info">
-      <span
-        v-if="seat === game.firstOut"
-        :class="[$style.out, $style.first]"
-      >
-        1st
-      </span>
-      <span
-        v-else-if="seat === game.secondOut"
-        :class="[$style.out, $style.second]"
-      >
-        2nd
-      </span>
-      <span
-        v-else-if="seat === game.lastOut"
-        :class="[$style.out, $style.last]"
-      >
-        Last
-      </span>
-      <strong :class="$style.name">{{ player.name }}</strong>
-      <span :class="$style.count">
-        <strong>{{ player.hand.size }}</strong>
-        <HandSvg :class="$style.icon"/>
-      </span>
-      <span :class="$style.count">
-        <strong>{{ player.tricks.length }}</strong>
-        <StackSvg :class="$style.icon"/>
-      </span>
-    </div>
+    <PlayerInfo v-else :seat="seat" :game="game" :active="active" />
   </div>
 </template>
 
 <script lang="ts">
 import Hand from '@/components/Hand.vue';
-import HandSvg from '@/components/svg/Hand.vue';
-import StackSvg from '@/components/svg/Stack.vue';
+import PlayerInfo from '@/components/PlayerInfo.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '@/store';
 import { Game } from '@/logic/game';
@@ -52,8 +25,7 @@ export default defineComponent({
   name: "Player",
   components: {
     Hand,
-    HandSvg,
-    StackSvg
+    PlayerInfo
   },
   props: {
     game: { type: Game, required: true },
@@ -75,45 +47,18 @@ export default defineComponent({
 
 .player {
   padding: 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  width: max-content;
 
+  &.north { background-color: @north-color; }
+  &.south { background-color: @south-color; }
+  &.east { background-color: @east-color; }
+  &.west { background-color: @west-color; }
+
+    border-radius: 10px;
   &.active {
     width: 100%;
   }
-}
-
-.out {
-  margin-right: @px-grid-gap;
-  font-weight: bold;
-  line-height: 1;
-  padding: 5px;
-  border-radius: 3px;
-}
-
-.first {
-  background-color: #ffeb01;
-}
-
-.second {
-  background-color: #fff;
-}
-
-.last {
-  background-color: #d4b6b6;
-}
-
-.info {
-  display: flex;
-  align-items: center;
-}
-
-.count {
-  margin-left: @px-grid-gap;
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  width: 24px;
-  margin: 0 5px;
 }
 </style>

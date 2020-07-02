@@ -79,18 +79,17 @@ export default defineComponent({
 
   display: grid;
   grid-template-areas:
-   "partner partner partner"
+   ". partner ."
    "left table right"
    "me me me";
   grid-template-rows: max-content 1fr;
   grid-auto-rows: max-content;
-  grid-template-columns: 52px 1fr 52px;
+  grid-template-columns: 55px 1fr 55px;
   grid-gap: @px-grid-gap;
 }
 
 .tricks {
   position: relative;
-  background: #3fd264;
   border-radius: 10px;
   height: 100%;
   grid-area: table;
@@ -101,32 +100,39 @@ export default defineComponent({
   border-radius: 10px;
   display: flex;
   justify-content: space-around;
-
-  &.north { background-color: @north-color; }
-  &.south { background-color: @south-color; }
-  &.east { background-color: @east-color; }
-  &.west { background-color: @west-color; }
+  z-index: 1;
 
   &.partner {
     grid-area: partner;
+
+    .details { 
+      box-shadow: 3px 3px;
+    }
   }
   &.me {
     grid-area: me;
     z-index: 1;
+    box-shadow: 3px 3px;
   }
   &.left, &.right {
     flex-direction: column;
+    .details {
+      position: relative;
+      left: 50%;
+    }
   } 
   &.left {
     grid-area: left;
     .details {
-      transform: rotate(-90deg) translateX(-100%);
+      box-shadow: -3px 3px;
+      transform: translateX(-50%) rotate(-90deg);
     }
   }
   &.right {
     grid-area: right;
     .details {
-      transform: rotate(90deg) translateX(-100%);
+      box-shadow: 3px -3px;
+      transform: translateX(-50%) rotate(90deg);
     }
   }
 }
@@ -146,8 +152,9 @@ export default defineComponent({
     position: relative;
     margin-left: -40px;
 
-    border: 1px solid #ccc;
+    border: 1px solid #000;
     border-radius: 5px;
+    box-shadow: 3px 3px;
     background-color: #fff;
     color: #333;
   }

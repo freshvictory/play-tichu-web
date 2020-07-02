@@ -97,6 +97,7 @@ export default defineComponent({
   text-align: right;
   background: #eee;
   font-weight: bold;
+  box-shadow: 3px 3px;
 
   &.north {
     background: @north-color;
@@ -128,7 +129,7 @@ export default defineComponent({
 }
 
 .take {
-  .action;
+  .button;
   display: inline;
 }
 </style>

@@ -85,9 +85,9 @@ export default defineComponent({
   width: 100%;
   display: flex;
   padding: @px-grid-gap;
-  // padding-bottom: 0;
   align-items: center;
   justify-content: space-between;
+  background-color: #49bd66;
 }
 
 .flex {
@@ -97,8 +97,11 @@ export default defineComponent({
 
 .title {
   font-size: 24px;
-  border-radius: 20px;
+  background: linear-gradient(to right, #efa940, #f0cb66);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1;
+  filter: drop-shadow(1px 1px #2c3e50);
 }
 
 .options {

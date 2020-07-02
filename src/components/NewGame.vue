@@ -109,6 +109,7 @@ export default defineComponent({
   padding: @px-grid-gap;
   display: grid;
   gap: @px-grid-gap;
+  box-shadow: 3px 3px;
 }
 
 .input {
@@ -129,8 +130,9 @@ export default defineComponent({
 }
 
 .submit {
+  .button;
+  padding: 10px;
   border-radius: 10px;
-  padding: 5px;
   background-color: @submit-color; 
 
   &:disabled {

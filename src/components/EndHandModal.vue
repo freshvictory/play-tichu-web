@@ -6,7 +6,7 @@
       <li>        
         <strong>Team {{index+1}}</strong>
         <div>
-          {{team.points}} points total
+          <strong>{{team.points}}</strong> points total
           <span v-if="team.gems.length">
             <span v-for="suit in team.gems" :key="suit" :class="[$style.gem, $style[suit]]"></span>
           </span>
@@ -19,9 +19,9 @@
       >
         <strong>{{ getPlayer(score.seat).name }}</strong>:
         <ul>
-          <li>{{ score.tricks }} points</li>
-          <li v-if="score.bonus">{{ score.bonus }} bonus</li>
-          <li v-if="score.hand">{{ score.hand }} left in hand</li>
+          <li><strong>{{ score.tricks }} </strong>points</li>
+          <li v-if="score.bonus"><strong>{{ score.bonus }}</strong> bonus</li>
+          <li v-if="score.hand"><strong>{{ score.hand }}</strong> left in hand</li>
         </ul>
       </li>
       </ol>
@@ -66,10 +66,11 @@ export default defineComponent({
 .modal {
   padding: @px-grid-gap;
   border-radius: 25px;
-  background-color: #fff;
+  background-color: #5e5e5e;
+  box-shadow: 3px 3px;
   text-align: left;
 
-  width: 200px;
+  width: 250px;
 
   display: grid;
   gap: @px-grid-gap;
@@ -77,6 +78,7 @@ export default defineComponent({
 
 .scores {
   display: block;
+  color: #fff;
   > li {
     margin-bottom: 10px;
   }
@@ -89,6 +91,7 @@ export default defineComponent({
 .header {
   border-bottom: 1px solid #ddd;
   margin-bottom: 10px;
+  color: #fff;
 }
 
 .button {

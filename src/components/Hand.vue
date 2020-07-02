@@ -1,13 +1,18 @@
 <template>
   <div :class="$style.hand">
     <div :class="$style.header">
-      <PlayerName :class="$style.name" :seat="seat" />
+      <span :class="$style.count">
+        <PlayerInfo :game="game" :active="active" :seat="seat" />
+      </span>
       <div :class="$style.actions">
-        <button @click="sort" :class="$style.button">sort</button>
-        <label :class="$style.switch">
-          <input v-model="sortReverse" type="checkbox">
-          <span :class="$style.slider"></span>
-        </label>
+        <div :class="$style.sort">
+          <button @click="sort" :class="$style.button">sort</button>
+          <label :class="$style.switch">
+            <input v-model="sortReverse" type="checkbox">
+            <span :class="$style.slider"></span>
+          </label>
+        </div>
+        
         <transition name="slide-fade">
           <button v-if="selected.length && !canPass" @click="play" :class="$style.button">play</button>
         </transition>
@@ -64,20 +69,26 @@
 import draggable from 'vuedraggable';
 import CardComponent from "@/components/Card.vue";
 import PlayerName from "@/components/PlayerName.vue";
+import PlayerInfo from '@/components/PlayerInfo.vue';
+import StackSvg from '@/components/svg/Stack.vue';
 import { defineComponent, ref, computed, watch } from "@vue/composition-api";
 import store from "../store";
 import { Card } from "@/logic/card";
-import { Seat, SeatMap } from "@/logic/game";
+import { Seat, SeatMap, Game } from "@/logic/game";
 
 export default defineComponent({
   name: "Hand",
   components: {
     Card: CardComponent,
     Draggable: draggable,
-    PlayerName
+    PlayerName,
+    PlayerInfo,
+    StackSvg
   },
   props: {
     seat: { type: String as () => Seat, required: true },
+    active: { type: String as () => Seat, required: true },
+    game: { type: Game, required: true },
     cards: { type: (Set as unknown) as () => Set<Card>, required: true },
     secondDeal: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
@@ -281,43 +292,51 @@ export default defineComponent({
 .header {
   display: grid;
   align-items: center;
-  grid-template-columns: max-content 1fr;
+  grid-auto-flow: column;
+  grid-template-columns: max-content;
+  grid-gap: 40px;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  width: 100%;
 }
 
 .name {
   margin-right: 20px;
 }
 
-.button {
-  .action;
-  will-change: transform;
-  transition: opacity 300ms;
-}
-
-.switch {
-  padding: 5px;
+.sort {
   display: flex;
   align-items: center;
   margin-right: auto;
+}
+
+.switch {
+  margin-left: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  width: 40px;
 
   border-radius: 20px;
-  background-color: #efc940;
-  background: linear-gradient(to right, #eca73f, #f0cb66);
+  background-color: #fff;
+  box-shadow: 3px 3px;
+
+  cursor: pointer;
 
   .slider {
     display: inline-block;
     width: 15px;
     height: 15px;
-    margin-left: 20px;
-    margin-right: 0px;
+
+    will-change: transform;
+    transform: translateX(100%);
+    transition: transform 150ms;
     border-radius: 10px;
-    background-color: white;
+    background-color: #5e5e5e;
+    box-shadow: 1px 1px;
   }
 
   input {
@@ -325,8 +344,7 @@ export default defineComponent({
   }
 
   input:checked + .slider {
-    margin-left: 0px;
-    margin-right: 20px;
+    transform: translateX(0);
   }
 }
 
@@ -340,7 +358,7 @@ export default defineComponent({
   position: relative;
   &:focus-within {
     .card {
-      outline: 1px solid #ddd;
+      outline: 2px solid;
       
     }
   }
@@ -377,13 +395,16 @@ export default defineComponent({
 .pass-options {
   display: grid;
   z-index: 1;
-  background-color: #fff;
+  background-color: #5e5e5e;
   padding: @px-grid-gap;
   border-radius: 25px;
+  box-shadow: 3px 3px;
 }
 
 .pass-option {
   pointer-events: auto;
+  .button;
+  padding: 0;
   border-radius: 10px;
   &:not(:last-child) {
     margin-bottom: 10px;
@@ -391,7 +412,6 @@ export default defineComponent({
 
   button {
     width: 100%;
-    .action;
     padding: 10px;
   }
 }
@@ -409,10 +429,21 @@ export default defineComponent({
   padding: 10px 5px;
   border-radius: 5px;
   min-width: 100px;
+  box-shadow: 3px 3px;
 
   transform: translateY(calc(100% - 7px)) scaleX(0.8);
   transition: transform 300ms;
   will-change: transform;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  width: 24px;
+  margin: 0 5px;
 }
 </style>
 
