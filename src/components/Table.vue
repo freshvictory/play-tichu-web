@@ -16,12 +16,14 @@
         </div>
       </div>
     </div>
+    <History :class="$style.history" :actions="actionHistory" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import Hand from '@/components/svg/Hand.vue';
+import History from '@/components/History.vue';
 import Player from '@/components/Player.vue';
 import Tricks from '@/components/Tricks.vue';
 import { Seat, Game } from '@/logic/game';
@@ -32,6 +34,7 @@ export default defineComponent({
   name: 'Table',
   components: {
     Hand,
+    History,
     Player,
     Tricks
   },
@@ -60,7 +63,14 @@ export default defineComponent({
       () => !store.state.clientState.handState.pickedUpSecondDeal
     );
 
+    const actionHistory = computed(() => store.state.stateHistory
+      .filter(s => s.stage === 'game')
+      .reverse()
+      .slice(0, 5)
+    );
+
     return {
+      actionHistory,
       hideDeal,
       player,
       placement,
@@ -76,6 +86,7 @@ export default defineComponent({
 
 .table {
   height: 100%;
+  position: relative;
 
   display: grid;
   grid-template-areas:
@@ -111,8 +122,11 @@ export default defineComponent({
   }
   &.me {
     grid-area: me;
-    z-index: 1;
-    box-shadow: 3px 3px;
+    z-index: 2;
+
+    .details {
+      box-shadow: 3px 3px;
+    }
   }
   &.left, &.right {
     flex-direction: column;
@@ -166,6 +180,22 @@ export default defineComponent({
     border-radius: 3px;
     height: calc(100% - 2 * 15px);
     width: calc(100% - 2 * 15px);
+  }
+}
+
+.history {
+  grid-column: right;
+  grid-row: table;
+  width: max-content;
+  position: absolute;
+  right: 0;
+  align-self: flex-end;
+  transform: translateY(calc(100% - 24px));
+  will-change: transform;
+  transition: transform 300ms;
+  z-index: 1;
+  &:hover {
+    transform: translateY(0);
   }
 }
 </style>

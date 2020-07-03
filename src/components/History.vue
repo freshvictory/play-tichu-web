@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <span>History</span>
+  <div :class="$style.container">
     <ul :class="$style.actions">
       <li v-for="(action, index) in actions" :key="index">
-        {{action.stageState.sequence}}.
+        <strong>{{action.stageState.sequence}}.</strong>
         <strong v-if="action.rewind">rw to: </strong>
         {{action.stageState.lastAction ? action.stageState.lastAction : 'unknown'}}
       </li>
@@ -30,8 +29,16 @@ export default defineComponent({
 <style lang="less" module>
 @import '../shared.less';
 
+.container {
+  background-color: #5e5e5e;
+  box-shadow: 3px 3px;
+  padding: @px-grid-gap;
+  border-radius: 25px;
+}
+
 .actions {
-  margin-top: 10px;
+  text-align: left;
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

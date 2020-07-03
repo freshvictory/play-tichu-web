@@ -7,10 +7,9 @@
       $style[card.style]
     ]"
   >
-    <div :class="$style.detail" v-if="card.suit != 'blank'">
-      <p :class="[$style.name, $style.top]">{{ card.name }}</p>
-      <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
-    </div>
+    <p :class="[$style.name, $style.top]">{{ card.name }}</p>
+    <div :class="$style.detail" v-if="card.suit != 'blank'"></div>
+    <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
   </div>
 </template>
 
@@ -38,6 +37,7 @@ export default defineComponent({
   display: block;
   height: 150px;
   width: 100px;
+  box-sizing: border-box;
   position: relative;
 
   transform: scale(1) translateY(0);
@@ -122,7 +122,7 @@ export default defineComponent({
   font-weight: bold;
   padding: 4px;
   position: absolute;
-  background-color: #fff;
+  background-color: inherit;
   min-height: 30px;
   min-width: 30px;
   border-radius: 60px;
@@ -135,6 +135,7 @@ export default defineComponent({
   &.bottom {
     bottom: 0;
     right: 0;
+    transform: rotateZ(180deg)
   }
 }
 </style>

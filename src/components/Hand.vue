@@ -52,7 +52,7 @@
             </div>
 
             <ol v-else-if="availablePasses.length" :class="$style['pass-options']">
-              <li v-for="seat in availablePasses" :key="seat" :class="[$style['pass-option'], $style[seat]]">
+              <li v-for="seat in availablePasses" :key="seat" :class="[$style['pass-option'], $style[seat], $style.button]">
                 <button @click.prevent="passCardToSeat(card, seat)">{{ getPlayer(seat).name }}</button>
               </li>
             </ol>
@@ -356,6 +356,7 @@ export default defineComponent({
 .card-container {
   display: inline-block;
   position: relative;
+
   &:focus-within {
     .card {
       outline: 2px solid;
@@ -403,7 +404,6 @@ export default defineComponent({
 
 .pass-option {
   pointer-events: auto;
-  .button;
   padding: 0;
   border-radius: 10px;
   &:not(:last-child) {

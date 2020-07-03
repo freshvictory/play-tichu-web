@@ -39,7 +39,6 @@ export default defineComponent({
       store.state.clientState.handState.showEndHandModal
     );
     const seats = computed(() => store.getters.seats);
-    const actionHistory = computed(() => store.state.stateHistory.filter(s => s.stage === 'game').reverse());
 
     const toggleModal = () => {
       store.commit('toggleEndHandModal');
@@ -48,7 +47,6 @@ export default defineComponent({
     return {
       showEndHandModal,
       seats,
-      actionHistory,
       toggleModal
     };
   },
