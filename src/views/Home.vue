@@ -45,9 +45,11 @@ export default defineComponent({
 @import '../shared.less';
 
 .home {
-  margin: 20px;
+  padding: @px-grid-gap;
+  height: 100vh;
   display: grid;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: 200px 1fr;
+  align-items: center;
   row-gap: @px-grid-gap;
 }
 
@@ -56,5 +58,6 @@ export default defineComponent({
   padding: @px-grid-gap;
   display: grid;
   row-gap: @px-grid-gap;
+  transform: translateY(-100%);
 }
 </style>

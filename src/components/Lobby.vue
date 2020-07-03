@@ -25,13 +25,13 @@
           />
         </div>
         <div :class="$style.buttons">
-          <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">Sit Down</button>
-          <button v-if="mySeat" type="button" :class="$style.submit" @click="stand">Stand Up</button>
-          <!-- <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">Ghost</button> -->
+          <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">sit down</button>
+          <button v-if="mySeat" type="button" :class="$style.submit" @click="stand">stand up</button>
+          <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">ghost</button>
           <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
         </div>
       </div>
-      <button type="button" :class="$style.submit" @click="copyLink">Copy Invite Link</button>
+      <button type="button" :class="[$style.submit, $style.copy]" @click="copyLink">copy invite link</button>
       <!-- <button type="button" :class="$style.submit" @click="ghostTab">Ghost Tab =></button> -->
     </form>
   </div>
@@ -118,7 +118,7 @@ export default defineComponent({
 
 .form {
   display: grid;
-  gap: @px-grid-gap;
+  gap: 100px;
 }
 
 .seats {
@@ -136,7 +136,9 @@ export default defineComponent({
   --c-team: #ddd;
 
   border: 2px solid var(--c-team);
-  border-radius: 5px;
+  border-radius: 25px;
+  background-color: #fff;
+  box-shadow: 3px 3px;
 
   display: grid;
   grid-template-rows: max-content 1fr;
@@ -158,6 +160,8 @@ label {
   padding: 5px 0;
   background-color: var(--c-team);
   border-bottom: 2px dotted #fff;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
 }
 
 .north {
@@ -190,20 +194,22 @@ label {
 
 .name {
   border: 2px solid #ddd;
-  border-radius: 5px;
+  border-radius: 25px;
   padding: 5px;
 }
 
 .submit {
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  padding: 5px;
+  .button;
+  border-radius: 25px;
+  padding: 15px;
+  background-color: #fff;
 }
 
 .start {
+  .button;
   color: #fff;
-  padding: 10px 20px;
+  padding: 15px;
   background-color: #03a503;
-  border-radius: 5px;
+  border-radius: 25px;
 }
 </style>

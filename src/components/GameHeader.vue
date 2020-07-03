@@ -2,7 +2,6 @@
   <header :class="$style.header">
     <div :class="$style.flex">
       <router-link to="/" title="Home"><h1 :class="$style.title">tichu</h1></router-link>
-      <PlayerName :seat="seat" />
     </div>
     <div :class="$style.suits">
       <span v-for="suit in suits" :key="suit" :class="[$style.gem, $style[suit]]"></span>
@@ -10,9 +9,6 @@
     <ul v-if="seat" :class="$style.options">
       <li v-if="allCardsPassed">
         <button :class="$style.button" @click="pickUp">everybody pick up</button>
-      </li>
-      <li v-if="currentTrick.length">
-        <button :class="$style.button" @click="take">take trick</button>
       </li>
       <li>
         <button :class="$style.button" @click="resync">resync</button>
@@ -42,7 +38,7 @@ export default defineComponent({
   props: {
     seat: { type: String as () => Seat, required: false },
   },
-  setup: (props) => {
+  setup: () => {
     const currentTrick = computed(() => store.getters.currentTrick);
     const allCardsPassed = computed(() => store.getters.allCardsPassed);
 
@@ -55,10 +51,6 @@ export default defineComponent({
 
     const endHand = () => {
       store.commit('toggleEndHandModal');
-    };
-
-    const take = async () => {
-      await store.dispatch('take', { seat: props.seat, cards: currentTrick.value });
     };
 
     const pickUp = async () => {
@@ -78,7 +70,6 @@ export default defineComponent({
       allCardsPassed,
       suits,
       endHand,
-      take,
       pickUp,
       resync,
       rewind
@@ -94,10 +85,9 @@ export default defineComponent({
   width: 100%;
   display: flex;
   padding: @px-grid-gap;
-  // padding-bottom: 0;
-  margin-bottom: 5px;
   align-items: center;
   justify-content: space-between;
+  background-color: #49bd66;
 }
 
 .flex {
@@ -107,10 +97,11 @@ export default defineComponent({
 
 .title {
   font-size: 24px;
-  border: 2px dotted #ddd;
-  padding: 10px;
-  border-radius: 20px;
+  background: linear-gradient(to right, #efa940, #f0cb66);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1;
+  filter: drop-shadow(1px 1px #2c3e50);
 }
 
 .options {

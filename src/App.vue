@@ -59,5 +59,6 @@ li {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background: linear-gradient(to right, #efa940, #f0cb66);
 }
 </style>
