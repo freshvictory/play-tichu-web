@@ -59,7 +59,7 @@ export default defineComponent({
 .view {
   display: grid;
   grid-template-rows: max-content 1fr;
-  height: 100vh;
+  height: 100%;
 }
 
 .table {

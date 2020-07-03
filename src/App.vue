@@ -5,6 +5,14 @@
 </template>
 
 <style lang="less">
+html, body, #app {
+  height: 100%;
+}
+
+html {
+  background: linear-gradient(to right, #efa940, #f0cb66);
+}
+
 body {
   margin: 0;
 }
@@ -59,6 +67,5 @@ li {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background: linear-gradient(to right, #efa940, #f0cb66);
 }
 </style>

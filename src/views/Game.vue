@@ -54,6 +54,6 @@ export default defineComponent({
   display: grid;
   grid-template-rows: 1fr;
   row-gap: @px-grid-gap;
-  height: 100vh;
+  height: 100%;
 }
 </style>

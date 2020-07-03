@@ -186,7 +186,7 @@ export default defineComponent({
 .history {
   grid-column: right;
   grid-row: table;
-  width: max-content;
+  display: inline-grid;
   position: absolute;
   right: 0;
   align-self: flex-end;
@@ -194,6 +194,7 @@ export default defineComponent({
   will-change: transform;
   transition: transform 300ms;
   z-index: 1;
+
   &:hover {
     transform: translateY(0);
   }

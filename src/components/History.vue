@@ -42,6 +42,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  min-width: max-content;
 
   list-style-type: none;
 }
