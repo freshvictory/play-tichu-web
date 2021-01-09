@@ -112,7 +112,7 @@ export default defineComponent({
 
 .button {
   margin-left: 20px;
-  .action;
+  .action();
 }
 
 .modal {

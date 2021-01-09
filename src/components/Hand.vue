@@ -26,7 +26,7 @@
     </div>
 
     <draggable v-model="sortedHand" tag="div" :class="$style.list"
-      :ghost-class="$style.ghost" :drag-class="$style.dragged">
+      :ghost-class="$style.ghost" :drag-class="$style.dragged" :force-fallback="true">
       <div
         v-for="card of sortedHand"
         :key="card.id"
@@ -68,9 +68,7 @@
 <script lang="ts">
 import draggable from 'vuedraggable';
 import CardComponent from "@/components/Card.vue";
-import PlayerName from "@/components/PlayerName.vue";
 import PlayerInfo from '@/components/PlayerInfo.vue';
-import StackSvg from '@/components/svg/Stack.vue';
 import { defineComponent, ref, computed, watch } from "@vue/composition-api";
 import store from "../store";
 import { Card } from "@/logic/card";
@@ -81,9 +79,7 @@ export default defineComponent({
   components: {
     Card: CardComponent,
     Draggable: draggable,
-    PlayerName,
-    PlayerInfo,
-    StackSvg
+    PlayerInfo
   },
   props: {
     seat: { type: String as () => Seat, required: true },
@@ -422,7 +418,7 @@ export default defineComponent({
 .west { background-color: @west-color; }
 
 .cancel {
-  .action;
+  .action();
 }
 
 .pass-player {

@@ -95,7 +95,7 @@ export default defineComponent({
 }
 
 .button {
-  .action;
+  .action();
 
   padding: 10px;
   border-radius: 10px;

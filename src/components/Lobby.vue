@@ -199,14 +199,14 @@ label {
 }
 
 .submit {
-  .button;
+  .button();
   border-radius: 25px;
   padding: 15px;
   background-color: #fff;
 }
 
 .start {
-  .button;
+  .button();
   color: #fff;
   padding: 15px;
   background-color: #03a503;
