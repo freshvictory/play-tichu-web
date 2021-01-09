@@ -130,7 +130,7 @@ export default defineComponent({
 }
 
 .submit {
-  .button;
+  .button();
   padding: 10px;
   border-radius: 10px;
   background-color: @submit-color; 

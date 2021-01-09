@@ -101,11 +101,11 @@ export default defineComponent({
 
   .submit {
     margin-left: 10px;    
-    .action;
+    .action();
   }
   .cancel {
     margin-left:-25px;
-    .action;
+    .action();
   }
 }
 

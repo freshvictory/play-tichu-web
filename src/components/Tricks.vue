@@ -41,7 +41,7 @@ export default defineComponent({
     seat: { type: String as () => Seat, required: false }
   },
   setup: (props) => {
-    const trick = ref<Vue>(null);
+    const trick = ref<Vue | null>(null);
     const currentTrick = computed(() => store.getters.currentTrick);
     const name = computed(() => (seat: Seat) => store.getters.player(seat).name);
 
@@ -118,7 +118,7 @@ export default defineComponent({
 }
 
 .list {
-  .card-grid;
+  .card-grid();
   position: relative;
   justify-content: center;
 }
@@ -129,7 +129,7 @@ export default defineComponent({
 }
 
 .take {
-  .button;
+  .button();
   display: inline;
 }
 </style>
