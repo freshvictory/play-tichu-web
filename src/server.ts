@@ -2,8 +2,8 @@ import axios from 'axios';
 import { HubConnectionBuilder, LogLevel, HubConnection } from "@aspnet/signalr";
 
 export type Handlers = {
-  onReceiveState: Function;
-  onRequestState: Function;
+  onReceiveState: (state: any) => void;
+  onRequestState: () => void;
 }
 
 export class Server {

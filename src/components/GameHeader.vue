@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts">
-import PlayerName from '../components/PlayerName.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '../store';
 import { Seat } from '../logic/game';
@@ -32,9 +31,6 @@ import { Suit } from '../logic/gems-deck';
 
 export default defineComponent({
   name: 'GameHeader',
-  components: {
-    PlayerName
-  },
   props: {
     seat: { type: String as () => Seat, required: false },
   },

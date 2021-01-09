@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import Hand from '@/components/svg/Hand.vue';
 import History from '@/components/History.vue';
 import Player from '@/components/Player.vue';
 import Tricks from '@/components/Tricks.vue';
@@ -33,7 +32,6 @@ import { Card } from '../logic/card';
 export default defineComponent({
   name: 'Table',
   components: {
-    Hand,
     History,
     Player,
     Tricks

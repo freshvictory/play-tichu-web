@@ -15,8 +15,6 @@
 import EndHandModal from '@/components/EndHandModal.vue';
 import GameHeader from '@/components/GameHeader.vue';
 import Table from '@/components/Table.vue';
-import Player from '@/components/Player.vue';
-import History from '@/components/History.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import { Game } from '../logic/game';
 import store from '../store';
@@ -26,9 +24,7 @@ export default defineComponent({
   components: {
     EndHandModal,
     GameHeader,
-    Table,
-    Player,
-    History
+    Table
   },
   props: {
     game: { type: Game, required: true },
