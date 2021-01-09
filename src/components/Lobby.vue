@@ -27,7 +27,7 @@
         <div :class="$style.buttons">
           <button v-if="chosenSeat && !mySeat" type="submit" :class="$style.submit">sit down</button>
           <button v-if="mySeat" type="button" :class="$style.submit" @click="stand">stand up</button>
-          <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">ghost</button>
+          <!-- <button v-if="chosenSeat" type="button" @click="ghost" :class="$style.submit">ghost</button> -->
           <button v-if="lobby.full" :class="$style.start" @click="start">start</button>
         </div>
       </div>
