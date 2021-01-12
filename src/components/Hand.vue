@@ -26,7 +26,7 @@
     </div>
 
     <draggable v-model="sortedHand" tag="div" :class="$style.list"
-      :ghost-class="$style.ghost" :drag-class="$style.dragged" :force-fallback="true">
+      :ghost-class="$style.ghost" :drag-class="$style.dragged">
       <div
         v-for="card of sortedHand"
         :key="card.id"
