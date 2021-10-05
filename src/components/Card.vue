@@ -10,6 +10,12 @@
     <p :class="[$style.name, $style.top]">{{ card.name }}</p>
     <div :class="$style.detail" v-if="card.suit != 'blank'"></div>
     <p :class="[$style.name, $style.bottom]">{{ card.name }}</p>
+    <img
+      :class="$style.img"
+      :src="`/img/tichu/${card.id}.png`"
+      alt=""
+      onerror="this.parentNode.removeChild(this)"
+    />
   </div>
 </template>
 
@@ -39,6 +45,7 @@ export default defineComponent({
   width: 100px;
   box-sizing: border-box;
   position: relative;
+  overflow: hidden;
 
   transform: scale(1) translateY(0);
   will-change: transform;
@@ -60,7 +67,7 @@ export default defineComponent({
 
   &.red {
     --c-card: #ff2f00;
-    --c-card-light: #ffd9d3;    
+    --c-card-light: #ffd9d3;
   }
 
   &.blue {
@@ -90,7 +97,7 @@ export default defineComponent({
   }
 }
 
-.gemGame {    
+.gemGame {
   &.card.red {
     --c-card-img: url('/img/fire.svg');
   }
@@ -102,6 +109,10 @@ export default defineComponent({
   }
   &.card.black {
     --c-card-img: url('/img/air.svg');
+  }
+
+  .img {
+    display: none;
   }
 }
 
@@ -126,7 +137,7 @@ export default defineComponent({
   min-height: 30px;
   min-width: 30px;
   border-radius: 60px;
-  
+
   &.top {
     top: 0;
     left: 0;
@@ -137,5 +148,14 @@ export default defineComponent({
     right: 0;
     transform: rotateZ(180deg)
   }
+}
+
+.img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0); // Force GPU rendering so Chrome isn't blurry
 }
 </style>

@@ -98,7 +98,7 @@ const Tichu: Card[] = [
     serializedId: 0
   },
   {
-    id: '1green_0',
+    id: 'green_10',
     name: '10',
     value: 10,
     rank: 10,
@@ -451,7 +451,7 @@ const Tichu: Card[] = [
   },
 ];
 
-for(let index = 0; index < Tichu.length; index ++) {
+for (let index = 0; index < Tichu.length; index++) {
   Tichu[index].serializedId = index;
 }
 
