@@ -16,6 +16,12 @@
       alt=""
       onerror="this.parentNode.removeChild(this)"
     />
+    <p
+      v-if="card.fullName"
+      :class="$style.fullname"
+    >
+      {{ card.fullName }}
+    </p>
   </div>
 </template>
 
@@ -45,7 +51,6 @@ export default defineComponent({
   width: 100px;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
 
   transform: scale(1) translateY(0);
   will-change: transform;
@@ -157,5 +162,25 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   transform: translateZ(0); // Force GPU rendering so Chrome isn't blurry
+  border-radius: 5px;
+}
+
+.fullname {
+  position: absolute;
+  bottom: 110%;
+  background-color: #5e5e5e;
+  color: white;
+  padding: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: max-content;
+  font-weight: bold;
+  border-radius: 5px;
+
+  display: none;
+}
+
+.card:hover .fullname {
+  display: block;
 }
 </style>

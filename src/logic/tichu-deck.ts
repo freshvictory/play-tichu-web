@@ -4,6 +4,7 @@ const Tichu: Card[] = [
   {
     id: 'dragon',
     name: 'Dragon',
+    fullName: 'Dragon',
     value: 25,
     rank: 16,
     suit: 'special',
@@ -12,6 +13,7 @@ const Tichu: Card[] = [
   {
     id: 'dog',
     name: 'Dog',
+    fullName: 'Dog',
     value: 0,
     rank: 0,
     suit: 'special',
@@ -20,6 +22,7 @@ const Tichu: Card[] = [
   {
     id: 'phoenix',
     name: 'Phoenix',
+    fullName: 'Phoenix',
     value: -25,
     rank: 15,
     suit: 'special',
@@ -28,6 +31,7 @@ const Tichu: Card[] = [
   {
     id: 'bird',
     name: 'Bird',
+    fullName: 'Bird',
     value: 0,
     rank: 1,
     suit: 'special',
@@ -35,6 +39,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_2',
+    fullName: 'Green 2',
     name: '2',
     value: 0,
     rank: 2,
@@ -43,6 +48,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_3',
+    fullName: 'Green 3',
     name: '3',
     value: 0,
     rank: 3,
@@ -51,6 +57,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_4',
+    fullName: 'Green 4',
     name: '4',
     value: 0,
     rank: 4,
@@ -59,6 +66,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_5',
+    fullName: 'Green 5',
     name: '5',
     value: 5,
     rank: 5,
@@ -67,6 +75,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_6',
+    fullName: 'Green 6',
     name: '6',
     value: 0,
     rank: 6,
@@ -75,6 +84,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_7',
+    fullName: 'Green 7',
     name: '7',
     value: 0,
     rank: 7,
@@ -83,6 +93,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_8',
+    fullName: 'Green 8',
     name: '8',
     value: 0,
     rank: 8,
@@ -91,6 +102,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_9',
+    fullName: 'Green 9',
     name: '9',
     value: 0,
     rank: 9,
@@ -99,6 +111,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_10',
+    fullName: 'Green 10',
     name: '10',
     value: 10,
     rank: 10,
@@ -107,6 +120,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_J',
+    fullName: 'Green Jack',
     name: 'J',
     value: 0,
     rank: 11,
@@ -115,6 +129,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_Q',
+    fullName: 'Green Queen',
     name: 'Q',
     value: 0,
     rank: 12,
@@ -123,6 +138,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_K',
+    fullName: 'Green King',
     name: 'K',
     value: 10,
     rank: 13,
@@ -131,6 +147,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'green_A',
+    fullName: 'Green Ace',
     name: 'A',
     value: 0,
     rank: 14,
@@ -139,6 +156,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_2',
+    fullName: 'Black 2',
     name: '2',
     value: 0,
     rank: 2,
@@ -147,6 +165,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_3',
+    fullName: 'Black 3',
     name: '3',
     value: 0,
     rank: 3,
@@ -155,6 +174,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_4',
+    fullName: 'Black 4',
     name: '4',
     value: 0,
     rank: 4,
@@ -163,6 +183,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_5',
+    fullName: 'Black 5',
     name: '5',
     value: 5,
     rank: 5,
@@ -171,6 +192,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_6',
+    fullName: 'Black 6',
     name: '6',
     value: 0,
     rank: 6,
@@ -179,6 +201,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_7',
+    fullName: 'Black 7',
     name: '7',
     value: 0,
     rank: 7,
@@ -187,6 +210,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_8',
+    fullName: 'Black 8',
     name: '8',
     value: 0,
     rank: 8,
@@ -195,6 +219,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_9',
+    fullName: 'Black 9',
     name: '9',
     value: 0,
     rank: 9,
@@ -203,6 +228,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_10',
+    fullName: 'Black 10',
     name: '10',
     value: 10,
     rank: 10,
@@ -211,6 +237,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_J',
+    fullName: 'Black Jack',
     name: 'J',
     value: 0,
     rank: 11,
@@ -219,6 +246,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_Q',
+    fullName: 'Black Queen',
     name: 'Q',
     value: 0,
     rank: 12,
@@ -227,6 +255,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_K',
+    fullName: 'Black King',
     name: 'K',
     value: 10,
     rank: 13,
@@ -235,6 +264,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'black_A',
+    fullName: 'Black Ace',
     name: 'A',
     value: 0,
     rank: 14,
@@ -243,6 +273,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_2',
+    fullName: 'Blue 2',
     name: '2',
     value: 0,
     rank: 2,
@@ -251,6 +282,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_3',
+    fullName: 'Blue 3',
     name: '3',
     value: 0,
     rank: 3,
@@ -259,6 +291,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_4',
+    fullName: 'Blue 4',
     name: '4',
     value: 0,
     rank: 4,
@@ -267,6 +300,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_5',
+    fullName: 'Blue 5',
     name: '5',
     value: 5,
     rank: 5,
@@ -275,6 +309,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_6',
+    fullName: 'Blue 6',
     name: '6',
     value: 0,
     rank: 6,
@@ -283,6 +318,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_7',
+    fullName: 'Blue 7',
     name: '7',
     value: 0,
     rank: 7,
@@ -291,6 +327,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_8',
+    fullName: 'Blue 8',
     name: '8',
     value: 0,
     rank: 8,
@@ -299,6 +336,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_9',
+    fullName: 'Blue 9',
     name: '9',
     value: 0,
     rank: 9,
@@ -307,6 +345,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_10',
+    fullName: 'Blue 10',
     name: '10',
     value: 10,
     rank: 10,
@@ -315,6 +354,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_J',
+    fullName: 'Blue Jack',
     name: 'J',
     value: 0,
     rank: 11,
@@ -323,6 +363,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_Q',
+    fullName: 'Blue Queen',
     name: 'Q',
     value: 0,
     rank: 12,
@@ -331,6 +372,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_K',
+    fullName: 'Blue King',
     name: 'K',
     value: 10,
     rank: 13,
@@ -339,6 +381,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'blue_A',
+    fullName: 'Blue Ace',
     name: 'A',
     value: 0,
     rank: 14,
@@ -347,6 +390,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_2',
+    fullName: 'Red 2',
     name: '2',
     value: 0,
     rank: 2,
@@ -355,6 +399,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_3',
+    fullName: 'Red 3',
     name: '3',
     value: 0,
     rank: 3,
@@ -363,6 +408,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_4',
+    fullName: 'Red 4',
     name: '4',
     value: 0,
     rank: 4,
@@ -371,6 +417,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_5',
+    fullName: 'Red 5',
     name: '5',
     value: 5,
     rank: 5,
@@ -379,6 +426,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_6',
+    fullName: 'Red 6',
     name: '6',
     value: 0,
     rank: 6,
@@ -387,6 +435,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_7',
+    fullName: 'Red 7',
     name: '7',
     value: 0,
     rank: 7,
@@ -395,6 +444,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_8',
+    fullName: 'Red 8',
     name: '8',
     value: 0,
     rank: 8,
@@ -403,6 +453,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_9',
+    fullName: 'Red 9',
     name: '9',
     value: 0,
     rank: 9,
@@ -411,6 +462,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_10',
+    fullName: 'Red 10',
     name: '10',
     value: 10,
     rank: 10,
@@ -419,6 +471,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_J',
+    fullName: 'Red Jack',
     name: 'J',
     value: 0,
     rank: 11,
@@ -427,6 +480,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_Q',
+    fullName: 'Red Queen',
     name: 'Q',
     value: 0,
     rank: 12,
@@ -435,6 +489,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_K',
+    fullName: 'Red King',
     name: 'K',
     value: 10,
     rank: 13,
@@ -443,6 +498,7 @@ const Tichu: Card[] = [
   },
   {
     id: 'red_A',
+    fullName: 'Red Ace',
     name: 'A',
     value: 0,
     rank: 14,
