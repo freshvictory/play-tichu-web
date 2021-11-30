@@ -3,9 +3,9 @@
     <form :class="$style.form" @submit.prevent="() => gameid ? join() : submit()">
       <div :class="$style.box">      
         <input
-          id="name"
-          :class="[$style.input, !name ? $style.glow : '']"
-          v-model.trim="name"
+          id="playername"
+          :class="[$style.input, !playername ? $style.glow : '']"
+          v-model.trim="playername"
           placeholder="Enter your name"
           maxlength="20"
           pattern="[A-Za-z0-9 '\-!]+"
@@ -16,7 +16,7 @@
           v-if="!gameid"
           :class="$style.submit"
           type="submit"
-          :disabled="!name || starting"
+          :disabled="!playername || starting"
         >
           Host new game!
         </button>
@@ -24,7 +24,7 @@
           v-else
           :class="$style.submit"
           type="submit"
-          :disabled="!name || starting"
+          :disabled="!playername || starting"
         >
           Join this game!
         </button>
@@ -55,7 +55,7 @@ export default defineComponent({
     gameType: { type: String as () => GameType, required: true }
   },
   setup: (props) => {
-    const name = ref('');
+    const playername = ref('');
     const starting = ref(false);
     const gameid = computed({
       get: () => store.state.clientState.gameId, 
@@ -70,20 +70,20 @@ export default defineComponent({
       starting.value = true;
       store.commit('startLobby', {type: props.gameType});
 
-      store.commit('makeUserId', {name: name.value});
-      store.commit('joinLobby', { name: name.value, game: gameid.value });
+      store.commit('makeUserId', {name: playername.value});
+      store.commit('joinLobby', { name: playername.value, game: gameid.value });
       router.push({path:`game/${gameid.value}`, query: {userId: userid.value} });
     };
 
     const join = async () => {
       starting.value = true;
-      store.commit('makeUserId', {name: name.value});
-      store.commit('joinLobby', {name: name.value, game: gameid.value})
+      store.commit('makeUserId', {name: playername.value});
+      store.commit('joinLobby', {name: playername.value, game: gameid.value})
       router.push({path:`game/${gameid.value}`, query: {userId: userid.value} });
     }
 
     return {
-      name,
+      playername,
       gameid,
       submit,
       join,

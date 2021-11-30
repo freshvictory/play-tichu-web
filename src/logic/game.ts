@@ -74,7 +74,7 @@ export class Game {
     return out;
   }
 
-  constructor(id: string, type: GameType, seats: SeatMap<Player>) {
+  constructor(id: string, type: GameType, seats: SeatMap<Player>, sequence: number) {
     this.id = id;
     this.type = type;
     this.lastAction = 'new game';
@@ -83,7 +83,7 @@ export class Game {
     this.currentTrick = [];
     this.out = [];
     this.dealCount = 0;
-    this.sequence = 0;
+    this.sequence = sequence;
   }
 
   public play(seat: Seat, cards: Card[]): void {
@@ -301,7 +301,7 @@ export class Game {
       east: Player.deserialize(data.seats.east, deck),
       west: Player.deserialize(data.seats.west, deck),
     };
-    const game = new Game(data.id, data.type, seats);
+    const game = new Game(data.id, data.type, seats, data.sequence);
 
     for(const seat in data.seats) {
       data.cardsPassedTo[seat as Seat].forEach(cardId => 
@@ -310,7 +310,6 @@ export class Game {
     game.currentTrick = data.currentTrick.map((play) => [play[0] as Seat, play[1].map( (cardId) => deck[cardId] ) ]) as Trick
     game.out = data.out;
     game.dealCount = data.dealCount;
-    game.sequence = data.sequence;
     game.lastAction = data.lastAction; // ?
     return game;
   }
