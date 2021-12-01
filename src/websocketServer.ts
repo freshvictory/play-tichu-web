@@ -34,7 +34,7 @@ export class WebsocketServer implements GameServer {
     const ws = new WebSocket(`wss://${this.hostname}/api/room/${gameId}/websocket`);
 
     const ping = async () => {
-      while(ws.OPEN) {
+      while(ws.readyState === WebSocket.OPEN) {
         await new Promise(resolve => setTimeout(resolve, 29000));
         ws.send(JSON.stringify({id: userId}));
       }
