@@ -33,9 +33,17 @@ export class WebsocketServer implements GameServer {
     this.userId = userId;
     const ws = new WebSocket(`wss://${this.hostname}/api/room/${gameId}/websocket`);
 
+    const ping = async () => {
+      while(ws.OPEN) {
+        await new Promise(resolve => setTimeout(resolve, 29000));
+        ws.send(JSON.stringify({id: userId}));
+      }
+    } 
+
     ws.addEventListener("open", evt => {
       this.websocket = ws;
       ws.send(JSON.stringify({id: this.userId}));
+      ping();
     });
 
     ws.addEventListener("message", msg => {
@@ -64,10 +72,10 @@ export class WebsocketServer implements GameServer {
       }
 
       this.joinGame(gameId, userId);
-    };
+    };   
 
     ws.addEventListener("close", evt => {
-      console.log("Websocket closed, reconnecting: ", evt.code, evt.reason);
+      console.log("Websocket closed, reconnecting: ", evt.code, evt.reason, evt);
       rejoin();
     });
     ws.addEventListener("error", evt => {

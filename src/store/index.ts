@@ -323,7 +323,7 @@ export default new Vuex.Store<{
           sender: state.clientState.userId,
           stageState: state.sharedState.stageState.serialize()
         } as SerializedState;
-        console.log(`sending state ${serialized.stage === 'game' ? serialized.stageState.sequence : 0} for game ${state.sharedState.stageState.id}`);
+        console.log(`sending state ${serialized.stageState.sequence} for game ${state.sharedState.stageState.id}`);
         await server.pushState(state.sharedState.stageState.id, serialized);
       }
     }
