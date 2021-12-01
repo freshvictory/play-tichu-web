@@ -3,8 +3,7 @@
     <Hand
       v-if="seat === active"
       :class="$style.hand"
-      :cards="player.hand"
-      :secondDeal="player.secondDeal"
+      :player="player"
       :seat="seat"
       :active="active"
       :game="game"
@@ -20,6 +19,7 @@ import PlayerInfo from '@/components/PlayerInfo.vue';
 import { defineComponent, computed } from '@vue/composition-api';
 import store from '@/store';
 import { Game } from '@/logic/game';
+import { Card } from '@/logic/card';
 
 export default defineComponent({
   name: "Player",

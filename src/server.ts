@@ -6,7 +6,14 @@ export type Handlers = {
   onRequestState: () => void;
 }
 
-export class Server {
+export interface GameServer {
+  start(userId: string, handlers: Handlers): Promise<void>;
+  joinGame(gameId: string, userId: string): Promise<any>;
+  leaveAllGames(userId: string): Promise<any>;
+  pushState(gameId: string, state: any): Promise<any>;
+}
+
+export class Server implements GameServer {
   private readonly url: string;
   private connection!: HubConnection;
 
@@ -14,7 +21,7 @@ export class Server {
     this.url = url;
   }
 
-  public buildConnection(userId: string) {
+  private buildConnection(userId: string) {
     const connection = new HubConnectionBuilder()
       .withUrl(`${this.url}/api?userid=${userId}`)
       .configureLogging(LogLevel.Information)
@@ -23,7 +30,7 @@ export class Server {
     this.connection = connection;
   }
 
-  public setupEventHandlers(handlers: Handlers) { 
+  private setupEventHandlers(handlers: Handlers) { 
     // this.connection.on('ping', newMessage);
     this.connection.on('newState', (state) => handlers.onReceiveState(state));
     this.connection.on('requestState', () => handlers.onRequestState());

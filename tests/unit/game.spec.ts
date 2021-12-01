@@ -12,7 +12,7 @@ describe('Game', () => {
             south: new Player('p2', 'p2'),
             east: new Player('p3', 'p3'),
             west: new Player('p4', 'p4'),
-        });
+        }, 1);
 
         const serialized = game.serialize();
         expect(serialized).to.not.be.undefined;

@@ -5,6 +5,7 @@ export type SerializedLobby = {
   id: string;
   type: GameType;
   seats: SeatMap<SerializedPlayer | undefined>;
+  sequence: number;
 };
 
 export class Lobby {
@@ -12,6 +13,7 @@ export class Lobby {
   public readonly type: GameType;
 
   public seats: SeatMap<Player | undefined>;
+  public sequence: number;
 
   public get full(): boolean {
     return Object.values(this.seats).every((x) => !!x);
@@ -26,6 +28,7 @@ export class Lobby {
       east: undefined,
       west: undefined,
     };
+    this.sequence = 0;
   }
 
   public join(seat: Seat, name: string, id: string): void {
@@ -39,7 +42,7 @@ export class Lobby {
   }
 
   public start(): Game {
-    return new Game(this.id, this.type, this.seats as SeatMap<Player>);
+    return new Game(this.id, this.type, this.seats as SeatMap<Player>, this.sequence);
   }
   
   public serialize(): SerializedLobby {
@@ -51,12 +54,14 @@ export class Lobby {
         south: this.seats.south?.serialize(),
         east: this.seats.east?.serialize(),
         west: this.seats.west?.serialize(),
-      }
+      },
+      sequence: this.sequence+1
     }
   }
 
   static deserialize(data: SerializedLobby) {
     const lobby = new Lobby(data.id, data.type);
+    lobby.sequence = data.sequence;
     for(const seat in lobby.seats) {
       const dataseat = data.seats[seat as Seat];
       if(dataseat) lobby.join(seat as Seat, dataseat.name, dataseat.id)

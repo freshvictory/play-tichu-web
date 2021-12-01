@@ -5,12 +5,13 @@ import { Lobby, SerializedLobby } from '@/logic/lobby';
 import { State as SharedState, SerializedState } from '@/logic/state';
 import { Player } from '@/logic/player';
 import { Card } from '@/logic/card';
-import { Server, ApiBaseUrl } from '@/server';
+import { GameServer } from '@/server';
+import { WebsocketServer, WebsocketHost } from '@/websocketServer';
 import { ClientState } from '@/logic/client';
 
 Vue.use(Vuex);
 
-const server = new Server(ApiBaseUrl);
+const server: GameServer = new WebsocketServer(WebsocketHost);
 
 export default new Vuex.Store<{
   sharedState: SharedState;
@@ -67,7 +68,7 @@ export default new Vuex.Store<{
           players[player as Seat].hand = new Set([]);
           players[player as Seat].tricks = [];
         }
-        state.sharedState.stageState = new Game(state.sharedState.stageState.id, 'tichu', players);
+        state.sharedState.stageState = new Game(state.sharedState.stageState.id, 'tichu', players, state.sharedState.stageState.sequence);
       }
     },
     toggleEndHandModal: (state) => {
@@ -78,32 +79,36 @@ export default new Vuex.Store<{
       state.clientState.handState.pickedUpSecondDeal = true;
     },
     deserialize: (state, { newState }: { newState: SerializedState }) => {
-      console.log(`received new state ${newState.stage === 'game' ? newState.stageState.sequence : 0} for ${newState.stageState.type} game ${newState.stageState.id} from ${newState.sender}`);
+      console.log(`received new state ${newState.stageState.sequence} for ${newState.stageState.type} game ${newState.stageState.id} from ${newState.sender}`);
 
       // Check the game ID to guard against old SignalR subscriptions
-      if(state.clientState.gameId != newState.stageState.id) return;
+      if(state.clientState.gameId != newState.stageState.id) {
+        console.log("Wrong game ID, discarding");
+        return;
+      }
 
-      let stageState = null;
+      let newStageState = null;
       if(newState.stage === 'game') { 
-        stageState = Game.deserialize(newState.stageState as SerializedGame);
-        // If we started a new game or dealt a new hand, reset client hand state
+        newStageState = Game.deserialize(newState.stageState as SerializedGame);
+        // If we started a new game or dealt a new hand, reset client hand state        
         if((state.sharedState.stage === 'game' && 
-          stageState.dealCount > state.sharedState.stageState.dealCount) ||
-          state.sharedState.stage === 'lobby') {            
+          newStageState.dealCount > state.sharedState.stageState.dealCount) ||
+          state.sharedState.stage !== 'game') {    
+            console.log('resetting hand for new deal');
             state.clientState.handState = {
               // TODO: maybe invert pickedUpSecondDeal so the condition is simpler for other games
-              pickedUpSecondDeal: stageState.type === 'tichu' ? false : true,
+              pickedUpSecondDeal: newStageState.type === 'tichu' ? false : true,
               showEndHandModal: false,
               sortedHand: []
             };
           }
       }
-      else if(newState.stage === 'lobby') stageState = Lobby.deserialize(newState.stageState as SerializedLobby)
+      else if(newState.stage === 'lobby') newStageState = Lobby.deserialize(newState.stageState as SerializedLobby)
       else console.log('could not deserialize state for unknown stage')
       
-      if(stageState != null) { 
+      if(newStageState != null) {
         state.stateHistory.push(newState);
-        state.sharedState = {stage: newState.stage, stageState: stageState} as SharedState;
+        state.sharedState = {stage: newState.stage, stageState: newStageState} as SharedState;
       }
     }
   },
@@ -296,13 +301,17 @@ export default new Vuex.Store<{
       await dispatch('sendState');
     },
     rewind: async({ state }) => {
+      if(state.sharedState.stage == 'none') return;
+      // Grab the current sequence, because it needs to be incremented
+      const currentSequence = state.sharedState.stageState.sequence;
       // Discard the top of the history because that is the current state
       state.stateHistory.pop();
       // Then remove the previous history, because we'll get it back, and send it through pushState
       const lastState = state.stateHistory.pop();
       if(lastState != undefined) {
-        console.log(`sending rewind state ${lastState.stage === 'game' ? lastState.stageState.sequence : 0} for game ${lastState.stageState.id}`);
+        console.log(`sending rewind to state ${lastState.stageState.sequence} for game ${lastState.stageState.id}`);
         lastState.rewind = true;
+        lastState.stageState.sequence = currentSequence+1;
         await server.pushState(lastState.stageState.id, lastState);
       }
     },
@@ -314,7 +323,7 @@ export default new Vuex.Store<{
           sender: state.clientState.userId,
           stageState: state.sharedState.stageState.serialize()
         } as SerializedState;
-        console.log(`sending state ${serialized.stage === 'game' ? serialized.stageState.sequence : 0} for game ${state.sharedState.stageState.id}`);
+        console.log(`sending state ${serialized.stageState.sequence} for game ${state.sharedState.stageState.id}`);
         await server.pushState(state.sharedState.stageState.id, serialized);
       }
     }

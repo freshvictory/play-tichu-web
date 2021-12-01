@@ -14,7 +14,7 @@
         </div>
         
         <transition name="slide-fade">
-          <button v-if="selected.length && !canPass" @click="play" :class="$style.button">play</button>
+          <button v-if="selected.length && canPlay" @click="play" :class="$style.button">play</button>
         </transition>
         <transition name="slide-fade">
           <button v-if="hideDeal" @click="pickup" :class="$style.button">pick up</button>
@@ -85,11 +85,10 @@ export default defineComponent({
     seat: { type: String as () => Seat, required: true },
     active: { type: String as () => Seat, required: true },
     game: { type: Game, required: true },
-    cards: { type: (Set as unknown) as () => Set<Card>, required: true },
-    secondDeal: { type: (Set as unknown) as () => Set<Card>, required: true }
   },
   setup: (props, ctx) => {
     const getPlayer = (seat: Seat) => store.getters.player(seat);
+    const thisPlayer = computed(() => getPlayer(props.seat));
 
     /**
      * Passing
@@ -110,10 +109,10 @@ export default defineComponent({
     });
     const canPass = computed(() => {
       const handState = store.state.clientState.handState;
-      const player = getPlayer(props.seat);
       return handState.pickedUpSecondDeal
-        && !player.passedCards;
+        && !thisPlayer.value.passedCards;
     });
+    const canPlay = computed(() => thisPlayer.value.passedCards);
     const passingCard = ref<Card | null>(null);
 
     const passCardToSeat = (card: Card, seat: Seat) => {
@@ -173,12 +172,13 @@ export default defineComponent({
       () => !store.state.clientState.handState.pickedUpSecondDeal
     );
     const visibleHand = computed(() =>
-      Array.from(props.cards).filter(
-        card => !hideDeal.value || !props.secondDeal.has(card)
-      )
+      Array.from(thisPlayer.value.hand).filter(
+        card => !hideDeal.value || !thisPlayer.value.secondDeal.has(card)
+      ) as Card[]
     );
 
     const sortReverse = ref(false);
+    const firstSort = ref(false);
     
     const minBlank: Card = {
         id: 'blankMin',
@@ -199,14 +199,21 @@ export default defineComponent({
     }
 
     const sortedHand = computed({
-      get: () => store.state.clientState.handState.sortedHand,
+      get: () => firstSort.value 
+        ? store.state.clientState.handState.sortedHand 
+        : computeSortedHand(visibleHand.value, store.state.clientState.handState.sortedHand, sortReverse.value),
       set: (value) => store.state.clientState.handState.sortedHand = value
     });
-    watch(visibleHand, (newHand, oldHand) => {      
-      const newHandSet = new Set(newHand.concat(minBlank, maxBlank));
+    watch(visibleHand, (newHand, oldHand) => {
+      sortedHand.value = computeSortedHand(newHand, sortedHand.value, sortReverse.value);
+    });
+    
+    const computeSortedHand = (newHand: readonly Card[] , sortedHand: readonly Card[], sortReverse: boolean): Card[] => {
+      firstSort.value = true;
+      const newHandSet = new Set<Card>(newHand.concat(minBlank, maxBlank));
       let newSortedHand: Card[] = [];
 
-      sortedHand.value.forEach((card, index) => {
+      sortedHand.forEach((card, index) => {
         if(newHandSet.has(card)) {
           newSortedHand.push(card);
           newHandSet.delete(card);
@@ -214,13 +221,13 @@ export default defineComponent({
       });
 
       // TODO: toggle default sort direction
-      const remaining = sortReverse.value 
+      const remaining = sortReverse
         ? Array.from(newHandSet).sort((a, b) => b.rank - a.rank)
         : Array.from(newHandSet).sort((a, b) => a.rank - b.rank);
       newSortedHand = newSortedHand.concat(remaining);
 
-      sortedHand.value = newSortedHand;
-    });
+      return newSortedHand;
+    }
 
     const sort = () => {
       const sorted = sortReverse.value 
@@ -251,6 +258,7 @@ export default defineComponent({
     return {
       availablePasses,
       canPass,
+      canPlay,
       cancelPass,
       hideDeal,
       isSelected,
