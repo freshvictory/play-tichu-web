@@ -40,10 +40,15 @@ export class WebsocketServer implements GameServer {
       }
     } 
 
-    ws.addEventListener("open", evt => {
-      this.websocket = ws;
-      ws.send(JSON.stringify({id: this.userId}));
-      ping();
+    // We want to await the socket to open so we know it is ready to use
+    // Wrap the open listener in a promise that will resolve when connected
+    const promise = new Promise((resolve, reject) => {
+      ws.addEventListener("open", evt => {
+        this.websocket = ws;
+        ws.send(JSON.stringify({id: this.userId}));
+        ping();
+        resolve(ws);
+      });
     });
 
     ws.addEventListener("message", msg => {
@@ -83,7 +88,7 @@ export class WebsocketServer implements GameServer {
       rejoin();
     });
 
-    return Promise.resolve();
+    return promise;
   }
 
   leaveAllGames(userId: string): Promise<any> {

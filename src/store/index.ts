@@ -200,6 +200,8 @@ export default new Vuex.Store<{
         // Subscribe user to the game and request current state
         await server.joinGame(gameId, state.clientState.userId);
         commit('connected');
+        // If we created the game, this will initialize server state, if not it will be ignored
+        await dispatch('sendState');
     },
     takeSeat: async ({ dispatch, state }, { seat }: { seat: Seat }) => {
       if(state.sharedState.stage === 'lobby') {        
